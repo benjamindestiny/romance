@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import rom from "../assets/rom.png";
 import LogoLoading from "../components/LogoLoading";
 
