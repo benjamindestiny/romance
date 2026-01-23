@@ -1,5 +1,6 @@
 import React from "react";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup"
 import { Routes, Route } from "react-router-dom";
 import NotFound from "./pages/NotFound";
 
@@ -8,6 +9,7 @@ const App = () => {
     <>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

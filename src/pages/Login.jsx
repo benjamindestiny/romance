@@ -3,6 +3,8 @@ import LogoLoading from "../components/LogoLoading";
 import rom from "../assets/rom.png";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { Link } from "react-router-dom";
+import signup from "./Signup";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -157,7 +159,7 @@ const Login = () => {
 
         <div className="mt-6 text-center text-sm text-gray-500">
           Don't have an account?{" "}
-          <a href="#" className="text-rose-600 hover:underline">
+          <a href="/signup" className="text-rose-600 hover:underline">
             Sign up
           </a>
         </div>
