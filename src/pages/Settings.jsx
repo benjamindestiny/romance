@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
-import { BellIcon, UserCircleIcon, LockClosedIcon, Cog6ToothIcon, CreditCardIcon, BellAlertIcon, StopIcon, ShieldExclamationIcon } from '@heroicons/react/24/solid';
+import { 
+  BellIcon, 
+  UserCircleIcon, 
+  LockClosedIcon, 
+  Cog6ToothIcon, 
+  CreditCardIcon, 
+  BellAlertIcon, 
+  StopIcon, 
+  ShieldExclamationIcon,
+  KeyIcon
+} 
+from '@heroicons/react/24/solid';
 import ProfilePhoto from '../assets/nature.jpg';
 
 function Settings() {
@@ -135,9 +146,24 @@ function Settings() {
                     <ShieldExclamationIcon className='size-10' />
                   </div>
                 </div>
+                <div className="flex justify-between bg-[#18121F] border p-3 border-">
+                  <div className="flex items-center gap-4">
+                    <span className="bg-[#842591] p-2 w-12 flex items-center justify-center rounded-md">
+                      <KeyIcon className='size-7' />
+                    </span>
+                    <div className="flex flex-col">
+                      <h4 className="text-lg font-semibold mt-4">Password</h4>
+                      <p className="text-gray-400">Last Changed 3 months ago</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center">
+                    <button className="bg-[#FF69B4] p-2 rounded-md">Change Password</button>
+                  </div>
+                </div>
               </section>
             )}
 
+            {activeSection === 'danger' && 
             <section className="bg-[#18121F] border border-red-800/50 rounded-2xl p-6 mt-8">
               <div className="flex items-center gap-3 mb-6">
                 <span className="text-2xl text-red-400">Danger</span>
@@ -152,7 +178,7 @@ function Settings() {
                   Permanently Delete Account
                 </button>
               </div>
-            </section>
+            </section>}
           </div>
         </div>
       </main>
