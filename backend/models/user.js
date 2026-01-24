@@ -15,9 +15,29 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+      default: null,
+    },
+    verificationTokenExpiry: {
+      type: Date,
+      default: null,
+    },
+    passwordResetToken: {
+      type: String,
+      default: null,
+    },
+    passwordResetTokenExpiry: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
-  { lastLogin: Date }
+  { lastLogin: Date },
 );
 
 export default mongoose.model("user", userSchema);
