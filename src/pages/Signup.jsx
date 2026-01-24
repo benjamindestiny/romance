@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import LogoLoading from "../components/LogoLoading";
 import rom from "../assets/rom.png";
 import { Formik, Field, Form, ErrorMessage } from "formik";
@@ -7,6 +9,8 @@ import * as Yup from "yup";
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
   const togglePassword = () => setShowPassword((prev) => !prev);
 
   const initialValues = { name: "", email: "", password: "", remember: false };
@@ -21,9 +25,26 @@ const Signup = () => {
       .required("Password is required"),
   });
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log("Account Created Successfully", values);
-    setSubmitting(false);
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setError("");
+    try {
+      const { name, email, password } = values;
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/register",
+        { name, email, password },
+      );
+
+      // Store token in localStorage
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data));
+
+      // Redirect to home
+      navigate("/");
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to create account");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (showLoader)
@@ -43,6 +64,12 @@ const Signup = () => {
           </p>
         </div>
 
+        {error && (
+          <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -61,9 +88,10 @@ const Signup = () => {
                   className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-200"
                 />
                 <ErrorMessage
+                  className="mt-4 text-sm text-red-500 mt-1"
+                  rrorMessage
                   name="name"
                   component="div"
-                  className="text-sm text-red-500 mt-1"
                 />
               </div>
               <div>
@@ -166,9 +194,9 @@ const Signup = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="mt-6 w-full inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium rounded-lg shadow hover:brightness-95 focus:outline-none cursor-pointer"
+                className="mt-6 w-full inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium rounded-lg shadow hover:brightness-95 focus:outline-none cursor-pointer disabled:opacity-50"
               >
-                {isSubmitting ? "Creating Account..." : "Account Created"}
+                {isSubmitting ? "Creating Account..." : "Create Account"}
               </button>
             </Form>
           )}

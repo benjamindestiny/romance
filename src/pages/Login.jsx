@@ -1,15 +1,20 @@
-import  { useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import LogoLoading from "../components/LogoLoading";
 import rom from "../assets/rom.png";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
-import signup from "./Signup";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
   const togglePassword = () => setShowPassword((prev) => !prev);
+
+  // user.lastLogin = new Date();
+  // await user.save();
 
   const initialValues = { email: "", password: "", remember: false };
 
@@ -22,10 +27,34 @@ const Login = () => {
       .required("Password is required"),
   });
 
-  const handleSubmit = (values, { setSubmitting }) => {
-    console.log("login", values);
-    setSubmitting(false);
+  const handleSubmit = async (values, { setSubmitting }) => {
+    setError("");
+    try {
+      const { email, password } = values;
+      const response = await axios.post(
+        "http://localhost:3000/api/auth/login",
+        { email, password },
+      );
+
+      // Store token in localStorage
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data));
+
+      // Redirect to dashboard or home
+      navigate("/");
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to login");
+    } finally {
+      setSubmitting(false);
+    }
   };
+  {
+    error && (
+      <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+        {error}
+      </div>
+    );
+  }
 
   if (showLoader)
     return <LogoLoading onComplete={() => setShowLoader(false)} />;
