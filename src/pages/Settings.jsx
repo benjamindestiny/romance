@@ -137,27 +137,219 @@ function Settings() {
             {/* Account and Security Section */}
             {activeSection === 'account' && (
               <section className='bg-[#18121F] rounded-2xl p-6'>
-                <div className='flex justify-between items-center'>
+                <div className='flex justify-between items-center mb-6'>
                   <div className='flex flex-col space-y-2'>
-                    <h3 className='text-3xl font-semibold'>Account and Security</h3>
-                    <p className='text-gray-600 font-medium'>Manage your password and security settings</p>
+                    <h3 className='text-2xl font-semibold text-[#FF69B4]'>Account and Security</h3>
+                    <p className='text-gray-400 font-medium'>Manage your password and security settings</p>
                   </div>
                   <div className='bg-[#FF69B4] p-2 rounded-lg'>
-                    <ShieldExclamationIcon className='size-10' />
+                    <ShieldExclamationIcon className='size-10 text-white' />
                   </div>
                 </div>
-                <div className="flex justify-between bg-[#18121F] border p-3 border-">
-                  <div className="flex items-center gap-4">
-                    <span className="bg-[#842591] p-2 w-12 flex items-center justify-center rounded-md">
-                      <KeyIcon className='size-7' />
-                    </span>
-                    <div className="flex flex-col">
-                      <h4 className="text-lg font-semibold mt-4">Password</h4>
-                      <p className="text-gray-400">Last Changed 3 months ago</p>
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
+                    <div className="flex items-center gap-4">
+                      <span className="bg-[#842591] p-2 w-12 flex items-center justify-center rounded-md">
+                        <KeyIcon className='size-7 text-white' />
+                      </span>
+                      <div className="flex flex-col">
+                        <h4 className="text-lg font-semibold">Password</h4>
+                        <p className="text-gray-400">Last Changed 3 months ago</p>
+                      </div>
+                    </div>
+                    <button className="bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">Change Password</button>
+                  </div>
+                  <div className="flex justify-between items-center bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
+                    <div className="flex items-center gap-4">
+                      <span className="bg-[#842591] p-2 w-12 flex items-center justify-center rounded-md">
+                        <ShieldExclamationIcon className='size-7 text-white' />
+                      </span>
+                      <div className="flex flex-col">
+                        <h4 className="text-lg font-semibold">Two-Factor Authentication</h4>
+                        <p className="text-gray-400">Add an extra layer of security</p>
+                      </div>
+                    </div>
+                    <button className="bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">Enable 2FA</button>
+                  </div>
+                  <div className="flex justify-between items-center bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
+                    <div className="flex items-center gap-4">
+                      <span className="bg-[#842591] p-2 w-12 flex items-center justify-center rounded-md">
+                        <BellIcon className='size-7 text-white' />
+                      </span>
+                      <div className="flex flex-col">
+                        <h4 className="text-lg font-semibold">Login History</h4>
+                        <p className="text-gray-400">View recent login activity</p>
+                      </div>
+                    </div>
+                    <button className="bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">View History</button>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* Notifications Section */}
+            {activeSection === 'notifications' && (
+              <section className="bg-[#18121F] rounded-2xl p-6">
+                <h2 className="text-2xl font-semibold text-[#FF69B4] mb-6">Notifications</h2>
+                <p className="text-sm text-gray-400 mb-6">Choose how you want to be notified</p>
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-medium">Email Notifications</h3>
+                      <p className="text-gray-400">Receive notifications via email</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-medium">Push Notifications</h3>
+                      <p className="text-gray-400">Receive push notifications on your device</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" defaultChecked />
+                      <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                    </label>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-medium">SMS Notifications</h3>
+                      <p className="text-gray-400">Receive text messages for important updates</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" />
+                      <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                    </label>
+                  </div>
+                  <div className="border-t border-[#2D2D3A] pt-6">
+                    <h3 className="text-lg font-medium mb-4">Notification Preferences</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span>New Matches</span>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" className="sr-only peer" defaultChecked />
+                          <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                        </label>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Messages</span>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" className="sr-only peer" defaultChecked />
+                          <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                        </label>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Likes and Super Likes</span>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" className="sr-only peer" defaultChecked />
+                          <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                        </label>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center">
-                    <button className="bg-[#FF69B4] p-2 rounded-md">Change Password</button>
+                </div>
+              </section>
+            )}
+
+            {/* Privacy Section */}
+            {activeSection === 'privacy' && (
+              <section className="bg-[#18121F] rounded-2xl p-6">
+                <h2 className="text-2xl font-semibold text-[#FF69B4] mb-6">Privacy</h2>
+                <p className="text-sm text-gray-400 mb-6">Control your privacy and data sharing</p>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Profile Visibility</h3>
+                    <div className="space-y-3">
+                      <label className="flex items-center">
+                        <input type="radio" name="visibility" className="mr-3 accent-[#FF69B4]" defaultChecked />
+                        <span>Public - Anyone can see your profile</span>
+                      </label>
+                      <label className="flex items-center">
+                        <input type="radio" name="visibility" className="mr-3 accent-[#FF69B4]" />
+                        <span>Private - Only people you like can see your profile</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Data Sharing</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span>Share data for personalized recommendations</span>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" className="sr-only peer" defaultChecked />
+                          <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                        </label>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Allow analytics to improve the app</span>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" className="sr-only peer" />
+                          <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Blocked Users</h3>
+                    <p className="text-gray-400 mb-4">Manage users you've blocked</p>
+                    <button className="bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">View Blocked Users</button>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* Billing Section */}
+            {activeSection === 'billing' && (
+              <section className="bg-[#18121F] rounded-2xl p-6">
+                <h2 className="text-2xl font-semibold text-[#FF69B4] mb-6">Billing</h2>
+                <p className="text-sm text-gray-400 mb-6">Manage your subscription and payment methods</p>
+                <div className="space-y-6">
+                  <div className="bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
+                    <h3 className="text-lg font-medium mb-2">Current Plan</h3>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="text-[#FF69B4] font-semibold">Premium Plan</p>
+                        <p className="text-gray-400">$9.99/month</p>
+                      </div>
+                      <button className="bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">Upgrade</button>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Payment Methods</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
+                        <div className="flex items-center gap-3">
+                          <CreditCardIcon className="size-8 text-gray-400" />
+                          <div>
+                            <p>**** **** **** 1234</p>
+                            <p className="text-gray-400">Expires 12/25</p>
+                          </div>
+                        </div>
+                        <button className="text-gray-400 hover:text-white">Edit</button>
+                      </div>
+                    </div>
+                    <button className="mt-4 bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">Add Payment Method</button>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium mb-4">Billing History</h3>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
+                        <div>
+                          <p>Premium Plan - January 2025</p>
+                          <p className="text-gray-400">$9.99</p>
+                        </div>
+                        <button className="text-[#FF69B4] hover:underline">Download</button>
+                      </div>
+                      <div className="flex justify-between items-center bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
+                        <div>
+                          <p>Premium Plan - December 2024</p>
+                          <p className="text-gray-400">$9.99</p>
+                        </div>
+                        <button className="text-[#FF69B4] hover:underline">Download</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </section>
