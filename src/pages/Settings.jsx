@@ -22,6 +22,8 @@ function Settings() {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('profile');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [profilePhotoPreview, setProfilePhotoPreview] = useState(ProfilePhoto);
+  const [uploading, setUploading] = useState(false);
   const [profile, setProfile] = useState({
     firstName: 'Sarah',
     lastName: 'Mitchell',
@@ -36,7 +38,7 @@ function Settings() {
     { id: 'profile', label: 'Profile', icon: <UserCircleIcon className="size-5" /> },
     { id: 'account', label: 'Account & Security', icon: <LockClosedIcon className="size-5" /> },
     { id: 'notifications', label: 'Notifications', icon: <BellAlertIcon className="size-5" /> },
-    { id: 'privacy', label: 'Privacy', icon: <Cog6ToothIcon className="size-5" /> },
+    { id: 'privacy', label: 'Privacy & Data', icon: <ShieldExclamationIcon className="size-5" /> },
     { id: 'help', label: 'Help & Support', icon: <QuestionMarkCircleIcon className="size-5" /> }
   ];
 
@@ -48,6 +50,39 @@ function Settings() {
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Handle profile photo upload
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Image must be less than 5MB');
+      return;
+    }
+
+    setUploading(true);
+
+    // Create a preview
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      setProfilePhotoPreview(event.target?.result);
+      toast.success('Photo selected! (Backend dev will upload to Cloudinary/Database)');
+      setUploading(false);
+      
+      // Here, backend dev can add API call to upload to Cloudinary
+      // Example: await uploadToCloudinary(file)
+      // or save to database with FormData
+    };
+    reader.readAsDataURL(file);
   };
   return (
     <div className="min-h-screen bg-[#0F0F14] text-gray-100 font-sans pb-32 md:pb-0">
@@ -99,8 +134,8 @@ function Settings() {
                 <option value="profile">Profile</option>
                 <option value="account">Account & Security</option>
                 <option value="notifications">Notifications</option>
-                <option value="privacy">Privacy</option>
-                <option value="danger">Danger Zone</option>
+                <option value="privacy">Privacy & Data</option>
+                <option value="help">Help & Support</option>
               </select>
             </div>
 
@@ -113,15 +148,28 @@ function Settings() {
                   <div className="flex flex-col md:flex-row gap-8 items-start">
                     <div className="relative">
                       <img
-                        src={ProfilePhoto}
+                        src={profilePhotoPreview}
                         alt={profile.firstName + ' ' + profile.lastName}
                         className="size-32 rounded-full object-cover border-4 border-[#FF69B4]/30"
                       />
-                      <button className="absolute -bottom-2 -right-2 bg-[#FF69B4] text-white p-3 rounded-full shadow-md" type="button">
+                      <label htmlFor="photo-upload" className="absolute -bottom-2 -right-2 bg-[#FF69B4] text-white p-3 rounded-full shadow-md cursor-pointer hover:bg-[#E0559B] transition-colors">
                         <UserCircleIcon className="size-5" />
-                      </button>
+                      </label>
+                      <input
+                        id="photo-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handlePhotoUpload}
+                        disabled={uploading}
+                        className="hidden"
+                      />
                     </div>
                     <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                      {uploading && (
+                        <div className="md:col-span-2 bg-[#FF69B4]/10 border border-[#FF69B4]/30 rounded-lg p-3">
+                          <p className="text-sm text-[#FF69B4]">Uploading photo...</p>
+                        </div>
+                      )}
                       <div>
                         <label className="block text-sm text-gray-400 mb-1">First Name</label>
                         <input type="text" name="firstName" value={profile.firstName} onChange={handleProfileChange} className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
@@ -290,6 +338,106 @@ function Settings() {
             )}
 
             {/* Privacy Section */}
+            {activeSection === 'privacy' && (
+              <section className="bg-[#18121F] rounded-2xl p-6 space-y-6">
+                <div>
+                  <h2 className="text-2xl font-semibold text-[#FF69B4] mb-2">Privacy & Data</h2>
+                  <p className="text-sm text-gray-400">Control your privacy and how your data is used</p>
+                </div>
+
+                {/* Profile Visibility */}
+                <div className="border-b border-[#2D2D3A] pb-6">
+                  <h3 className="text-lg font-semibold mb-4">Profile Visibility</h3>
+                  <div className="space-y-3">
+                    <label className="flex items-center p-3 border border-[#2D2D3A] rounded-lg hover:border-[#FF69B4]/50 cursor-pointer transition-colors">
+                      <input type="radio" name="visibility" value="public" className="mr-3 accent-[#FF69B4]" defaultChecked />
+                      <div>
+                        <p className="font-medium">Public</p>
+                        <p className="text-sm text-gray-400">Anyone can see your profile and send you messages</p>
+                      </div>
+                    </label>
+                    <label className="flex items-center p-3 border border-[#2D2D3A] rounded-lg hover:border-[#FF69B4]/50 cursor-pointer transition-colors">
+                      <input type="radio" name="visibility" value="private" className="mr-3 accent-[#FF69B4]" />
+                      <div>
+                        <p className="font-medium">Private</p>
+                        <p className="text-sm text-gray-400">Only people you match with can see your profile</p>
+                      </div>
+                    </label>
+                    <label className="flex items-center p-3 border border-[#2D2D3A] rounded-lg hover:border-[#FF69B4]/50 cursor-pointer transition-colors">
+                      <input type="radio" name="visibility" value="hidden" className="mr-3 accent-[#FF69B4]" />
+                      <div>
+                        <p className="font-medium">Hidden</p>
+                        <p className="text-sm text-gray-400">Your profile is not visible to anyone (you're "invisible")</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Data & Personalization */}
+                <div className="border-b border-[#2D2D3A] pb-6">
+                  <h3 className="text-lg font-semibold mb-4">Data & Personalization</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 bg-[#0F0F14] rounded-lg">
+                      <div>
+                        <p className="font-medium">Personalized Recommendations</p>
+                        <p className="text-sm text-gray-400">Use your data to improve match suggestions</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" defaultChecked />
+                        <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                      </label>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-[#0F0F14] rounded-lg">
+                      <div>
+                        <p className="font-medium">Analytics & Improvements</p>
+                        <p className="text-sm text-gray-400">Help us improve the app with anonymous analytics</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" defaultChecked />
+                        <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                      </label>
+                    </div>
+                    <div className="flex items-center justify-between p-3 bg-[#0F0F14] rounded-lg">
+                      <div>
+                        <p className="font-medium">Marketing Communications</p>
+                        <p className="text-sm text-gray-400">Receive emails about new features and updates</p>
+                      </div>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" className="sr-only peer" />
+                        <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Blocked Users & Privacy */}
+                <div className="border-b border-[#2D2D3A] pb-6">
+                  <h3 className="text-lg font-semibold mb-4">Safety & Blocking</h3>
+                  <div className="space-y-3">
+                    <button className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3 text-left hover:border-[#FF69B4]/50 transition-colors">
+                      <p className="font-medium">Manage Blocked Users</p>
+                      <p className="text-sm text-gray-400">View and manage users you've blocked</p>
+                    </button>
+                    <button className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3 text-left hover:border-[#FF69B4]/50 transition-colors">
+                      <p className="font-medium">Download Your Data</p>
+                      <p className="text-sm text-gray-400">Get a copy of all your data in a portable format (GDPR)</p>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Data Deletion */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 text-red-400">Data & Account</h3>
+                  <p className="text-sm text-gray-400 mb-4">Manage your account and data</p>
+                  <button className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3 text-left hover:border-[#FF69B4]/50 transition-colors">
+                    <p className="font-medium">Export Profile</p>
+                    <p className="text-sm text-gray-400">Download all your profile information and conversations</p>
+                  </button>
+                </div>
+              </section>
+            )}
+
+            {/* Help & Support Section */}
             {activeSection === 'help' && (
               <section className="bg-[#18121F] rounded-2xl p-6 space-y-6">
                 <div>
