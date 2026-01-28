@@ -5,9 +5,7 @@ import {
   UserCircleIcon, 
   LockClosedIcon, 
   Cog6ToothIcon, 
-  CreditCardIcon, 
-  BellAlertIcon, 
-  StopIcon, 
+  BellAlertIcon,
   ShieldExclamationIcon,
   KeyIcon
 } 
@@ -21,7 +19,7 @@ function Settings() {
     { id: 'account', label: 'Account & Security', icon: <LockClosedIcon className="size-5" /> },
     { id: 'notifications', label: 'Notifications', icon: <BellAlertIcon className="size-5" /> },
     { id: 'privacy', label: 'Privacy', icon: <Cog6ToothIcon className="size-5" /> },
-    { id: 'billing', label: 'Billing', icon: <CreditCardIcon className="size-5" /> },
+    { id: 'danger', label: 'Danger Zone', icon: <Cog6ToothIcon className="size-5" /> }
   ];
 
   return (
@@ -36,7 +34,7 @@ function Settings() {
             <p className="text-sm text-gray-400">Personalize your Romance experience</p>
           </div>
           <div className="flex items-center space-x-4 w-full md:w-auto">
-            <BellIcon className="h-6 w-6 text-gray-400" />
+            <BellIcon className="size-6 text-gray-400" />
             <button className="bg-[#FF69B4] text-white px-6 py-3 rounded-full text-sm font-medium flex-1 md:flex-none">
               Save Changes
             </button>
@@ -71,7 +69,7 @@ function Settings() {
                 <option value="account">Account & Security</option>
                 <option value="notifications">Notifications</option>
                 <option value="privacy">Privacy</option>
-                <option value="billing">Billing</option>
+                <option value="danger">Danger Zone</option>
               </select>
             </div>
 
@@ -85,10 +83,10 @@ function Settings() {
                     <img
                       src={ProfilePhoto}
                       alt="Sarah Mitchell"
-                      className="w-32 h-32 rounded-full object-cover border-4 border-[#FF69B4]/30"
+                      className="size-32 rounded-full object-cover border-4 border-[#FF69B4]/30"
                     />
                     <button className="absolute -bottom-2 -right-2 bg-[#FF69B4] text-white p-3 rounded-full shadow-md">
-                      <UserCircleIcon className="h-5 w-5" />
+                      <UserCircleIcon className="size-5" />
                     </button>
                   </div>
                   <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
@@ -127,6 +125,8 @@ function Settings() {
                       <label className="block text-sm text-gray-400 mb-1">Timezone</label>
                       <select className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3">
                         <option>Pacific Time (PT)</option>
+                        <option>West Africa Time (WAT)</option>
+                        <option>Greenwich Merridian Time (GMT)</option>
                       </select>
                     </div>
                   </div>
@@ -295,61 +295,6 @@ function Settings() {
                     <h3 className="text-lg font-medium mb-4">Blocked Users</h3>
                     <p className="text-gray-400 mb-4">Manage users you've blocked</p>
                     <button className="bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">View Blocked Users</button>
-                  </div>
-                </div>
-              </section>
-            )}
-
-            {/* Billing Section */}
-            {activeSection === 'billing' && (
-              <section className="bg-[#18121F] rounded-2xl p-6">
-                <h2 className="text-2xl font-semibold text-[#FF69B4] mb-6">Billing</h2>
-                <p className="text-sm text-gray-400 mb-6">Manage your subscription and payment methods</p>
-                <div className="space-y-6">
-                  <div className="bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
-                    <h3 className="text-lg font-medium mb-2">Current Plan</h3>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="text-[#FF69B4] font-semibold">Premium Plan</p>
-                        <p className="text-gray-400">$9.99/month</p>
-                      </div>
-                      <button className="bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">Upgrade</button>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-medium mb-4">Payment Methods</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
-                        <div className="flex items-center gap-3">
-                          <CreditCardIcon className="size-8 text-gray-400" />
-                          <div>
-                            <p>**** **** **** 1234</p>
-                            <p className="text-gray-400">Expires 12/25</p>
-                          </div>
-                        </div>
-                        <button className="text-gray-400 hover:text-white">Edit</button>
-                      </div>
-                    </div>
-                    <button className="mt-4 bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">Add Payment Method</button>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-medium mb-4">Billing History</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
-                        <div>
-                          <p>Premium Plan - January 2025</p>
-                          <p className="text-gray-400">$9.99</p>
-                        </div>
-                        <button className="text-[#FF69B4] hover:underline">Download</button>
-                      </div>
-                      <div className="flex justify-between items-center bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
-                        <div>
-                          <p>Premium Plan - December 2024</p>
-                          <p className="text-gray-400">$9.99</p>
-                        </div>
-                        <button className="text-[#FF69B4] hover:underline">Download</button>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </section>

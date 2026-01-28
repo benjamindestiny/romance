@@ -1,7 +1,6 @@
 import React from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
-import UserIndicatorMobile from '../components/UserIndicatorMobile.jsx';
 import StatCard from '../components/StatCard.jsx';
 import QuickActionCard from '../components/QuickActionCard.jsx';
 import { Link } from 'react-router-dom';
@@ -27,7 +26,7 @@ export default function Dashboard() {
           <div>
             <h1 className="text-primary-purple text-2xl font-bold md:hidden">Romance</h1>
             <p className="text-xl font-bold">Welcome Back, Sarah</p>
-            <p className="text-sm text-text-secondary">Monday, January 13, 2026</p>
+            <p className="text-sm text-text-secondary">Wednesday, January 28, 2026</p>
           </div>
           <div className="flex items-center space-x-4">
             <BellIcon className="h-6 w-6 text-text-secondary" />
@@ -213,7 +212,7 @@ export default function Dashboard() {
           <div className="space-y-4">
             <div className="bg-card-bg p-4 rounded-lg">
               <div className="flex items-center mb-2">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 mr-3 flex items-center justify-center">
+                <div className="size-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 mr-3 flex items-center justify-center">
                   <span className="text-white font-bold">J</span>
                 </div>
                 <div>
@@ -224,16 +223,16 @@ export default function Dashboard() {
               <p className="text-sm mb-2">Just completed my first month of therapy sessions. The progress has been incredible! Thanks to this amazing community for the support.</p>
               <div className="flex space-x-4 text-text-secondary text-sm">
                 <div className="flex items-center">
-                  <HeartIcon className="h-4 w-4 mr-1" /> 24
+                  <HeartIcon className="size-4 mr-1" /> 24
                 </div>
                 <div className="flex items-center">
-                  <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" /> 11
+                  <ChatBubbleLeftRightIcon className="size-4 mr-1" /> 11
                 </div>
               </div>
             </div>
             <div className="bg-card-bg p-4 rounded-lg">
               <div className="flex items-center mb-2">
-                <div className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 mr-3 flex items-center justify-center">
+                <div className="size-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 mr-3 flex items-center justify-center">
                   <span className="text-white font-bold">M</span>
                 </div>
                 <div>
@@ -244,10 +243,10 @@ export default function Dashboard() {
               <p className="text-sm mb-2">Anyone else in a long-distance relationship? Looking for advice on staying connected daily.</p>
               <div className="flex space-x-4 text-text-secondary text-sm">
                 <div className="flex items-center">
-                  <HeartIcon className="h-4 w-4 mr-1" /> 32
+                  <HeartIcon className="size-4 mr-1" /> 32
                 </div>
                 <div className="flex items-center">
-                  <ChatBubbleLeftRightIcon className="h-4 w-4 mr-1" /> 18
+                  <ChatBubbleLeftRightIcon className="size-4 mr-1" /> 18
                 </div>
               </div>
             </div>
@@ -255,7 +254,6 @@ export default function Dashboard() {
         </section>
       </main>
       {/* Bottom Navigation Components */}
-      <UserIndicatorMobile />
       <BottomNav />
     </div>
   );
