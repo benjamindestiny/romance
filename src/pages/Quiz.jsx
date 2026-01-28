@@ -3,7 +3,6 @@ import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
 
 export default function Quiz() {
-  // Example quiz questions related to romance, relationships, and self-growth
   const questions = [
     {
       question: 'What is your primary love language?',

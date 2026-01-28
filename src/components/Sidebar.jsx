@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { HomeIcon, MapIcon, CalendarIcon, UsersIcon, AcademicCapIcon, WrenchScrewdriverIcon, Cog6ToothIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, MapIcon, CalendarIcon, UsersIcon, AcademicCapIcon, WrenchScrewdriverIcon, Cog6ToothIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import UserIndicatorMobile from './UserIndicatorMobile';
 
 export default function Sidebar() {
@@ -70,14 +70,14 @@ export default function Sidebar() {
             <span>Tools</span>
           </NavLink>
           <NavLink
-            to="/quiz"
+            to="/reports"
             className={({ isActive }) =>
               `flex items-center space-x-3 rounded-md p-2 ${isActive ? 'bg-card-bg text-primary-purple font-medium' : 'hover:bg-card-bg'
               }`
             }
           >
-            <AcademicCapIcon className="size-5" />
-            <span>Quiz</span>
+            <ExclamationTriangleIcon className="size-5" />
+            <span>Report Issue</span>
           </NavLink>
           <NavLink
             to="/settings"

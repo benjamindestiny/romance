@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useNavigate, Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.jsx';
+import AccountDeletionModal from '../components/AccountDeletionModal.jsx';
 import { 
   BellIcon, 
   UserCircleIcon, 
@@ -8,14 +10,18 @@ import {
   Cog6ToothIcon, 
   BellAlertIcon,
   ShieldExclamationIcon,
-  KeyIcon
+  KeyIcon,
+  QuestionMarkCircleIcon,
+  EnvelopeIcon,
+  ExclamationTriangleIcon
 } 
 from '@heroicons/react/24/solid';
 import ProfilePhoto from '../assets/nature.jpg';
 
 function Settings() {
+  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('profile');
-  // Controlled form state for profile section
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [profile, setProfile] = useState({
     firstName: 'Sarah',
     lastName: 'Mitchell',
@@ -31,21 +37,19 @@ function Settings() {
     { id: 'account', label: 'Account & Security', icon: <LockClosedIcon className="size-5" /> },
     { id: 'notifications', label: 'Notifications', icon: <BellAlertIcon className="size-5" /> },
     { id: 'privacy', label: 'Privacy', icon: <Cog6ToothIcon className="size-5" /> },
-    { id: 'danger', label: 'Danger Zone', icon: <Cog6ToothIcon className="size-5" /> }
+    { id: 'help', label: 'Help & Support', icon: <QuestionMarkCircleIcon className="size-5" /> }
   ];
 
-  // Simulate save handler for backend dev
   const handleSave = (e) => {
     e.preventDefault();
-    toast.success('Changes saved! (Not yet persisted)');
-    // Here, backend dev can add API call to save profile, etc.
+    toast.success('Changes saved! (Ready for backend integration)');
   };
 
-  // Controlled input handler
   const handleProfileChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
+  return (
     <div className="min-h-screen bg-[#0F0F14] text-gray-100 font-sans pb-32 md:pb-0">
       <Sidebar />
       <main className="md:ml-64 p-4 md:p-6">
@@ -286,71 +290,112 @@ function Settings() {
             )}
 
             {/* Privacy Section */}
-            {activeSection === 'privacy' && (
-              <section className="bg-[#18121F] rounded-2xl p-6">
-                <h2 className="text-2xl font-semibold text-[#FF69B4] mb-6">Privacy</h2>
-                <p className="text-sm text-gray-400 mb-6">Control your privacy and data sharing</p>
-                <div className="space-y-6">
-                  <div>
-                    <h3 className="text-lg font-medium mb-4">Profile Visibility</h3>
-                    <div className="space-y-3">
-                      <label className="flex items-center">
-                        <input type="radio" name="visibility" className="mr-3 accent-[#FF69B4]" defaultChecked />
-                        <span>Public - Anyone can see your profile</span>
-                      </label>
-                      <label className="flex items-center">
-                        <input type="radio" name="visibility" className="mr-3 accent-[#FF69B4]" />
-                        <span>Private - Only people you like can see your profile</span>
-                      </label>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-medium mb-4">Data Sharing</h3>
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span>Share data for personalized recommendations</span>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input type="checkbox" className="sr-only peer" defaultChecked />
-                          <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
-                        </label>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span>Allow analytics to improve the app</span>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input type="checkbox" className="sr-only peer" />
-                          <div className="w-11 h-6 bg-[#2D2D3A] peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#FF69B4]/25 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#FF69B4]"></div>
-                        </label>
+            {activeSection === 'help' && (
+              <section className="bg-[#18121F] rounded-2xl p-6 space-y-6">
+                <div>
+                  <h2 className="text-2xl font-semibold text-[#FF69B4] mb-2">Help & Support</h2>
+                  <p className="text-sm text-gray-400">We're here to help. Find answers or contact our team.</p>
+                </div>
+
+                {/* Support Options */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Link to="/reports" className="bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4 hover:border-[#FF69B4]/50 transition-colors">
+                    <div className="flex items-start gap-3">
+                      <ExclamationTriangleIcon className="size-6 text-[#FF69B4] flex-shrink-0 mt-1" />
+                      <div>
+                        <h3 className="font-semibold">Report an Issue</h3>
+                        <p className="text-sm text-gray-400 mt-1">Report bugs, safety concerns, scams, or inappropriate content</p>
                       </div>
                     </div>
+                  </Link>
+
+                  <a href="mailto:support@romance.app" className="bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4 hover:border-[#FF69B4]/50 transition-colors">
+                    <div className="flex items-start gap-3">
+                      <EnvelopeIcon className="size-6 text-[#FF69B4] flex-shrink-0 mt-1" />
+                      <div>
+                        <h3 className="font-semibold">Email Support</h3>
+                        <p className="text-sm text-gray-400 mt-1">support@romance.app - Response within 24 hours</p>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a href="https://help.romance.app" target="_blank" rel="noopener noreferrer" className="bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4 hover:border-[#FF69B4]/50 transition-colors">
+                    <div className="flex items-start gap-3">
+                      <QuestionMarkCircleIcon className="size-6 text-[#FF69B4] flex-shrink-0 mt-1" />
+                      <div>
+                        <h3 className="font-semibold">Knowledge Base</h3>
+                        <p className="text-sm text-gray-400 mt-1">Browse FAQs and troubleshooting guides</p>
+                      </div>
+                    </div>
+                  </a>
+
+                  <div className="bg-[#0F0F14] border border-[#2D2D3A] rounded-lg p-4">
+                    <div className="flex items-start gap-3">
+                      <ShieldExclamationIcon className="size-6 text-[#FF69B4] flex-shrink-0 mt-1" />
+                      <div>
+                        <h3 className="font-semibold">Safety & Trust</h3>
+                        <p className="text-sm text-gray-400 mt-1">Learn about our safety features and community guidelines</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-medium mb-4">Blocked Users</h3>
-                    <p className="text-gray-400 mb-4">Manage users you've blocked</p>
-                    <button className="bg-[#FF69B4] text-white px-4 py-2 rounded-md hover:bg-[#E0559B]">View Blocked Users</button>
+                </div>
+
+                {/* FAQ Section */}
+                <div className="border-t border-[#2D2D3A] pt-6">
+                  <h3 className="font-semibold mb-4">Frequently Asked Questions</h3>
+                  <div className="space-y-3 text-sm">
+                    <details className="group">
+                      <summary className="cursor-pointer font-medium hover:text-[#FF69B4]">How do I report inappropriate content?</summary>
+                      <p className="text-gray-400 mt-2 ml-4">Go to Reports page or use the report option on any profile or message. Our team reviews all reports within 24 hours.</p>
+                    </details>
+                    <details className="group">
+                      <summary className="cursor-pointer font-medium hover:text-[#FF69B4]">What if I feel unsafe?</summary>
+                      <p className="text-gray-400 mt-2 ml-4">Please contact our safety team immediately at safety@romance.app. If you're in immediate danger, contact local authorities.</p>
+                    </details>
+                    <details className="group">
+                      <summary className="cursor-pointer font-medium hover:text-[#FF69B4]">How do I delete my account?</summary>
+                      <p className="text-gray-400 mt-2 ml-4">
+                        <button onClick={() => setShowDeleteModal(true)} className="text-[#FF69B4] hover:underline">Click here</button> to start the account deletion process. Your feedback will help us improve.
+                      </p>
+                    </details>
                   </div>
+                </div>
+
+                {/* Account Deletion */}
+                <div className="border-t border-[#2D2D3A] pt-6">
+                  <h3 className="font-semibold mb-3">Account Management</h3>
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="w-full bg-red-600/20 border border-red-600/50 hover:bg-red-600/30 text-red-400 py-3 rounded-lg font-medium transition-colors"
+                  >
+                    Delete My Account
+                  </button>
+                  <p className="text-xs text-gray-400 mt-2">This action cannot be undone. Your account will be completely removed after 30 days.</p>
                 </div>
               </section>
             )}
 
-            {activeSection === 'danger' && 
-            <section className="bg-[#18121F] border border-red-800/50 rounded-2xl p-6 mt-8">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-2xl text-red-400">Danger</span>
-                <h2 className="text-2xl font-semibold text-red-400">Danger Zone</h2>
-              </div>
-              <p className="text-sm text-gray-400 mb-6">Irreversible actions - proceed with caution</p>
-              <div className="space-y-4">
-                <button className="w-full bg-[#2D2D3A] hover:bg-[#3A3A45] text-gray-100 py-3 rounded-lg font-medium">
-                  Temporarily Deactivate Account
-                </button>
-                <button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold">
-                  Permanently Delete Account
-                </button>
-              </div>
-            </section>}
+            {activeSection === 'danger' && (
+              <section className="bg-[#18121F] border border-red-800/50 rounded-2xl p-6 mt-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-2xl text-red-400">Danger</span>
+                  <h2 className="text-2xl font-semibold text-red-400">Danger Zone</h2>
+                </div>
+                <p className="text-sm text-gray-400 mb-6">Irreversible actions - proceed with caution</p>
+                <div className="space-y-4">
+                  <button className="w-full bg-[#2D2D3A] hover:bg-[#3A3A45] text-gray-100 py-3 rounded-lg font-medium">
+                    Temporarily Deactivate Account
+                  </button>
+                  <button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-bold">
+                    Permanently Delete Account
+                  </button>
+                </div>
+              </section>
+            )}
           </div>
         </div>
       </main>
+      <AccountDeletionModal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)} />
     </div>
   );
 }

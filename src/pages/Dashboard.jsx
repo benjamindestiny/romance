@@ -11,7 +11,7 @@ import {
   FireIcon,
   TrophyIcon,
   UserCircleIcon,
-  QuestionMarkCircleIcon,
+  ExclamationTriangleIcon,
   UsersIcon,
   ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/solid';
@@ -74,16 +74,16 @@ export default function Dashboard() {
               description="Connect with a licensed therapist for your relationship." 
             />
             <QuickActionCard 
-              to="/quiz" 
-              icon={<QuestionMarkCircleIcon className="h-6 w-6 text-primary-purple" />} 
-              title="Take a Quiz" 
-              description="Discover insights about yourself and your relationship." 
-            />
-            <QuickActionCard 
               to="/community" 
               icon={<UsersIcon className="h-6 w-6 text-primary-purple" />} 
               title="Join Community" 
               description="Connect with others on similar journeys and share experiences." 
+            />
+            <QuickActionCard 
+              to="/reports" 
+              icon={<ExclamationTriangleIcon className="h-6 w-6 text-primary-purple" />} 
+              title="Report an Issue" 
+              description="Help us keep our community safe and trustworthy." 
             />
           </div>
         </section>
@@ -186,21 +186,21 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <div className="w-full h-32 bg-gradient-to-r from-blue-500 to-cyan-500 object-cover"></div>
-              <div className="p-4">
-                <p className="text-xs text-text-secondary mb-1">Quiz • 5 min</p>
-                <p className="font-semibold mb-1">Discover Your Love Language</p>
-                <p className="text-sm text-text-secondary mb-2">Understand how you give and receive love in relationships...</p>
-                <Link to="/quiz" className="text-primary-purple text-sm">Start Quiz +</Link>
-              </div>
-            </div>
-            <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
               <div className="w-full h-32 bg-gradient-to-r from-green-500 to-teal-500 object-cover"></div>
               <div className="p-4">
                 <p className="text-xs text-text-secondary mb-1">Workshop • Jan 20</p>
                 <p className="font-semibold mb-1">Making Meaningful Friendships as an Adult</p>
                 <p className="text-sm text-text-secondary mb-2">Join our community workshop on building lasting connections...</p>
                 <Link to="/workshop" className="text-primary-purple text-sm">Join +</Link>
+              </div>
+            </div>
+            <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
+              <div className="w-full h-32 bg-gradient-to-r from-red-500 to-orange-500 object-cover"></div>
+              <div className="p-4">
+                <p className="text-xs text-text-secondary mb-1">Guide • 10 min read</p>
+                <p className="font-semibold mb-1">Safety Tips for Online Dating</p>
+                <p className="text-sm text-text-secondary mb-2">Learn how to stay safe while meeting new people online...</p>
+                <Link to="/safety-guide" className="text-primary-purple text-sm">Read More +</Link>
               </div>
             </div>
           </div>
