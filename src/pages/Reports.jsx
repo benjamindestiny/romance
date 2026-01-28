@@ -31,7 +31,6 @@ export default function Reports() {
       return;
     }
     
-    // Simulate backend submission
     toast.success('Report submitted successfully. We\'ll review it within 24 hours.');
     setSubmitted(true);
     
