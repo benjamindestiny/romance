@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import Sidebar from '../components/Sidebar.jsx';
 import { 
   BellIcon, 
@@ -14,6 +15,17 @@ import ProfilePhoto from '../assets/nature.jpg';
 
 function Settings() {
   const [activeSection, setActiveSection] = useState('profile');
+  // Controlled form state for profile section
+  const [profile, setProfile] = useState({
+    firstName: 'Sarah',
+    lastName: 'Mitchell',
+    email: 'sarah.mitchell@example.com',
+    phone: '+1 (555) 123-4567',
+    dob: '1992-05-15',
+    bio: 'Passionate about personal growth and building meaningful connections. On a journey to discover deeper intimacy and emotional intelligence.',
+    location: 'San Francisco, CA',
+    timezone: 'Pacific Time (PT)',
+  });
   const activeSectionsLinks = [
     { id: 'profile', label: 'Profile', icon: <UserCircleIcon className="size-5" /> },
     { id: 'account', label: 'Account & Security', icon: <LockClosedIcon className="size-5" /> },
@@ -22,7 +34,18 @@ function Settings() {
     { id: 'danger', label: 'Danger Zone', icon: <Cog6ToothIcon className="size-5" /> }
   ];
 
-  return (
+  // Simulate save handler for backend dev
+  const handleSave = (e) => {
+    e.preventDefault();
+    toast.success('Changes saved! (Not yet persisted)');
+    // Here, backend dev can add API call to save profile, etc.
+  };
+
+  // Controlled input handler
+  const handleProfileChange = (e) => {
+    const { name, value } = e.target;
+    setProfile((prev) => ({ ...prev, [name]: value }));
+  };
     <div className="min-h-screen bg-[#0F0F14] text-gray-100 font-sans pb-32 md:pb-0">
       <Sidebar />
       <main className="md:ml-64 p-4 md:p-6">
@@ -35,7 +58,11 @@ function Settings() {
           </div>
           <div className="flex items-center space-x-4 w-full md:w-auto">
             <BellIcon className="size-6 text-gray-400" />
-            <button className="bg-[#FF69B4] text-white px-6 py-3 rounded-full text-sm font-medium flex-1 md:flex-none">
+            <button
+              className="bg-[#FF69B4] text-white px-6 py-3 rounded-full text-sm font-medium flex-1 md:flex-none"
+              onClick={handleSave}
+              type="button"
+            >
               Save Changes
             </button>
           </div>
@@ -78,59 +105,64 @@ function Settings() {
               <section className="bg-[#18121F] rounded-2xl p-6">
                 <h2 className="text-2xl font-semibold text-[#FF69B4] mb-6">Profile Information</h2>
                 <p className="text-sm text-gray-400 mb-6">Update your personal details and profile picture</p>
-                <div className="flex flex-col md:flex-row gap-8 items-start">
-                  <div className="relative">
-                    <img
-                      src={ProfilePhoto}
-                      alt="Sarah Mitchell"
-                      className="size-32 rounded-full object-cover border-4 border-[#FF69B4]/30"
-                    />
-                    <button className="absolute -bottom-2 -right-2 bg-[#FF69B4] text-white p-3 rounded-full shadow-md">
-                      <UserCircleIcon className="size-5" />
-                    </button>
-                  </div>
-                  <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-                    <div>
-                      <label className="block text-sm text-gray-400 mb-1">First Name</label>
-                      <input type="text" defaultValue="Sarah" className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-gray-400 mb-1">Last Name</label>
-                      <input type="text" defaultValue="Mitchell" className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm text-gray-400 mb-1">Email Address</label>
-                      <input type="email" defaultValue="sarah.mitchell@example.com" className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-gray-400 mb-1">Phone Number</label>
-                      <input type="tel" defaultValue="+1 (555) 123-4567" className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-gray-400 mb-1">Date of Birth</label>
-                      <input type="date" defaultValue="1992-05-15" className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm text-gray-400 mb-1">Bio</label>
-                      <textarea
-                        defaultValue="Passionate about personal growth and building meaningful connections. On a journey to discover deeper intimacy and emotional intelligence."
-                        className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3 h-24"
+                <form onSubmit={handleSave}>
+                  <div className="flex flex-col md:flex-row gap-8 items-start">
+                    <div className="relative">
+                      <img
+                        src={ProfilePhoto}
+                        alt={profile.firstName + ' ' + profile.lastName}
+                        className="size-32 rounded-full object-cover border-4 border-[#FF69B4]/30"
                       />
+                      <button className="absolute -bottom-2 -right-2 bg-[#FF69B4] text-white p-3 rounded-full shadow-md" type="button">
+                        <UserCircleIcon className="size-5" />
+                      </button>
                     </div>
-                    <div>
-                      <label className="block text-sm text-gray-400 mb-1">Location</label>
-                      <input type="text" defaultValue="San Francisco, CA" className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
-                    </div>
-                    <div>
-                      <label className="block text-sm text-gray-400 mb-1">Timezone</label>
-                      <select className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3">
-                        <option>Pacific Time (PT)</option>
-                        <option>West Africa Time (WAT)</option>
-                        <option>Greenwich Merridian Time (GMT)</option>
-                      </select>
+                    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-1">First Name</label>
+                        <input type="text" name="firstName" value={profile.firstName} onChange={handleProfileChange} className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-1">Last Name</label>
+                        <input type="text" name="lastName" value={profile.lastName} onChange={handleProfileChange} className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm text-gray-400 mb-1">Email Address</label>
+                        <input type="email" name="email" value={profile.email} onChange={handleProfileChange} className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-1">Phone Number</label>
+                        <input type="tel" name="phone" value={profile.phone} onChange={handleProfileChange} className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-1">Date of Birth</label>
+                        <input type="date" name="dob" value={profile.dob} onChange={handleProfileChange} className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
+                      </div>
+                      <div className="md:col-span-2">
+                        <label className="block text-sm text-gray-400 mb-1">Bio</label>
+                        <textarea
+                          name="bio"
+                          value={profile.bio}
+                          onChange={handleProfileChange}
+                          className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3 h-24"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-1">Location</label>
+                        <input type="text" name="location" value={profile.location} onChange={handleProfileChange} className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3" />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-gray-400 mb-1">Timezone</label>
+                        <select name="timezone" value={profile.timezone} onChange={handleProfileChange} className="w-full bg-[#0F0F14] border border-[#2D2D3A] rounded-lg px-4 py-3">
+                          <option>Pacific Time (PT)</option>
+                          <option>West Africa Time (WAT)</option>
+                          <option>Greenwich Merridian Time (GMT)</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
-                </div>
+                  <button type="submit" className="mt-8 bg-[#FF69B4] text-white px-6 py-3 rounded-full text-sm font-medium w-full md:w-auto">Save Profile</button>
+                </form>
               </section>
             )}
 

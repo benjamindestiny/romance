@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { HomeIcon, CalendarIcon, ChatBubbleLeftRightIcon, UserIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, CalendarIcon, ChatBubbleLeftRightIcon, UserIcon, AcademicCapIcon } from '@heroicons/react/24/solid';
 
 export default function BottomNav() {
   return (
@@ -15,6 +15,10 @@ export default function BottomNav() {
       <Link to="/community" className="flex flex-col items-center space-y-1 text-text-secondary">
         <ChatBubbleLeftRightIcon className="size-6" />
         <span className="text-xs">Community</span>
+      </Link>
+      <Link to="/quiz" className="flex flex-col items-center space-y-1 text-text-secondary">
+        <AcademicCapIcon className="size-6" />
+        <span className="text-xs">Quiz</span>
       </Link>
       <Link to="/profile" className="flex flex-col items-center space-y-1 text-text-secondary">
         <UserIcon className="size-6" />
