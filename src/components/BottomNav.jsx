@@ -20,7 +20,7 @@ export default function BottomNav() {
         <AcademicCapIcon className="size-6" />
         <span className="text-xs">Quiz</span>
       </Link>
-      <Link to="/profile" className="flex flex-col items-center space-y-1 text-text-secondary">
+      <Link to="/settings" className="flex flex-col items-center space-y-1 text-text-secondary">
         <UserIcon className="size-6" />
         <span className="text-xs">Profile</span>
       </Link>

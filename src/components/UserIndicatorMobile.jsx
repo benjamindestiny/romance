@@ -1,4 +1,5 @@
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
+import { Link } from 'react-router-dom';
 
 export default function UserIndicatorMobile() {
   return (
@@ -8,7 +9,9 @@ export default function UserIndicatorMobile() {
           <img src="https://via.placeholder.com/40?text=SM" alt="Sarah Mitchell" className="h-10 w-10 rounded-full" />
           <p className="font-semibold">Sarah Mitchell</p>
         </div>
-        <Cog6ToothIcon className="h-6 w-6 text-text-secondary cursor-pointer" />
+        <Link to="/settings">
+          <Cog6ToothIcon className="size-6 text-text-secondary cursor-pointer" />
+        </Link>
       </div>
     </div>
   );
