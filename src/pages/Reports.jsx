@@ -7,8 +7,7 @@ import {
   CheckCircleIcon,
   DocumentTextIcon,
   ShieldExclamationIcon,
-  BugAntIcon,
-  CheckIcon,
+  BugAntIcon
 } from '@heroicons/react/24/solid';
 
 export default function Reports() {
@@ -64,7 +63,6 @@ export default function Reports() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Report Type Selection */}
             <div className="bg-card-bg rounded-2xl p-6">
               <label className="block text-lg font-semibold mb-4">What would you like to report?</label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -102,10 +100,10 @@ export default function Reports() {
             <div className="bg-card-bg rounded-2xl p-6 border border-primary-purple/20">
               <h3 className="font-semibold mb-3">Tips for Better Reports:</h3>
               <ul className="space-y-2 text-sm text-text-secondary">
-                <li><CheckIcon className="inline-block mr-2" /> Include specific dates and times if applicable</li>
-                <li><CheckIcon className="inline-block mr-2" /> Mention usernames or profile information if relevant</li>
-                <li><CheckIcon className="inline-block mr-2" /> Describe the impact or harm caused</li>
-                <li><CheckIcon className="inline-block mr-2" /> Don't include personal information of others unnecessarily</li>
+                <li>Include specific dates and times if applicable</li>
+                <li>Mention usernames or profile information if relevant</li>
+                <li>Describe the impact or harm caused</li>
+                <li>Don't include personal information of others unnecessarily</li>
               </ul>
             </div>
 

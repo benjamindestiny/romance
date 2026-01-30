@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { ExclamationTriangleIcon, CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { ExclamationTriangleIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 export default function AccountDeletionModal({ isOpen, onClose }) {
   const navigate = useNavigate();
@@ -25,7 +25,6 @@ export default function AccountDeletionModal({ isOpen, onClose }) {
   };
 
   const handleConfirmDeletion = () => {
-    // Simulate backend deletion
     toast.success('Your account has been deleted. We\'ll miss you!');
     setTimeout(() => {
       navigate('/');
@@ -46,7 +45,6 @@ export default function AccountDeletionModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Content */}
         <div className="p-6 space-y-6">
           {step === 1 && (
             <>
@@ -107,7 +105,7 @@ export default function AccountDeletionModal({ isOpen, onClose }) {
             <>
               <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
                 <p className="text-sm font-semibold text-red-400">
-                  ⚠️ Final Confirmation
+                  Final Confirmation
                 </p>
                 <p className="text-sm text-text-secondary mt-2">
                   You're about to permanently delete your account. Type "DELETE" below to confirm.

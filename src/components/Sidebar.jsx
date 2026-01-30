@@ -20,6 +20,16 @@ export default function Sidebar() {
             <span>Dashboard</span>
           </NavLink>
           <NavLink
+            to="/quiz"
+            className={({ isActive }) =>
+              `flex items-center space-x-3 rounded-md p-2 ${isActive ? 'bg-card-bg text-primary-purple font-medium' : 'hover:bg-card-bg'
+              }`
+            }
+          >
+            <HomeIcon className="size-5" />
+            <span>Quiz</span>
+          </NavLink>
+          <NavLink
             to="/journey"
             className={({ isActive }) =>
               `flex items-center space-x-3 rounded-md p-2 ${isActive ? 'bg-card-bg text-primary-purple font-medium' : 'hover:bg-card-bg'
