@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
 
-// Configure email service
+// ================= EMAIL CONFIG =================
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// sign up
+// ================= REGISTER =================
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -22,52 +22,57 @@ export const registerUser = async (req, res) => {
     if (userExists)
       return res.status(400).json({ message: "User already exists" });
 
+    // hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Generate verification token
-    const verificationToken = crypto.randomBytes(32).toString("hex");
-    const verificationTokenExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+    // generate verification token
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
 
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       isVerified: false,
-      verificationToken,
-      verificationTokenExpiry,
+      verificationToken: hashedToken,
+      verificationTokenExpiry: Date.now() + 24 * 60 * 60 * 1000, // 24hrs
     });
+    console.log("Verification URL:", verificationUrl);
 
-    // Send verification email
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${verificationToken}`;
-    const mailOptions = {
+
+    // send verification email
+    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
+
+    await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Verify your email",
       html: `<p>Click <a href="${verificationUrl}">here</a> to verify your email</p>`,
-    };
-
-    await transporter.sendMail(mailOptions);
+    });
 
     res.status(201).json({
-      message: "User registered. Check your email to verify your account",
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+      message:
+        "Registration successful. Check your email to verify your account.",
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// verify email
+// ================= VERIFY EMAIL =================
 export const verifyEmail = async (req, res) => {
-  const { token } = req.body;
+  const { token } = req.query;
 
   try {
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
     const user = await User.findOne({
-      verificationToken: token,
-      verificationTokenExpiry: { $gt: new Date() },
+      verificationToken: hashedToken,
+      verificationTokenExpiry: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -85,9 +90,6 @@ export const verifyEmail = async (req, res) => {
 
     res.json({
       message: "Email verified successfully",
-      _id: user._id,
-      name: user.name,
-      email: user.email,
       token: jwtToken,
     });
   } catch (error) {
@@ -95,28 +97,28 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
-// login
+// ================= LOGIN =================
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
+
   try {
     const user = await User.findOne({ email });
-    if (!user) {
+    if (!user)
       return res.status(400).json({ message: "Invalid email or password" });
-    }
 
-    if (!user.isVerified) {
+    if (!user.isVerified)
       return res
         .status(400)
         .json({ message: "Please verify your email first" });
-    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    if (!isMatch)
       return res.status(400).json({ message: "Invalid email or password" });
-    }
+
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+
     res.json({
       _id: user._id,
       name: user.name,
@@ -128,68 +130,61 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// forgot password
+// ================= FORGOT PASSWORD =================
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "User not found" });
-    }
+    if (!user) return res.status(400).json({ message: "User not found" });
 
-    // Generate password reset token
-    const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenExpiry = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
 
-    user.passwordResetToken = resetToken;
-    user.passwordResetTokenExpiry = resetTokenExpiry;
+    user.passwordResetToken = hashedToken;
+    user.passwordResetTokenExpiry = Date.now() + 60 * 60 * 1000; // 1hr
     await user.save();
 
-    // Send reset email
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-    const mailOptions = {
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${rawToken}`;
+
+    await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Reset your password",
-      html: `<p>Click <a href="${resetUrl}">here</a> to reset your password. This link expires in 1 hour.</p>`,
-    };
-
-    await transporter.sendMail(mailOptions);
-
-    res.json({
-      message: "Password reset link sent to your email",
+      html: `<p>Click <a href="${resetUrl}">here</a> to reset your password</p>`,
     });
+
+    res.json({ message: "Password reset link sent" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// reset password
+// ================= RESET PASSWORD =================
 export const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
 
   try {
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
     const user = await User.findOne({
-      passwordResetToken: token,
-      passwordResetTokenExpiry: { $gt: new Date() },
+      passwordResetToken: hashedToken,
+      passwordResetTokenExpiry: { $gt: Date.now() },
     });
 
-    if (!user) {
+    if (!user)
       return res.status(400).json({ message: "Invalid or expired token" });
-    }
 
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-    user.password = hashedPassword;
+    user.password = await bcrypt.hash(newPassword, salt);
     user.passwordResetToken = null;
     user.passwordResetTokenExpiry = null;
     await user.save();
 
-    res.json({
-      message: "Password reset successfully",
-    });
+    res.json({ message: "Password reset successful" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

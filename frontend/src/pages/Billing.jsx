@@ -18,7 +18,7 @@ const Billing = () => {
       name: 'Basic Plan',
       price: 9,
       period: 'month',
-      features: ['Up to 10 matches per day', 'Basic profile', 'Standard messaging' , 'Access to community events']
+      features: ['Up to 10 matches per day', 'Basic profile', 'Standard messaging' , 'Access to community events', '']
     },
     {
       id: 'premium',
