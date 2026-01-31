@@ -13,39 +13,42 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+transporter.verify((err, success) => {
+  if (err) console.log("EMAIL ERROR:", err);
+  else console.log("EMAIL SERVER READY");
+});
+
 // ================= REGISTER =================
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-    const userExists = await User.findOne({ email });
-    if (userExists)
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
       return res.status(400).json({ message: "User already exists" });
 
-    // hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // generate verification token
     const rawToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto
       .createHash("sha256")
       .update(rawToken)
       .digest("hex");
 
+    // ✅ CREATE USER FIRST
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
       isVerified: false,
       verificationToken: hashedToken,
-      verificationTokenExpiry: Date.now() + 24 * 60 * 60 * 1000, // 24hrs
+      verificationTokenExpiry: Date.now() + 24 * 60 * 60 * 1000,
     });
-    console.log("Verification URL:", verificationUrl);
 
+    // ✅ BUILD URL USING PORT
+    const verificationUrl = `http://localhost:${process.env.PORT}/api/auth/verify-email?token=${rawToken}`;
 
-    // send verification email
-    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
+    console.log("VERIFY LINK:", verificationUrl);
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -55,13 +58,14 @@ export const registerUser = async (req, res) => {
     });
 
     res.status(201).json({
-      message:
-        "Registration successful. Check your email to verify your account.",
+      message: "Registration successful. Check your email to verify your account.",
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // ================= VERIFY EMAIL =================
 export const verifyEmail = async (req, res) => {

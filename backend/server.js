@@ -15,6 +15,8 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/payments", paymentRoutes);
+router.get("/verify-email", verifyEmail);
+
 
 const PORT = process.env.PORT || 3000;
 
