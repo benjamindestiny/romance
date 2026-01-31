@@ -3,22 +3,28 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import crypto from "crypto";
+import dotenv from "dotenv";
 
-// ================= EMAIL CONFIG =================
+dotenv.config();
+
+/* ================= EMAIL CONFIG ================= */
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
+    pass: process.env.EMAIL_PASSWORD, // APP PASSWORD
   },
 });
 
-transporter.verify((err, success) => {
-  if (err) console.log("EMAIL ERROR:", err);
-  else console.log("EMAIL SERVER READY");
+console.log("Email Config - User:", process.env.EMAIL_USER ? "✓ Loaded" : "✗ Missing");
+console.log("Email Config - Password:", process.env.EMAIL_PASSWORD ? "✓ Loaded" : "✗ Missing");
+
+transporter.verify((err) => {
+  if (err) console.error("✗ EMAIL ERROR:", err);
+  else console.log("✓ EMAIL SERVER READY");
 });
 
-// ================= REGISTER =================
+/* ================= REGISTER ================= */
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -35,39 +41,44 @@ export const registerUser = async (req, res) => {
       .update(rawToken)
       .digest("hex");
 
-    // ✅ CREATE USER FIRST
-    const user = await User.create({
+    await User.create({
       name,
       email,
       password: hashedPassword,
       isVerified: false,
       verificationToken: hashedToken,
-      verificationTokenExpiry: Date.now() + 24 * 60 * 60 * 1000,
+      verificationTokenExpiry: Date.now() + 24 * 60 * 60 * 1000, // 24hrs
     });
 
-    // ✅ BUILD URL USING PORT
     const verificationUrl = `http://localhost:${process.env.PORT}/api/auth/verify-email?token=${rawToken}`;
 
-    console.log("VERIFY LINK:", verificationUrl);
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Verify your email",
-      html: `<p>Click <a href="${verificationUrl}">here</a> to verify your email</p>`,
-    });
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Verify your email",
+        html: `
+          <h3>Email Verification</h3>
+          <p>Click the link below to verify your account:</p>
+          <a href="${verificationUrl}">${verificationUrl}</a>
+        `,
+      });
+      console.log("✓ Verification email sent to:", email);
+    } catch (emailError) {
+      console.error("✗ Email sending failed:", emailError);
+      return res.status(500).json({ message: "Failed to send verification email: " + emailError.message });
+    }
 
     res.status(201).json({
-      message: "Registration successful. Check your email to verify your account.",
+      message: "Registration successful. Check your email to verify.",
     });
   } catch (error) {
-    console.error(error);
+    console.error("✗ Registration error:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-
-// ================= VERIFY EMAIL =================
+/* ================= VERIFY EMAIL ================= */
 export const verifyEmail = async (req, res) => {
   const { token } = req.query;
 
@@ -79,29 +90,21 @@ export const verifyEmail = async (req, res) => {
       verificationTokenExpiry: { $gt: Date.now() },
     });
 
-    if (!user) {
+    if (!user)
       return res.status(400).json({ message: "Invalid or expired token" });
-    }
 
     user.isVerified = true;
     user.verificationToken = null;
     user.verificationTokenExpiry = null;
     await user.save();
 
-    const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    res.json({
-      message: "Email verified successfully",
-      token: jwtToken,
-    });
+    res.json({ message: "Email verified successfully" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// ================= LOGIN =================
+/* ================= LOGIN ================= */
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -134,13 +137,14 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// ================= FORGOT PASSWORD =================
+/* ================= FORGOT PASSWORD ================= */
 export const forgotPassword = async (req, res) => {
   const { email } = req.body;
 
   try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "User not found" });
+    if (!user)
+      return res.status(400).json({ message: "User not found" });
 
     const rawToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto
@@ -152,22 +156,34 @@ export const forgotPassword = async (req, res) => {
     user.passwordResetTokenExpiry = Date.now() + 60 * 60 * 1000; // 1hr
     await user.save();
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${rawToken}`;
+    const resetUrl = `http://localhost:${process.env.PORT}/reset-password?token=${rawToken}`;
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Reset your password",
-      html: `<p>Click <a href="${resetUrl}">here</a> to reset your password</p>`,
-    });
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Reset your password",
+        html: `
+          <h3>Password Reset</h3>
+          <p>Click the link below to reset your password:</p>
+          <a href="${resetUrl}">${resetUrl}</a>
+          <p>This link expires in 1 hour.</p>
+        `,
+      });
+      console.log("✓ Password reset email sent to:", email);
+    } catch (emailError) {
+      console.error("✗ Email sending failed:", emailError);
+      return res.status(500).json({ message: "Failed to send reset email: " + emailError.message });
+    }
 
-    res.json({ message: "Password reset link sent" });
+    res.json({ message: "Password reset link sent to your email" });
   } catch (error) {
+    console.error("✗ Forgot password error:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// ================= RESET PASSWORD =================
+/* ================= RESET PASSWORD ================= */
 export const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
 
@@ -182,8 +198,7 @@ export const resetPassword = async (req, res) => {
     if (!user)
       return res.status(400).json({ message: "Invalid or expired token" });
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
+    user.password = await bcrypt.hash(newPassword, 10);
     user.passwordResetToken = null;
     user.passwordResetTokenExpiry = null;
     await user.save();
