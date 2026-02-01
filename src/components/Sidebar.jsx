@@ -1,9 +1,11 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { HomeIcon, MapIcon, CalendarIcon, UsersIcon, AcademicCapIcon, WrenchScrewdriverIcon, Cog6ToothIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import UserIndicatorMobile from './UserIndicatorMobile';
 
 export default function Sidebar() {
+  const location = useLocation();
+
   return (
     <div className='flex flex-col justify-between'>
       <aside className="hidden md:block fixed top-0 left-0 h-full w-64 bg-dark-bg border-r border-gray-border p-4 space-y-6">
@@ -101,7 +103,7 @@ export default function Sidebar() {
           </NavLink>
         </nav>
       </aside>
-      <UserIndicatorMobile />
+      {location.pathname !== '/settings' && <UserIndicatorMobile />}
     </div>
   );
 }
