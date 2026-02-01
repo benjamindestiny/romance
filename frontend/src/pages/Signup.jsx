@@ -186,9 +186,6 @@ const Signup = () => {
                   <span className="ml-2 text-gray-600">Remember me</span>
                 </label>
 
-                <a href="#" className="text-sm text-rose-600 hover:underline">
-                  Forgot?
-                </a>
               </div>
 
               <button

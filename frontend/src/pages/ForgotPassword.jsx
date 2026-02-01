@@ -46,6 +46,12 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100">
       <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+
+        <img src={rom} 
+        alt="Romance Logo" 
+        className="w-24 h-24 mx-auto mb-4" 
+        />
+        
         <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
           Reset Password
         </h1>

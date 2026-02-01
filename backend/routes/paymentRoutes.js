@@ -1,6 +1,7 @@
 import express from "express";
 import {
-  processMastercardPayment,
+  createStripePaymentIntent,
+  confirmStripePayment,
   createPayPalOrder,
   capturePayPalPayment,
 } from "../controllers/paymentControllers.js";
@@ -9,8 +10,9 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Mastercard payment
-router.post("/mastercard", authMiddleware, processMastercardPayment);
+// Stripe payment
+router.post("/stripe/create-intent", authMiddleware, createStripePaymentIntent);
+router.post("/stripe/confirm", authMiddleware, confirmStripePayment);
 
 // PayPal payment
 router.post("/paypal/create-order", authMiddleware, createPayPalOrder);

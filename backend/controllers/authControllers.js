@@ -16,8 +16,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-console.log("Email Config - User:", process.env.EMAIL_USER ? "✓ Loaded" : "✗ Missing");
-console.log("Email Config - Password:", process.env.EMAIL_PASSWORD ? "✓ Loaded" : "✗ Missing");
+console.log(
+  "Email Config - User:",
+  process.env.EMAIL_USER ? "✓ Loaded" : "✗ Missing",
+);
+console.log(
+  "Email Config - Password:",
+  process.env.EMAIL_PASSWORD ? "✓ Loaded" : "✗ Missing",
+);
 
 transporter.verify((err) => {
   if (err) console.error("✗ EMAIL ERROR:", err);
@@ -66,7 +72,11 @@ export const registerUser = async (req, res) => {
       console.log("✓ Verification email sent to:", email);
     } catch (emailError) {
       console.error("✗ Email sending failed:", emailError);
-      return res.status(500).json({ message: "Failed to send verification email: " + emailError.message });
+      return res
+        .status(500)
+        .json({
+          message: "Failed to send verification email: " + emailError.message,
+        });
     }
 
     res.status(201).json({
@@ -143,8 +153,7 @@ export const forgotPassword = async (req, res) => {
 
   try {
     const user = await User.findOne({ email });
-    if (!user)
-      return res.status(400).json({ message: "User not found" });
+    if (!user) return res.status(400).json({ message: "User not found" });
 
     const rawToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto
@@ -173,7 +182,9 @@ export const forgotPassword = async (req, res) => {
       console.log("✓ Password reset email sent to:", email);
     } catch (emailError) {
       console.error("✗ Email sending failed:", emailError);
-      return res.status(500).json({ message: "Failed to send reset email: " + emailError.message });
+      return res
+        .status(500)
+        .json({ message: "Failed to send reset email: " + emailError.message });
     }
 
     res.json({ message: "Password reset link sent to your email" });
@@ -188,6 +199,12 @@ export const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
 
   try {
+    if (!token || !newPassword) {
+      return res
+        .status(400)
+        .json({ message: "Token and new password are required" });
+    }
+
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
     const user = await User.findOne({
@@ -203,8 +220,13 @@ export const resetPassword = async (req, res) => {
     user.passwordResetTokenExpiry = null;
     await user.save();
 
-    res.json({ message: "Password reset successful" });
+    console.log("✓ Password reset for user:", user.email);
+    res.json({
+      message:
+        "Password reset successful. Please login with your new password.",
+    });
   } catch (error) {
+    console.error("✗ Reset password error:", error);
     res.status(500).json({ message: error.message });
   }
 };
