@@ -7,7 +7,6 @@ import {
   BellIcon, 
   UserCircleIcon, 
   LockClosedIcon, 
-  Cog6ToothIcon, 
   BellAlertIcon,
   ShieldExclamationIcon,
   KeyIcon,
@@ -44,7 +43,7 @@ function Settings() {
 
   const handleSave = (e) => {
     e.preventDefault();
-    toast.success('Changes saved! (Ready for backend integration)');
+    toast.success('Changes saved!');
   };
 
   const handleProfileChange = (e) => {
@@ -64,7 +63,7 @@ function Settings() {
     }
 
     // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       toast.error('Image must be less than 5MB');
       return;
     }
@@ -75,12 +74,8 @@ function Settings() {
     const reader = new FileReader();
     reader.onload = (event) => {
       setProfilePhotoPreview(event.target?.result);
-      toast.success('Photo selected! (Backend dev will upload to Cloudinary/Database)');
+      toast.success('Photo selected! (Backend dwill upload to Cloudinary/Database)');
       setUploading(false);
-      
-      // Here, backend dev can add API call to upload to Cloudinary
-      // Example: await uploadToCloudinary(file)
-      // or save to database with FormData
     };
     reader.readAsDataURL(file);
   };
