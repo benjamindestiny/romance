@@ -3,17 +3,18 @@ import toast from 'react-hot-toast';
 import { useNavigate, Link } from 'react-router-dom';
 import Sidebar from '../components/Sidebar.jsx';
 import AccountDeletionModal from '../components/AccountDeletionModal.jsx';
-import { 
-  BellIcon, 
-  UserCircleIcon, 
-  LockClosedIcon, 
+import {
+  BellIcon,
+  UserCircleIcon,
+  LockClosedIcon,
   BellAlertIcon,
   ShieldExclamationIcon,
   KeyIcon,
   QuestionMarkCircleIcon,
   EnvelopeIcon,
-  ExclamationTriangleIcon
-} 
+  ExclamationTriangleIcon,
+  ArrowLeftIcon
+}
 from '@heroicons/react/24/solid';
 import ProfilePhoto from '../assets/nature.jpg';
 
@@ -86,6 +87,13 @@ function Settings() {
         {/* Header Section */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>
+            <button
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2 text-[#FF69B4] hover:text-[#E0559B] transition-colors mb-2"
+            >
+              <ArrowLeftIcon className="size-5" />
+              <span className="text-sm font-medium">Go Back</span>
+            </button>
             <h1 className="text-[#FF69B4] text-2xl font-bold md:hidden">Romance</h1>
             <p className="text-xl font-bold">Settings</p>
             <p className="text-sm text-gray-400">Personalize your Romance experience</p>

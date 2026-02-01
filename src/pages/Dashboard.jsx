@@ -131,8 +131,8 @@ export default function Dashboard() {
                   <p>Communication Skills</p>
                   <p>92%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full">
-                  <div className="bg-primary-purple h-2 rounded-full w-[92%]"></div>
+                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Communication Skills: 92% - Excellent progress! Keep practicing active listening and expressing your feelings clearly.">
+                  <div className="bg-primary-purple h-2 rounded-full w-[92%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
               <div>
@@ -140,8 +140,8 @@ export default function Dashboard() {
                   <p>Emotional Intelligence</p>
                   <p>78%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full">
-                  <div className="bg-primary-purple h-2 rounded-full w-[78%]"></div>
+                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Emotional Intelligence: 78% - Good progress! Focus on recognizing emotions in yourself and others. Consider taking our EQ assessment.">
+                  <div className="bg-primary-purple h-2 rounded-full w-[78%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
               <div>
@@ -149,8 +149,8 @@ export default function Dashboard() {
                   <p>Conflict Resolution</p>
                   <p>85%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full">
-                  <div className="bg-primary-purple h-2 rounded-full w-[85%]"></div>
+                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Conflict Resolution: 85% - Great work! Continue practicing compromise and finding win-win solutions in disagreements.">
+                  <div className="bg-primary-purple h-2 rounded-full w-[85%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
               <div>
@@ -158,8 +158,8 @@ export default function Dashboard() {
                   <p>Self-Awareness</p>
                   <p>91%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full">
-                  <div className="bg-primary-purple h-2 rounded-full w-[91%]"></div>
+                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Self-Awareness: 91% - Outstanding! You're very in tune with your thoughts and feelings. Consider mentoring others.">
+                  <div className="bg-primary-purple h-2 rounded-full w-[91%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
             </div>
