@@ -1,7 +1,7 @@
 import React from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
-import StatCard from '../components/StatCard.jsx';
+import HighlightsGrid from '../components/HighlightsGrid.jsx';
 import QuickActionCard from '../components/QuickActionCard.jsx';
 import { Link } from 'react-router-dom';
 import LongDistance from '../assets/long-distance.jpg';
@@ -37,34 +37,8 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Stat Cards Section */}
-        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <StatCard 
-            icon={<HeartIcon className="size-6 text-primary-purple mb-2" />} 
-            value="0%" 
-            label="Relationship Health" 
-            subtext="+0% this week" 
-            subtextColor="text-green-500" 
-          />
-          <StatCard 
-            icon={<CalendarDaysIcon className="size-6 text-primary-purple mb-2" />} 
-            value="0" 
-            label="Upcoming Sessions" 
-            subtext="Next: Tomorrow" 
-          />
-          <StatCard 
-            icon={<FireIcon className="size-6 text-primary-purple mb-2" />} 
-            value="0" 
-            label="Day Streak" 
-            subtext="Keep it up!" 
-          />
-          <StatCard 
-            icon={<TrophyIcon className="size-6 text-primary-purple mb-2" />} 
-            value="0" 
-            label="Milestones Reached" 
-            subtext="+0 this month" 
-          />
-        </section>
+        {/* Highlights Section */}
+        <HighlightsGrid />
 
         {/* Quick Actions Section */}
         <section className="mb-8">
