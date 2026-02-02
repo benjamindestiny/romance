@@ -4,6 +4,9 @@ import BottomNav from '../components/BottomNav.jsx';
 import StatCard from '../components/StatCard.jsx';
 import QuickActionCard from '../components/QuickActionCard.jsx';
 import { Link } from 'react-router-dom';
+import LongDistance from '../assets/long-distance.jpg';
+import OnlineDating from '../assets/online-dating.jpg';
+import Friendship from '../assets/meaningful-friendship.jpg';
 import { 
   BellIcon, 
   HeartIcon,
@@ -177,7 +180,7 @@ export default function Dashboard() {
           </div>
           <div className="flex overflow-x-auto space-x-4 pb-4">
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <div className="w-full h-32 bg-gradient-to-r from-purple-500 to-pink-500 object-cover"></div>
+              <img className="w-full h-32 object-cover" src={LongDistance} />
               <div className="p-4">
                 <p className="text-xs text-text-secondary mb-1">Article • 8 min read</p>
                 <p className="font-semibold mb-1">Building Intimacy in Long-Distance Relationships</p>
@@ -186,7 +189,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <div className="w-full h-32 bg-gradient-to-r from-green-500 to-teal-500 object-cover"></div>
+              <img className="w-full h-32 object-cover" src={Friendship} />
               <div className="p-4">
                 <p className="text-xs text-text-secondary mb-1">Workshop • Jan 20</p>
                 <p className="font-semibold mb-1">Making Meaningful Friendships as an Adult</p>
@@ -195,7 +198,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <div className="w-full h-32 bg-gradient-to-r from-red-500 to-orange-500 object-cover"></div>
+              <img className="w-full h-32 object-cover" src={OnlineDating} />
               <div className="p-4">
                 <p className="text-xs text-text-secondary mb-1">Guide • 10 min read</p>
                 <p className="font-semibold mb-1">Safety Tips for Online Dating</p>

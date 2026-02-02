@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { HomeIcon, MapIcon, CalendarIcon, UsersIcon, Cog6ToothIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, MapIcon, CalendarIcon, UsersIcon, Cog6ToothIcon, AcademicCapIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import UserIndicatorMobile from './UserIndicatorMobile';
 
 export default function Sidebar() {
@@ -28,7 +28,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <HomeIcon className="size-5" />
+            <AcademicCapIcon className="size-5" />
             <span>Quiz</span>
           </NavLink>
           <NavLink
