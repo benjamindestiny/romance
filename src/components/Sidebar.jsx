@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { HomeIcon, MapIcon, CalendarIcon, UsersIcon, AcademicCapIcon, WrenchScrewdriverIcon, Cog6ToothIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, MapIcon, CalendarIcon, UsersIcon, Cog6ToothIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import UserIndicatorMobile from './UserIndicatorMobile';
 
 export default function Sidebar() {
