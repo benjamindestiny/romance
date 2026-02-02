@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 import { 
   ExclamationTriangleIcon, 
   CheckCircleIcon,
@@ -51,6 +52,30 @@ export default function Reports() {
           <h2 className="text-2xl font-bold">Report an Issue</h2>
           <p className="text-text-secondary mt-2">Help us keep Romance safe and enjoyable for everyone. We take all reports seriously.</p>
         </header>
+
+        {/* Plan Overview */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="bg-card-bg p-6 rounded-lg">
+            <p className="text-sm text-text-secondary">Plan</p>
+            <p className="font-semibold text-lg">{/* TODO: replace with backend plan */ 'Basic'}</p>
+            <p className="text-sm text-text-secondary mt-2">Basic summaries available. Upgrade for detailed reports.</p>
+            <div className="mt-4">
+              <Link to="/pricing" className="bg-primary-purple text-white px-4 py-2 rounded-lg text-sm">Upgrade</Link>
+            </div>
+          </div>
+
+          <div className="bg-card-bg p-6 rounded-lg">
+            <p className="text-sm text-text-secondary">Report Archive</p>
+            <p className="font-semibold text-lg">Last 90 days</p>
+            <p className="text-sm text-text-secondary mt-2">Download or request an official summary.</p>
+          </div>
+
+          <div className="bg-card-bg p-6 rounded-lg">
+            <p className="text-sm text-text-secondary">Export</p>
+            <p className="font-semibold text-lg">PDF (request)</p>
+            <p className="text-sm text-text-secondary mt-2">Request export and we'll prepare it.</p>
+          </div>
+        </section>
 
         {submitted ? (
           <div className="bg-card-bg rounded-2xl p-8 text-center space-y-4">

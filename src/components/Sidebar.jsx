@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { HomeIcon, MapIcon, CalendarIcon, UsersIcon, Cog6ToothIcon, AcademicCapIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, MapIcon, CalendarIcon, UsersIcon, Cog6ToothIcon, AcademicCapIcon, SparklesIcon, ExclamationTriangleIcon } from '@heroicons/react/24/solid';
 import UserIndicatorMobile from './UserIndicatorMobile';
 
 export default function Sidebar() {
@@ -68,7 +68,7 @@ export default function Sidebar() {
               }`
             }
           >
-            <ExclamationTriangleIcon className="size-5" />
+            <SparklesIcon className="size-5" />
             <span>Collaborate</span>
           </NavLink>
           <NavLink
