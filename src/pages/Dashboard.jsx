@@ -32,7 +32,7 @@ export default function Dashboard() {
             <p className="text-sm text-text-secondary">Wednesday, January 28, 2026</p>
           </div>
           <div className="flex items-center space-x-4">
-            <BellIcon className="h-6 w-6 text-text-secondary" />
+            <BellIcon className="size-6 text-text-secondary" />
             <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm font-medium hidden md:block">+ New Session</button>
           </div>
         </header>
@@ -40,26 +40,26 @@ export default function Dashboard() {
         {/* Stat Cards Section */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard 
-            icon={<HeartIcon className="h-6 w-6 text-primary-purple mb-2" />} 
+            icon={<HeartIcon className="size-6 text-primary-purple mb-2" />} 
             value="0%" 
             label="Relationship Health" 
             subtext="+0% this week" 
             subtextColor="text-green-500" 
           />
           <StatCard 
-            icon={<CalendarDaysIcon className="h-6 w-6 text-primary-purple mb-2" />} 
+            icon={<CalendarDaysIcon className="size-6 text-primary-purple mb-2" />} 
             value="0" 
             label="Upcoming Sessions" 
             subtext="Next: Tomorrow" 
           />
           <StatCard 
-            icon={<FireIcon className="h-6 w-6 text-primary-purple mb-2" />} 
+            icon={<FireIcon className="size-6 text-primary-purple mb-2" />} 
             value="0" 
             label="Day Streak" 
             subtext="Keep it up!" 
           />
           <StatCard 
-            icon={<TrophyIcon className="h-6 w-6 text-primary-purple mb-2" />} 
+            icon={<TrophyIcon className="size-6 text-primary-purple mb-2" />} 
             value="0" 
             label="Milestones Reached" 
             subtext="+0 this month" 
@@ -72,19 +72,19 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <QuickActionCard 
               to="/counseling" 
-              icon={<UserCircleIcon className="h-6 w-6 text-primary-purple" />} 
+              icon={<UserCircleIcon className="size-6 text-primary-purple" />} 
               title="Book Counseling" 
               description="Connect with a licensed therapist for your relationship." 
             />
             <QuickActionCard 
               to="/community" 
-              icon={<UsersIcon className="h-6 w-6 text-primary-purple" />} 
+              icon={<UsersIcon className="size-6 text-primary-purple" />} 
               title="Join Community" 
               description="Connect with others on similar journeys and share experiences." 
             />
             <QuickActionCard 
               to="/reports" 
-              icon={<ExclamationTriangleIcon className="h-6 w-6 text-primary-purple" />} 
+              icon={<ExclamationTriangleIcon className="size-6 text-primary-purple" />} 
               title="Report an Issue" 
               description="Help us keep our community safe and trustworthy." 
             />
@@ -180,7 +180,7 @@ export default function Dashboard() {
           </div>
           <div className="flex overflow-x-auto space-x-4 pb-4">
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <img className="w-full h-32 object-cover" src={LongDistance} />
+              <img className="w-full h-32 object-cover" src={LongDistance} loading='lazy' />
               <div className="p-4">
                 <p className="text-xs text-text-secondary mb-1">Article • 8 min read</p>
                 <p className="font-semibold mb-1">Building Intimacy in Long-Distance Relationships</p>
@@ -189,7 +189,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <img className="w-full h-32 object-cover" src={Friendship} />
+              <img className="w-full h-32 object-cover" src={Friendship} loading='lazy' />
               <div className="p-4">
                 <p className="text-xs text-text-secondary mb-1">Workshop • Jan 20</p>
                 <p className="font-semibold mb-1">Making Meaningful Friendships as an Adult</p>
@@ -198,7 +198,7 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <img className="w-full h-32 object-cover" src={OnlineDating} />
+              <img className="w-full h-32 object-cover" src={OnlineDating} loading='lazy' />
               <div className="p-4">
                 <p className="text-xs text-text-secondary mb-1">Guide • 10 min read</p>
                 <p className="font-semibold mb-1">Safety Tips for Online Dating</p>
