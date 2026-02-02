@@ -33,7 +33,7 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center space-x-4">
             <BellIcon className="size-6 text-text-secondary" />
-            <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm font-medium hidden md:block">Collaborate</button>
+            <Link to='/collaborate'><button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm font-medium hidden md:block">Collaborate</button></Link>
           </div>
         </header>
 
@@ -106,7 +106,9 @@ export default function Dashboard() {
                   <p className="text-sm text-text-secondary">Dr. Emily Johnson • Video Call</p>
                   <p className="text-sm text-text-secondary">Tomorrow at 2:00 PM • 60 minutes</p>
                 </div>
-                <Link to='/join'><button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm">Join</button></Link>
+                <Link to='/join'>
+                  <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm">Join</button>
+                </Link>
               </div>
               <div className="bg-card-bg p-4 rounded-lg">
                 <p className="text-primary-purple font-bold text-sm uppercase">Jan 16</p>
