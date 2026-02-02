@@ -38,28 +38,28 @@ export default function Dashboard() {
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard 
             icon={<HeartIcon className="h-6 w-6 text-primary-purple mb-2" />} 
-            value="87%" 
+            value="0%" 
             label="Relationship Health" 
-            subtext="+12% this week" 
+            subtext="+0% this week" 
             subtextColor="text-green-500" 
           />
           <StatCard 
             icon={<CalendarDaysIcon className="h-6 w-6 text-primary-purple mb-2" />} 
-            value="4" 
+            value="0" 
             label="Upcoming Sessions" 
             subtext="Next: Tomorrow" 
           />
           <StatCard 
             icon={<FireIcon className="h-6 w-6 text-primary-purple mb-2" />} 
-            value="28" 
+            value="0" 
             label="Day Streak" 
             subtext="Keep it up!" 
           />
           <StatCard 
             icon={<TrophyIcon className="h-6 w-6 text-primary-purple mb-2" />} 
-            value="12" 
+            value="0" 
             label="Milestones Reached" 
-            subtext="+2 this month" 
+            subtext="+0 this month" 
           />
         </section>
 
@@ -129,37 +129,37 @@ export default function Dashboard() {
               <div>
                 <div className="flex justify-between text-sm">
                   <p>Communication Skills</p>
-                  <p>92%</p>
+                  <p>0%</p>
                 </div>
                 <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Communication Skills: 92% - Excellent progress! Keep practicing active listening and expressing your feelings clearly.">
-                  <div className="bg-primary-purple h-2 rounded-full w-[92%] hover:bg-pink-accent transition-colors"></div>
+                  <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-sm">
                   <p>Emotional Intelligence</p>
-                  <p>78%</p>
+                  <p>0%</p>
                 </div>
                 <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Emotional Intelligence: 78% - Good progress! Focus on recognizing emotions in yourself and others. Consider taking our EQ assessment.">
-                  <div className="bg-primary-purple h-2 rounded-full w-[78%] hover:bg-pink-accent transition-colors"></div>
+                  <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-sm">
                   <p>Conflict Resolution</p>
-                  <p>85%</p>
+                  <p>0%</p>
                 </div>
                 <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Conflict Resolution: 85% - Great work! Continue practicing compromise and finding win-win solutions in disagreements.">
-                  <div className="bg-primary-purple h-2 rounded-full w-[85%] hover:bg-pink-accent transition-colors"></div>
+                  <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-sm">
                   <p>Self-Awareness</p>
-                  <p>91%</p>
+                  <p>0%</p>
                 </div>
                 <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Self-Awareness: 91% - Outstanding! You're very in tune with your thoughts and feelings. Consider mentoring others.">
-                  <div className="bg-primary-purple h-2 rounded-full w-[91%] hover:bg-pink-accent transition-colors"></div>
+                  <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
             </div>
