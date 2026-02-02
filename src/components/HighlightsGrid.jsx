@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // PlanSection: simple, manual-friendly component that shows Basic vs Premium features.
 // Backend integration note: The backend should pass the user's plan (e.g., 'basic'|'premium') via props,
 // a user context, or an API. For development preview, toggleLocal is available but should be removed in production.
-export default function HighlightsGrid({ plan = 'basic' }) {
+export default function HighlightsGrid({ plan = 'premium' }) {
   // localPlan lets you preview the other tier in the UI. Replace with backend value in integration.
   const [localPlan, setLocalPlan] = useState(plan);
   const isPremium = localPlan === 'premium';

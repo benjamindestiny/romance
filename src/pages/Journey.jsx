@@ -1,6 +1,7 @@
 import React from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
+import IdBanner from '../components/IdBanner.jsx';
 
 export default function Journey() {
   return (
@@ -13,6 +14,7 @@ export default function Journey() {
         </header>
 
         <div className="bg-card-bg rounded-lg p-8 text-center">
+          <IdBanner resource="journey" />
           <p className="text-lg font-semibold mb-2">Coming Soon</p>
           <p className="text-text-secondary">This area will show your progress timeline, milestones, and curated next steps once it's ready.</p>
           <div className="mt-6 text-sm text-text-secondary">Tip: You can remove or replace this page later — it's a simple placeholder to guide design and backend work.</div>

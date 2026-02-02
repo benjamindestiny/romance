@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
+import IdBanner from '../components/IdBanner.jsx';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { 
@@ -76,6 +77,11 @@ export default function Reports() {
             <p className="text-sm text-text-secondary mt-2">Request export and we'll prepare it.</p>
           </div>
         </section>
+
+        {/* Token access banner */}
+        <div className="mb-4">
+          <IdBanner resource="reports" />
+        </div>
 
         {submitted ? (
           <div className="bg-card-bg rounded-2xl p-8 text-center space-y-4">
