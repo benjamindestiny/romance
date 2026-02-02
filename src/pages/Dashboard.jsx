@@ -1,8 +1,9 @@
 import React from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
-import HighlightsGrid from '../components/HighlightsGrid.jsx';
 import QuickActionCard from '../components/QuickActionCard.jsx';
+import PremiumPanel from '../components/PremiumPanel.jsx';
+import { useUser } from '../contexts/UserContext.jsx';
 import { Link } from 'react-router-dom';
 import LongDistance from '../assets/long-distance.jpg';
 import OnlineDating from '../assets/online-dating.jpg';
@@ -19,6 +20,15 @@ import {
   ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/solid';
 
+function UserGreeting() {
+  const { user } = useUser();
+  return (
+    <div>
+      <p className="text-xl font-bold">Welcome back, {user?.name || 'Guest'}</p>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   return (
     <div className="min-h-screen bg-dark-bg text-text-primary font-sans pb-32 md:pb-0">
@@ -28,8 +38,8 @@ export default function Dashboard() {
         <header className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-primary-purple text-2xl font-bold md:hidden">Romance</h1>
-            <p className="text-xl font-bold">Welcome Back, Sarah</p>
-            <p className="text-sm text-text-secondary">Wednesday, January 28, 2026</p>
+            <UserGreeting />
+            <p className="text-sm text-text-secondary">{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
           </div>
           <div className="flex items-center space-x-4">
             <BellIcon className="size-6 text-text-secondary" />
@@ -37,8 +47,23 @@ export default function Dashboard() {
           </div>
         </header>
 
-        {/* Highlights Section */}
-        <HighlightsGrid />
+        {/* Premium Panel */}
+        <PremiumPanel />
+
+        {/* Recent Activity */}
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
+          <div className="grid grid-cols-1 gap-4">
+            <div className="bg-card-bg p-4 rounded-lg">
+              <p className="text-sm text-text-secondary">Jan 20 • Workshop</p>
+              <p className="font-semibold">Making Meaningful Friendships</p>
+            </div>
+            <div className="bg-card-bg p-4 rounded-lg">
+              <p className="text-sm text-text-secondary">Jan 18 • Session</p>
+              <p className="font-semibold">Dating Strategy Session</p>
+            </div>
+          </div>
+        </section>
 
         {/* Quick Actions Section */}
         <section className="mb-8">
