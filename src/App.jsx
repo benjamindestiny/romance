@@ -5,6 +5,7 @@ import Reports from './pages/Reports.jsx';
 import Quiz from './pages/Quiz.jsx'
 import Journey from './pages/Journey.jsx';
 import ToastProvider from './components/ToastProvider.jsx';
+import Collaborate from './pages/Collaborate.jsx';
 
 
 
