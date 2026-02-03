@@ -33,7 +33,9 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center space-x-4">
             <BellIcon className="size-6 text-text-secondary" />
-            <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm font-medium hidden md:block">+ New Session</button>
+            <Link to="/collaborate">
+              <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm font-medium hidden md:block">Collaborate</button>
+            </Link>
           </div>
         </header>
 

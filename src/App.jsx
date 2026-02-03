@@ -21,6 +21,9 @@ function App() {
         <Route path="/journey" element={<Journey />} />
 
         <Route path="/quiz" element={<Quiz />} />
+
+        {/* Collaborate (coming soon) */}
+        <Route path="/collaborate" element={<Collaborate />} />
       </Routes>
     </ToastProvider>
   );
