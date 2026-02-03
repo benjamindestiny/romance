@@ -1,9 +1,8 @@
 import React from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
+import StatCard from '../components/StatCard.jsx';
 import QuickActionCard from '../components/QuickActionCard.jsx';
-import PremiumPanel from '../components/PremiumPanel.jsx';
-import { useUser } from '../contexts/UserContext.jsx';
 import { Link } from 'react-router-dom';
 import LongDistance from '../assets/long-distance.jpg';
 import OnlineDating from '../assets/online-dating.jpg';
@@ -20,15 +19,6 @@ import {
   ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/solid';
 
-function UserGreeting() {
-  const { user } = useUser();
-  return (
-    <div>
-      <p className="text-xl font-bold">Welcome back, {user?.name || 'Guest'}</p>
-    </div>
-  );
-}
-
 export default function Dashboard() {
   return (
     <div className="min-h-screen bg-dark-bg text-text-primary font-sans pb-32 md:pb-0">
@@ -38,31 +28,42 @@ export default function Dashboard() {
         <header className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-primary-purple text-2xl font-bold md:hidden">Romance</h1>
-            <UserGreeting />
-            <p className="text-sm text-text-secondary">{new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            <p className="text-xl font-bold">Welcome Back, Sarah</p>
+            <p className="text-sm text-text-secondary">Wednesday, January 28, 2026</p>
           </div>
           <div className="flex items-center space-x-4">
             <BellIcon className="size-6 text-text-secondary" />
-            <Link to='/collaborate'><button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm font-medium hidden md:block">Collaborate</button></Link>
+            <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm font-medium hidden md:block">+ New Session</button>
           </div>
         </header>
 
-        {/* Premium Panel */}
-        <PremiumPanel />
-
-        {/* Recent Activity */}
-        <section className="mb-8">
-          <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
-          <div className="grid grid-cols-1 gap-4">
-            <div className="bg-card-bg p-4 rounded-lg">
-              <p className="text-sm text-text-secondary">Jan 20 • Workshop</p>
-              <p className="font-semibold">Making Meaningful Friendships</p>
-            </div>
-            <div className="bg-card-bg p-4 rounded-lg">
-              <p className="text-sm text-text-secondary">Jan 18 • Session</p>
-              <p className="font-semibold">Dating Strategy Session</p>
-            </div>
-          </div>
+        {/* Stat Cards Section */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <StatCard 
+            icon={<HeartIcon className="size-6 text-primary-purple mb-2" />} 
+            value="0%" 
+            label="Relationship Health" 
+            subtext="+0% this week" 
+            subtextColor="text-green-500" 
+          />
+          <StatCard 
+            icon={<CalendarDaysIcon className="size-6 text-primary-purple mb-2" />} 
+            value="0" 
+            label="Upcoming Sessions" 
+            subtext="Next: Tomorrow" 
+          />
+          <StatCard 
+            icon={<FireIcon className="size-6 text-primary-purple mb-2" />} 
+            value="0" 
+            label="Day Streak" 
+            subtext="Keep it up!" 
+          />
+          <StatCard 
+            icon={<TrophyIcon className="size-6 text-primary-purple mb-2" />} 
+            value="0" 
+            label="Milestones Reached" 
+            subtext="+0 this month" 
+          />
         </section>
 
         {/* Quick Actions Section */}
@@ -105,9 +106,7 @@ export default function Dashboard() {
                   <p className="text-sm text-text-secondary">Dr. Emily Johnson • Video Call</p>
                   <p className="text-sm text-text-secondary">Tomorrow at 2:00 PM • 60 minutes</p>
                 </div>
-                <Link to='/join'>
-                  <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm">Join</button>
-                </Link>
+                <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm">Join</button>
               </div>
               <div className="bg-card-bg p-4 rounded-lg">
                 <p className="text-primary-purple font-bold text-sm uppercase">Jan 16</p>
