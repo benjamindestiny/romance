@@ -41,6 +41,22 @@ export const createStripePaymentIntent = async (req, res) => {
   }
 };
 
+// Return Stripe public key for frontend
+export const getStripePublicKey = async (req, res) => {
+  try {
+    const publicKey = process.env.STRIPE_PUBLIC_KEY || null;
+    if (!publicKey) {
+      return res
+        .status(500)
+        .json({ message: "Stripe public key not configured" });
+    }
+    res.status(200).json({ publicKey });
+  } catch (error) {
+    console.error("Get Stripe public key error:", error);
+    res.status(500).json({ message: "Failed to get stripe public key" });
+  }
+};
+
 // Confirm Stripe Payment
 export const confirmStripePayment = async (req, res) => {
   try {

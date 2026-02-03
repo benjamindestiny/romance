@@ -2,6 +2,7 @@ import express from "express";
 import {
   createStripePaymentIntent,
   confirmStripePayment,
+  getStripePublicKey,
   createPayPalOrder,
   capturePayPalPayment,
 } from "../controllers/paymentControllers.js";
@@ -11,6 +12,7 @@ import { authMiddleware } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 // Stripe payment
+router.get("/stripe/key", getStripePublicKey);
 router.post("/stripe/create-intent", authMiddleware, createStripePaymentIntent);
 router.post("/stripe/confirm", authMiddleware, confirmStripePayment);
 
