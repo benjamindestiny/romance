@@ -17,7 +17,6 @@ export default function Journey() {
 
           <p className="text-lg font-semibold mb-2">Coming Soon</p>
           <p className="text-text-secondary">This area will show your progress timeline, milestones, and curated next steps once it's ready.</p>
-          <div className="mt-6 text-sm text-text-secondary">Tip: You can remove or replace this page later — it's a simple placeholder to guide design and backend work.</div>
         </div>
       </main>
       <BottomNav />
