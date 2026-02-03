@@ -20,6 +20,7 @@ function App() {
         {/* Journey (coming soon) */}
         <Route path="/journey" element={<Journey />} />
 
+        {/* Quiz (coming soon) */}
         <Route path="/quiz" element={<Quiz />} />
 
         {/* Collaborate (coming soon) */}
