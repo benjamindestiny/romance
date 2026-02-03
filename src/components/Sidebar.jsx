@@ -42,16 +42,6 @@ export default function Sidebar() {
             <span>My Journey</span>
           </NavLink>
           <NavLink
-            to="/sessions"
-            className={({ isActive }) =>
-              `flex items-center space-x-3 rounded-md p-2 ${isActive ? 'bg-card-bg text-primary-purple font-medium' : 'hover:bg-card-bg'
-              }`
-            }
-          >
-            <CalendarIcon className="size-5" />
-            <span>Sessions</span>
-          </NavLink>
-          <NavLink
             to="/community"
             className={({ isActive }) =>
               `flex items-center space-x-3 rounded-md p-2 ${isActive ? 'bg-card-bg text-primary-purple font-medium' : 'hover:bg-card-bg'
