@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
-
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
 import { 
   ExclamationTriangleIcon, 
   CheckCircleIcon,
@@ -33,6 +31,7 @@ export default function Reports() {
       return;
     }
     
+    // Simulate backend submission
     toast.success('Report submitted successfully. We\'ll review it within 24 hours.');
     setSubmitted(true);
     
@@ -54,35 +53,6 @@ export default function Reports() {
           <p className="text-text-secondary mt-2">Help us keep Romance safe and enjoyable for everyone. We take all reports seriously.</p>
         </header>
 
-        {/* Plan Overview */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-card-bg p-6 rounded-lg">
-            <p className="text-sm text-text-secondary">Plan</p>
-            <p className="font-semibold text-lg">{/* TODO: replace with backend plan */ 'Basic'}</p>
-            <p className="text-sm text-text-secondary mt-2">Basic summaries available. Upgrade for detailed reports.</p>
-            <div className="mt-4">
-              <Link to="/pricing" className="bg-primary-purple text-white px-4 py-2 rounded-lg text-sm">Upgrade</Link>
-            </div>
-          </div>
-
-          <div className="bg-card-bg p-6 rounded-lg">
-            <p className="text-sm text-text-secondary">Report Archive</p>
-            <p className="font-semibold text-lg">Last 90 days</p>
-            <p className="text-sm text-text-secondary mt-2">Download or request an official summary.</p>
-          </div>
-
-          <div className="bg-card-bg p-6 rounded-lg">
-            <p className="text-sm text-text-secondary">Export</p>
-            <p className="font-semibold text-lg">PDF (request)</p>
-            <p className="text-sm text-text-secondary mt-2">Request export and we'll prepare it.</p>
-          </div>
-        </section>
-
-        {/* Token access banner */}
-        <div className="mb-4">
-
-        </div>
-
         {submitted ? (
           <div className="bg-card-bg rounded-2xl p-8 text-center space-y-4">
             <div className="flex justify-center">
@@ -94,6 +64,7 @@ export default function Reports() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Report Type Selection */}
             <div className="bg-card-bg rounded-2xl p-6">
               <label className="block text-lg font-semibold mb-4">What would you like to report?</label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -131,10 +102,10 @@ export default function Reports() {
             <div className="bg-card-bg rounded-2xl p-6 border border-primary-purple/20">
               <h3 className="font-semibold mb-3">Tips for Better Reports:</h3>
               <ul className="space-y-2 text-sm text-text-secondary">
-                <li>Include specific dates and times if applicable</li>
-                <li>Mention usernames or profile information if relevant</li>
-                <li>Describe the impact or harm caused</li>
-                <li>Don't include personal information of others unnecessarily</li>
+                <li>✓ Include specific dates and times if applicable</li>
+                <li>✓ Mention usernames or profile information if relevant</li>
+                <li>✓ Describe the impact or harm caused</li>
+                <li>✓ Don't include personal information of others unnecessarily</li>
               </ul>
             </div>
 
