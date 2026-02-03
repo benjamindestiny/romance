@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 import {
   ExclamationTriangleIcon,
   CheckCircleIcon,
@@ -38,7 +39,7 @@ export default function Reports() {
       return;
     }
 
-    // Simulate backend submission
+    // Backend submission
     const newReport = {
       id: Date.now(),
       name: 'You',
@@ -71,7 +72,6 @@ export default function Reports() {
         </header>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          {/* Left: Form (larger column on desktop) */}
           <section className="md:col-span-2 bg-card-bg rounded-2xl p-6 shadow-sm">
             {submitted ? (
               <div className="text-center py-12">
@@ -170,7 +170,7 @@ export default function Reports() {
 
             <div className="bg-card-bg rounded-2xl p-4 shadow-sm border border-primary-purple/10">
               <h5 className="font-semibold mb-2">Need immediate help?</h5>
-              <p className="text-xs text-text-secondary">If you or someone is in immediate danger, please contact local emergency services first. For urgent platform support, email support@romance.app.</p>
+              <p className="text-xs text-text-secondary">If you or someone is in immediate danger, please contact local emergency services first. For urgent platform support, email <Link to="mailto:support@romance.app">support@romance.app</Link>.</p>
             </div>
           </aside>
         </div>
