@@ -42,26 +42,26 @@ export default function Dashboard() {
         {/* Stat Cards Section */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard 
-            icon={<HeartIcon className="size-6 text-primary-purple mb-2" />} 
+            icon={<HeartIcon className="size-6 text-primary-purple mb-2 bg-pink-300 p-3 rounded-lg" />} 
             value="0%" 
             label="Relationship Health" 
             subtext="+0% this week" 
             subtextColor="text-green-500" 
           />
           <StatCard 
-            icon={<CalendarDaysIcon className="size-6 text-primary-purple mb-2" />} 
+            icon={<CalendarDaysIcon className="size-6 text-primary-purple mb-2 bg-pink-300 p-3 rounded-lg" />} 
             value="0" 
             label="Upcoming Sessions" 
             subtext="Next: Tomorrow" 
           />
           <StatCard 
-            icon={<FireIcon className="size-6 text-primary-purple mb-2" />} 
+            icon={<FireIcon className="size-6 text-primary-purple mb-2 bg-pink-300 p-3 rounded-lg" />} 
             value="0" 
             label="Day Streak" 
             subtext="Keep it up!" 
           />
           <StatCard 
-            icon={<TrophyIcon className="size-6 text-primary-purple mb-2" />} 
+            icon={<TrophyIcon className="size-6 text-primary-purple mb-2 bg-pink-300 p-3 rounded-lg" />} 
             value="0" 
             label="Milestones Reached" 
             subtext="+0 this month" 

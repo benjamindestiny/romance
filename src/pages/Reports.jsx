@@ -92,9 +92,8 @@ export default function Reports() {
                         key={type.id}
                         type="button"
                         onClick={() => setReportType(type.id)}
-                        className={`flex items-center gap-3 p-4 rounded-lg border transition-all text-left ${
-                          reportType === type.id ? 'border-primary-purple bg-primary-purple/10' : 'border-gray-border hover:border-primary-purple/40'
-                        }`}
+                        className={`flex items-center gap-3 p-4 rounded-lg border transition-all text-left ${reportType === type.id ? 'border-primary-purple bg-primary-purple/10' : 'border-gray-border hover:border-primary-purple/40'
+                          }`}
                       >
                         {type.icon}
                         <div>
