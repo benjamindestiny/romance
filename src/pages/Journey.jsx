@@ -3,7 +3,6 @@ import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
 import { FlagIcon, SunIcon, FireIcon, ScaleIcon, RocketLaunchIcon, CameraIcon } from '@heroicons/react/20/solid';
 
-// Icon mapping - maps string names to actual components
 const iconMap = {
   FlagIcon,
   SunIcon,
@@ -14,6 +13,10 @@ const iconMap = {
 };
 
 export default function Journey() {
+  const [selectedMilestone, setSelectedMilestone] = useState(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [timelineFilter, setTimelineFilter] = useState("all");
+  const [viewMode, setViewMode] = useState("timeline");
   const [journeyData, setJourneyData] = useState({
     title: "90-Day Transformation Challenge",
     startDate: "2025-01-01",
@@ -77,39 +80,19 @@ export default function Journey() {
       }
     ]
   });
-  const [selectedMilestone, setSelectedMilestone] = useState(null);
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [timelineFilter, setTimelineFilter] = useState("all");
-  const [viewMode, setViewMode] = useState("timeline");
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white p-8">
+    <div className="min-h-screen bg-gray-950 text-white p-8">
       <Sidebar />
-      <div>
-        <h1 className="text-4xl font-bold mb-4">States are now set up.</h1>
-        <p className="text-gray-400">Journey title: {journeyData.title}</p>
-        <p className="text-gray-400">Progress: {journeyData.overallProgress}%</p>
-        <p className="text-gray-400">Milestones count: {journeyData.milestones.length}</p>
-        <p className="text-gray-400">Icons List below</p>
-        {journeyData.milestones.map(d => {
-          const IconComponent = iconMap[d.icon];
-          return (
-            <div key={d.id}>
-              <p>{d.id}</p>
-              <p>{d.id}</p>
-              <p>{d.title}</p>
-              <p>date: {d.date}</p>
-              <p>status: {d.status}</p>
-              <p>description: {d.description}</p>
-              <p>points: {d.points}</p>
-              <p>{d.icon}</p>
-              {IconComponent && <IconComponent className="w-6 h-6" />}
-            </div>
-          );
-        })}
-      </div>
+      <main className='md:ml-64 p-4 md:p-6'>
+        <section className='bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg p-12 mb-8 h-80 flex flex-col justify-center items-center text-center shadow-2xl'>
+          <h1 className='text-5xl font-bold mb-8 text-white'>
+            {journeyData.title}
+          </h1>
+        </section>
+      </main>
       <BottomNav />
-    </main>
+    </div>
   );
 }
 
