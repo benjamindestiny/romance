@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
-import { FlagIcon, SunIcon, FireIcon, ScaleIcon, RocketLaunchIcon, CameraIcon } from '@heroicons/react/20/solid';
+import { FlagIcon, SunIcon, FireIcon, ScaleIcon, RocketLaunchIcon, CameraIcon, BellIcon } from '@heroicons/react/20/solid';
 
 const iconMap = {
   FlagIcon,
@@ -85,10 +85,47 @@ export default function Journey() {
     <div className="min-h-screen bg-gray-950 text-white p-8">
       <Sidebar />
       <main className='md:ml-64 p-4 md:p-6'>
-        <section className='bg-gradient-to-r from-gray-900 to-gray-800 rounded-lg p-12 mb-8 h-80 flex flex-col justify-center items-center text-center shadow-2xl'>
-          <h1 className='text-5xl font-bold mb-8 text-white'>
-            {journeyData.title}
-          </h1>
+        <header className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-primary-purple text-2xl font-bold md:hidden">
+              Romance
+            </h1>
+            <p className="text-xl font-bold">My Journey</p>
+            <p className="text-sm text-text-secondary">
+              Track your growth, milestones, and progress
+            </p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <BellIcon className="size-6 text-text-secondary" />
+          </div>
+        </header>
+        <section className="bg-card-bg rounded-lg p-6 mb-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+              <div>
+                <p className="text-sm text-text-secondary mb-1">Overall Progress</p>
+                <p className="text-3xl font-bold text-primary-purple">
+                  {journeyData.overallProgress}%
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-text-secondary mb-1">Streak</p>
+                <p className="text-3xl font-bold">
+                  {journeyData.streakDays} days
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-text-secondary mb-1">Total Points</p>
+              <p className="text-3xl font-bold">
+                {journeyData.totalPoints}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-text-secondary mb-1">Milestones</p>
+              <p className="text-3xl font-bold">
+                {journeyData.milestones.length}
+              </p>
+            </div>
+          </div>
         </section>
       </main>
       <BottomNav />
