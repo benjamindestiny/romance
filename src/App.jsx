@@ -16,21 +16,11 @@ function App() {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/settings" element={<Settings />} />
-
         <Route path="/reports" element={<Reports />} />
-
-        {/* Journey (coming soon) */}
         <Route path="/journey" element={<Journey />} />
-
-        {/* Quiz (coming soon) */}
         <Route path="/quiz" element={<Quiz />} />
-
-        {/* Collaborate (coming soon) */}
         <Route path="/collaborate" element={<Collaborate />} />
-
-        {/* Community Page (in building) */}
         <Route path='/community' element={<Community />} />
-        
       </Routes>
     </ToastProvider>
   );
