@@ -38,7 +38,7 @@ export default function ResetPassword() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/auth/reset-password",
+        "https://romance-0bj5.onrender.com/api/auth/reset-password",
         {
           token,
           newPassword,

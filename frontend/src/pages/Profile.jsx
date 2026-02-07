@@ -18,7 +18,7 @@ export default function Profile() {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/auth/profile/${userId}`,
+          `https://romance-0bj5.onrender.com/api/auth/profile/${userId}`,
         );
         setProfile(response.data);
       } catch (error) {
