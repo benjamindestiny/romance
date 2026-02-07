@@ -1,279 +1,418 @@
 import Room from "../models/room.js";
 import User from "../models/user.js";
-import crypto from "crypto";
 
-/**
- * ROOM CONTROLLERS - Handles Couple Quiz Collaboration
- *
- * PURPOSE: Manage quiz rooms where partners can join and play together
- *
- * KEY CONCEPTS:
- * - roomCode: Unique 6-char code (ABC123) shared between partners
- * - participants: Array of people in room (max 2)
- * - quizAnswers: Tracks answers for compatibility comparison
- * - TTL (expires): Auto-delete stale rooms after 24 hours
- *
- * FLOW:
- * 1. createRoom() → User A creates room, gets code
- * 2. joinRoom() → User B joins with code
- * 3. getRoom() → Fetch room details and participants
- * 4. updateRoomStatus() → Change room state (waiting→playing→completed)
- * 5. submitQuizAnswers() → Save answers during quiz
- * 6. leaveRoom() → User leaves, room deletes if empty
- */
-
-/* ================= CREATE ROOM ================= */
-/**
- * Creates a new quiz room for a couple
- *
- * WHY THIS WORKS:
- * - Generates cryptographically random 6-char code (crypto.randomBytes)
- * - Makes it easy to share manually (can say it out loud, type in text)
- * - Not sequential (can't guess next code)
- * - Unique constraint prevents collisions
- *
- * WHAT HAPPENS:
- * 1. Get user ID from auth token
- * 2. Generate random room code
- * 3. Create room with creator as first participant
- * 4. Return code so user can share with partner
- *
- * RESPONSE:
- * {
- *   roomCode: "A3B2C1",      // Share this with partner
- *   roomId: "507f...",       // Internal ID (for API calls)
- *   message: "Room created..."
- * }
- */
+// ==================== CREATE ROOM ====================
+// POST /api/rooms/create
+// WHY: User A creates a quiz room and gets a shareable code
 export const createRoom = async (req, res) => {
   try {
-    const userId = req.userId; // From auth middleware (we'll need to add this)
+    const userId = req.userId;
 
-    // Generate unique 6-character room code
-    const roomCode = crypto.randomBytes(3).toString("hex").toUpperCase();
+    // Generate unique code
+    let roomCode;
+    let codeExists = true;
 
-    const user = await User.findById(userId).select("name");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    // Keep generating until we get unique code
+    // WHY: Ensure code is unique so no collisions
+    while (codeExists) {
+      roomCode = Room.generateRoomCode();
+      const existing = await Room.findOne({ roomCode });
+      if (!existing) {
+        codeExists = false;
+      }
     }
 
-    const room = await Room.create({
+    // Create new room with creator as first participant
+    const room = new Room({
       roomCode,
       createdBy: userId,
       participants: [
         {
           userId,
-          name: user.name,
+          status: "joined",
         },
       ],
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      status: "waiting", // Waiting for second person
     });
 
+    await room.save();
+
     res.status(201).json({
-      roomCode,
-      roomId: room._id,
-      message: "Room created successfully. Share this code with your partner.",
+      success: true,
+      message: "Room created successfully",
+      room: {
+        id: room._id,
+        roomCode: room.roomCode,
+        status: room.status,
+        participants: room.participants.length,
+        expiresAt: room.expiresAt,
+      },
     });
   } catch (error) {
-    console.error("✗ Create room error:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-/* ================= JOIN ROOM ================= */
-/**
- * Join an existing quiz room using room code
- *
- * WHY THIS WORKS:
- * - User B received code from User A (via WhatsApp/text externally)
- * - Searches for room by roomCode (case-insensitive)
- * - Adds User B to participants array
- * - NOW both can play quizzes together
- *
- * VALIDATIONS:
- * 1. Room exists (code is valid)
- * 2. User not already in room (prevent duplicates)
- * 3. Room not full (max 2 people)
- *
- * WHAT HAPPENS:
- * 1. Lookup room by code (ABC123)
- * 2. Verify room exists & not full
- * 3. Add current user to participants
- * 4. Save and return updated room with both participants
- *
- * RESPONSE:
- * {
- *   roomId: "507f...",
- *   roomCode: "A3B2C1",
- *   participants: [
- *     { userId: "...", name: "Alice" },
- *     { userId: "...", name: "Bob" }
- *   ],
- *   message: "Joined room successfully"
- * }
- */
+// ==================== JOIN ROOM ====================
+// POST /api/rooms/join
+// WHY: User B joins with the code User A shared
 export const joinRoom = async (req, res) => {
   try {
     const { roomCode } = req.body;
-    const userId = req.userId; // From auth middleware
+    const userId = req.userId;
 
     if (!roomCode) {
-      return res.status(400).json({ message: "Room code is required" });
+      return res.status(400).json({
+        success: false,
+        message: "Room code required",
+      });
     }
 
-    const room = await Room.findOne({ roomCode: roomCode.toUpperCase() });
+    // Find room by code
+    const room = await Room.findOne({ roomCode });
+
     if (!room) {
-      return res.status(404).json({ message: "Room not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
     }
 
-    // Check if user is already in room
-    const alreadyInRoom = room.participants.some((p) =>
-      p.userId.equals(userId),
+    // Check if room is expired
+    if (room.status === "expired" || new Date() > room.expiresAt) {
+      return res.status(400).json({
+        success: false,
+        message: "Room has expired",
+      });
+    }
+
+    // Check if already 2 people in room
+    if (room.participants.length >= 2) {
+      return res.status(400).json({
+        success: false,
+        message: "Room is full",
+      });
+    }
+
+    // Check if user already in room
+    const alreadyJoined = room.participants.some(
+      (p) => p.userId.toString() === userId.toString(),
     );
-    if (alreadyInRoom) {
-      return res.status(400).json({ message: "You are already in this room" });
-    }
-
-    // Check if room is full
-    if (room.participants.length >= room.maxParticipants) {
-      return res
-        .status(400)
-        .json({ message: "Room is full. Maximum 2 participants." });
-    }
-
-    const user = await User.findById(userId).select("name");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    if (alreadyJoined) {
+      return res.status(400).json({
+        success: false,
+        message: "You already joined this room",
+      });
     }
 
     // Add user to room
     room.participants.push({
       userId,
-      name: user.name,
+      status: "joined",
     });
+
+    // If 2 people now, room becomes active
+    // WHY: Can't start quiz until both people are here
+    if (room.participants.length === 2) {
+      room.status = "active";
+    }
+
     await room.save();
 
     res.json({
-      roomId: room._id,
-      roomCode: room.roomCode,
-      participants: room.participants,
+      success: true,
       message: "Joined room successfully",
+      room: {
+        id: room._id,
+        roomCode: room.roomCode,
+        status: room.status,
+        participants: room.participants.length,
+        selectedQuiz: room.selectedQuiz,
+      },
     });
   } catch (error) {
-    console.error("✗ Join room error:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-/* ================= GET ROOM ================= */
+// ==================== GET ROOM ====================
+// GET /api/rooms/:roomId
+// WHY: Fetch room details, participants, quiz status
 export const getRoom = async (req, res) => {
   try {
     const { roomId } = req.params;
 
     const room = await Room.findById(roomId)
-      .populate("createdBy", "name")
-      .populate("participants.userId", "name");
+      .populate("createdBy", "firstName lastName email")
+      .populate("participants.userId", "firstName lastName email");
 
     if (!room) {
-      return res.status(404).json({ message: "Room not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
     }
 
-    res.json(room);
+    res.json({
+      success: true,
+      room: {
+        id: room._id,
+        roomCode: room.roomCode,
+        status: room.status,
+        selectedQuiz: room.selectedQuiz,
+        participants: room.participants.map((p) => ({
+          userId: p.userId._id,
+          name: `${p.userId.firstName} ${p.userId.lastName}`,
+          status: p.status,
+        })),
+        answersSubmitted: room.quizAnswers.length,
+        expiresAt: room.expiresAt,
+      },
+    });
   } catch (error) {
-    console.error("✗ Get room error:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-/* ================= UPDATE ROOM STATUS ================= */
+// ==================== UPDATE ROOM STATUS ====================
+// PUT /api/rooms/:roomId/status
+// WHY: Change room state (waiting -> active -> completed)
 export const updateRoomStatus = async (req, res) => {
   try {
     const { roomId } = req.params;
-    const { status, currentQuiz } = req.body;
-
-    const room = await Room.findByIdAndUpdate(
-      roomId,
-      { status, currentQuiz },
-      { new: true },
-    );
-
-    if (!room) {
-      return res.status(404).json({ message: "Room not found" });
-    }
-
-    res.json(room);
-  } catch (error) {
-    console.error("✗ Update room error:", error);
-    res.status(500).json({ message: error.message });
-  }
-};
-
-/* ================= SUBMIT QUIZ ANSWERS ================= */
-export const submitQuizAnswers = async (req, res) => {
-  try {
-    const { roomId } = req.params;
-    const { quizId, answers } = req.body;
-    const userId = req.userId;
+    const { status, selectedQuiz } = req.body;
 
     const room = await Room.findById(roomId);
+
     if (!room) {
-      return res.status(404).json({ message: "Room not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
     }
 
-    // Find or create user answers in room
-    let userAnswers = room.quizAnswers.find((qa) => qa.userId.equals(userId));
-    if (!userAnswers) {
-      userAnswers = {
-        userId,
-        answers: [],
-      };
-      room.quizAnswers.push(userAnswers);
-    }
-
-    // Add answers
-    userAnswers.answers = answers.map((answer) => ({
-      questionId: answer.questionId,
-      answer: answer.answer,
-      timestamp: new Date(),
-    }));
+    // Update status and quiz if provided
+    if (status) room.status = status;
+    if (selectedQuiz) room.selectedQuiz = selectedQuiz;
 
     await room.save();
 
     res.json({
-      message: "Answers submitted successfully",
-      room,
+      success: true,
+      message: "Room updated",
+      room: {
+        id: room._id,
+        status: room.status,
+        selectedQuiz: room.selectedQuiz,
+      },
     });
   } catch (error) {
-    console.error("✗ Submit answers error:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
-/* ================= LEAVE ROOM ================= */
+// ==================== SUBMIT QUIZ ANSWERS ====================
+// POST /api/rooms/:roomId/submit
+// WHY: Save user's quiz answers for compatibility scoring
+export const submitQuizAnswers = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const { answers } = req.body;
+    const userId = req.userId;
+
+    if (!answers || !Array.isArray(answers)) {
+      return res.status(400).json({
+        success: false,
+        message: "Answers array required",
+      });
+    }
+
+    const room = await Room.findById(roomId);
+
+    if (!room) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
+    // Check if user is in room
+    const participantIndex = room.participants.findIndex(
+      (p) => p.userId.toString() === userId.toString(),
+    );
+
+    if (participantIndex === -1) {
+      return res.status(403).json({
+        success: false,
+        message: "You are not in this room",
+      });
+    }
+
+    // Remove old submission if exists
+    // WHY: Allow user to resubmit answers
+    room.quizAnswers = room.quizAnswers.filter(
+      (qa) => qa.userId.toString() !== userId.toString(),
+    );
+
+    // Add new submission
+    room.quizAnswers.push({
+      userId,
+      answers,
+      submittedAt: new Date(),
+    });
+
+    // Mark participant as completed
+    room.participants[participantIndex].status = "completed";
+
+    // If both completed, mark room as completed
+    const allCompleted = room.participants.every(
+      (p) => p.status === "completed",
+    );
+    if (allCompleted) {
+      room.status = "completed";
+    }
+
+    await room.save();
+
+    res.json({
+      success: true,
+      message: "Answers submitted",
+      submissionsCount: room.quizAnswers.length,
+      roomStatus: room.status,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// ==================== GET QUIZ RESULTS ====================
+// GET /api/rooms/:roomId/results
+// WHY: Get compatibility score and comparison of answers
+export const getQuizResults = async (req, res) => {
+  try {
+    const { roomId } = req.params;
+
+    const room = await Room.findById(roomId)
+      .populate("participants.userId", "firstName lastName")
+      .populate("quizAnswers.userId", "firstName lastName");
+
+    if (!room) {
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
+    }
+
+    if (room.status !== "completed") {
+      return res.status(400).json({
+        success: false,
+        message: "Quiz not completed yet",
+      });
+    }
+
+    // Calculate compatibility score
+    // WHY: Simple algorithm: matching answers / total answers
+    let matchingAnswers = 0;
+    let totalAnswers = 0;
+
+    if (room.quizAnswers.length === 2) {
+      const [submission1, submission2] = room.quizAnswers;
+
+      // Compare answers
+      submission1.answers.forEach((answer1, index) => {
+        const answer2 = submission2.answers[index];
+        if (answer2 && answer1.answer === answer2.answer) {
+          matchingAnswers++;
+        }
+        totalAnswers++;
+      });
+    }
+
+    const compatibilityScore =
+      totalAnswers > 0 ? Math.round((matchingAnswers / totalAnswers) * 100) : 0;
+
+    res.json({
+      success: true,
+      results: {
+        compatibilityScore,
+        matchingAnswers,
+        totalAnswers,
+        quiz: room.selectedQuiz,
+        answers: room.quizAnswers.map((qa) => ({
+          user: `${qa.userId.firstName} ${qa.userId.lastName}`,
+          answers: qa.answers,
+        })),
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// ==================== LEAVE ROOM ====================
+// DELETE /api/rooms/:roomId/leave
+// WHY: User exits room, delete if empty
 export const leaveRoom = async (req, res) => {
   try {
     const { roomId } = req.params;
     const userId = req.userId;
 
-    const room = await Room.findByIdAndUpdate(
-      roomId,
-      {
-        $pull: { participants: { userId } },
-      },
-      { new: true },
-    );
+    const room = await Room.findById(roomId);
 
     if (!room) {
-      return res.status(404).json({ message: "Room not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Room not found",
+      });
     }
 
-    // Delete room if no participants left
+    // Remove user from room
+    room.participants = room.participants.filter(
+      (p) => p.userId.toString() !== userId.toString(),
+    );
+
+    // If no one left, delete room
+    // WHY: Clean up empty rooms
     if (room.participants.length === 0) {
       await Room.findByIdAndDelete(roomId);
+      return res.json({
+        success: true,
+        message: "Left room (deleted as it's empty)",
+      });
     }
 
-    res.json({ message: "Left room successfully" });
+    // If someone still here, update room status
+    room.status = "waiting"; // Back to waiting for new person
+    await room.save();
+
+    res.json({
+      success: true,
+      message: "Left room",
+      remainingParticipants: room.participants.length,
+    });
   } catch (error) {
-    console.error("✗ Leave room error:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
