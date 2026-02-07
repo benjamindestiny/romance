@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
-import { 
-  FlagIcon, 
-  SunIcon, 
-  FireIcon, 
-  ScaleIcon, 
-  RocketLaunchIcon, 
-  CameraIcon, 
+import {
+  FlagIcon,
+  SunIcon,
+  FireIcon,
+  ScaleIcon,
+  RocketLaunchIcon,
+  CameraIcon,
   BellIcon,
   CheckCircleIcon,
   ClockIcon,
@@ -16,7 +16,15 @@ import {
   SparklesIcon,
   CalendarDaysIcon,
   StarIcon,
-  ChevronRightIcon
+  ChevronRightIcon,
+  HeartIcon,
+  TrophyIcon,
+  ChartBarIcon,
+  CalendarIcon,
+  GiftIcon,
+  UserGroupIcon,
+  LightBulbIcon,
+  HandHeartIcon
 } from '@heroicons/react/24/solid';
 
 const iconMap = {
@@ -279,110 +287,188 @@ export default function Journey() {
           </div>
         </section>
 
-        {/* Filter Tabs */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-          {[
-            { value: "all", label: "All Milestones" },
-            { value: "completed", label: "✓ Completed", count: completedCount },
-            { value: "in-progress", label: "⏳ In Progress", count: inProgressCount },
-            { value: "locked", label: "🔒 Locked", count: lockedCount }
-          ].map(filter => (
+        {/* View Mode Toggle */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {[
+              { value: "all", label: "All Milestones" },
+              { value: "completed", label: "✓ Completed", count: completedCount },
+              { value: "in-progress", label: "⏳ In Progress", count: inProgressCount },
+              { value: "locked", label: "🔒 Locked", count: lockedCount }
+            ].map(filter => (
+              <button
+                key={filter.value}
+                onClick={() => setTimelineFilter(filter.value)}
+                className={`px-4 py-2 rounded-lg whitespace-nowrap text-sm font-medium transition-all ${
+                  timelineFilter === filter.value
+                    ? 'bg-primary-purple text-white'
+                    : 'bg-card-bg text-text-secondary hover:bg-card-bg border border-gray-border/30'
+                }`}
+              >
+                {filter.label} {filter.count !== undefined && `(${filter.count})`}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
             <button
-              key={filter.value}
-              onClick={() => setTimelineFilter(filter.value)}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap text-sm font-medium transition-all ${
-                timelineFilter === filter.value
+              onClick={() => setViewMode("timeline")}
+              className={`p-2 rounded-lg transition-all ${
+                viewMode === "timeline"
                   ? 'bg-primary-purple text-white'
                   : 'bg-card-bg text-text-secondary hover:bg-card-bg border border-gray-border/30'
               }`}
             >
-              {filter.label} {filter.count !== undefined && `(${filter.count})`}
+              <ChartBarIcon className="size-5" />
             </button>
-          ))}
+            <button
+              onClick={() => setViewMode("calendar")}
+              className={`p-2 rounded-lg transition-all ${
+                viewMode === "calendar"
+                  ? 'bg-primary-purple text-white'
+                  : 'bg-card-bg text-text-secondary hover:bg-card-bg border border-gray-border/30'
+              }`}
+            >
+              <CalendarIcon className="size-5" />
+            </button>
+          </div>
         </div>
 
         {/* Milestones Timeline */}
-        <section className="space-y-4">
-          {filteredMilestones.length > 0 ? (
-            filteredMilestones.map((milestone, index) => {
-              const IconComponent = iconMap[milestone.icon];
-              const status = statusConfig[milestone.status];
-              const isLast = index === filteredMilestones.length - 1;
+        {viewMode === "timeline" && (
+          <section className="space-y-4">
+            {filteredMilestones.length > 0 ? (
+              filteredMilestones.map((milestone, index) => {
+                const IconComponent = iconMap[milestone.icon];
+                const status = statusConfig[milestone.status];
+                const isLast = index === filteredMilestones.length - 1;
 
-              return (
-                <div key={milestone.id} className="relative">
-                  {/* Timeline connector line */}
-                  {!isLast && (
-                    <div className="absolute left-6 top-20 w-0.5 h-12 bg-gradient-to-b from-gray-border to-transparent" />
-                  )}
+                return (
+                  <div key={milestone.id} className="relative">
+                    {/* Timeline connector line */}
+                    {!isLast && (
+                      <div className="absolute left-6 top-20 w-0.5 h-12 bg-gradient-to-b from-gray-border to-transparent" />
+                    )}
 
-                  <div
-                    onClick={() => openMilestoneDetail(milestone)}
-                    className={`relative cursor-pointer transition-all duration-300 ${status.bg} border-l-4 ${status.border} p-5 rounded-lg hover:border-l-primary-purple hover:shadow-lg group`}
-                  >
-                    {/* Status Indicator Circle */}
-                    <div className="absolute -left-6 top-5">
-                      <div className={`w-12 h-12 rounded-full border-4 border-dark-bg flex items-center justify-center ${status.bg}`}>
-                        {IconComponent && (
-                          <IconComponent className={`size-6 ${status.color}`} />
+                    <div
+                      onClick={() => openMilestoneDetail(milestone)}
+                      className={`relative cursor-pointer transition-all duration-300 ${status.bg} border-l-4 ${status.border} p-5 rounded-lg hover:border-l-primary-purple hover:shadow-lg group`}
+                    >
+                      {/* Status Indicator Circle */}
+                      <div className="absolute -left-6 top-5">
+                        <div className={`w-12 h-12 rounded-full border-4 border-dark-bg flex items-center justify-center ${status.bg}`}>
+                          {IconComponent && (
+                            <IconComponent className={`size-6 ${status.color}`} />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="ml-4">
+                        <div className="flex justify-between items-start gap-4">
+                          <div className="flex-1">
+                            <h3 className="text-lg font-bold group-hover:text-primary-purple transition-colors">
+                              {milestone.title}
+                            </h3>
+                            <p className="text-xs text-text-secondary mt-1">
+                              {new Date(milestone.date).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric'
+                              })}
+                            </p>
+                            <p className="text-sm text-text-secondary mt-2">
+                              {milestone.description}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <div className="text-right">
+                              <p className={`text-sm font-bold ${status.color}`}>
+                                {status.label}
+                              </p>
+                              <p className="text-xs text-text-secondary mt-1">{milestone.points} pts</p>
+                            </div>
+                            <ChevronRightIcon className="size-5 text-text-secondary group-hover:text-primary-purple transition-colors" />
+                          </div>
+                        </div>
+
+                        {/* Progress indicator for in-progress */}
+                        {milestone.status === 'in-progress' && (
+                          <div className="mt-4 pt-4 border-t border-gray-border/30">
+                            <div className="flex justify-between text-xs mb-2">
+                              <span className="text-text-secondary">Progress</span>
+                              <span className="text-primary-purple font-semibold">65%</span>
+                            </div>
+                            <div className="w-full h-2 bg-gray-border rounded-full overflow-hidden">
+                              <div className="h-full bg-gradient-to-r from-primary-purple to-pink-accent w-[65%]" />
+                            </div>
+                          </div>
                         )}
                       </div>
                     </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-12">
+                <SparklesIcon className="size-12 text-text-secondary mx-auto mb-4 opacity-50" />
+                <p className="text-text-secondary mb-2">No milestones found</p>
+                <p className="text-xs text-text-secondary">Try adjusting your filter settings</p>
+              </div>
+            )}
+          </section>
+        )}
 
-                    {/* Content */}
-                    <div className="ml-4">
-                      <div className="flex justify-between items-start gap-4">
-                        <div className="flex-1">
-                          <h3 className="text-lg font-bold group-hover:text-primary-purple transition-colors">
-                            {milestone.title}
-                          </h3>
-                          <p className="text-xs text-text-secondary mt-1">
-                            {new Date(milestone.date).toLocaleDateString('en-US', { 
-                              month: 'short', 
-                              day: 'numeric', 
-                              year: 'numeric' 
-                            })}
-                          </p>
-                          <p className="text-sm text-text-secondary mt-2">
-                            {milestone.description}
-                          </p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="text-right">
-                            <p className={`text-sm font-bold ${status.color}`}>
-                              {status.label}
-                            </p>
-                            <p className="text-xs text-text-secondary mt-1">{milestone.points} pts</p>
-                          </div>
-                          <ChevronRightIcon className="size-5 text-text-secondary group-hover:text-primary-purple transition-colors" />
+        {/* Calendar View */}
+        {viewMode === "calendar" && (
+          <section className="bg-card-bg rounded-lg p-6 border border-gray-border/30">
+            <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+              <CalendarIcon className="size-6 text-primary-purple" />
+              Journey Calendar
+            </h3>
+            <div className="grid grid-cols-7 gap-2 mb-4">
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                <div key={day} className="text-center text-xs font-semibold text-text-secondary py-2">
+                  {day}
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-7 gap-2">
+              {Array.from({ length: 31 }, (_, i) => {
+                const day = i + 1;
+                const milestone = journeyData.milestones.find(m => new Date(m.date).getDate() === day);
+                const isToday = new Date().getDate() === day;
+                return (
+                  <div
+                    key={day}
+                    className={`aspect-square rounded-lg border flex items-center justify-center text-sm font-medium transition-all ${
+                      milestone
+                        ? `${statusConfig[milestone.status].bg} ${statusConfig[milestone.status].border} border-2 cursor-pointer hover:scale-105`
+                        : 'bg-gray-border/5 border-gray-border/20'
+                    } ${isToday ? 'ring-2 ring-primary-purple' : ''}`}
+                    onClick={() => milestone && openMilestoneDetail(milestone)}
+                  >
+                    {milestone ? (
+                      <div className="text-center">
+                        <div className="text-xs">{day}</div>
+                        <div className={`text-xs ${statusConfig[milestone.status].color}`}>
+                          {milestone.icon === 'FlagIcon' && '🚩'}
+                          {milestone.icon === 'SunIcon' && '☀️'}
+                          {milestone.icon === 'FireIcon' && '🔥'}
+                          {milestone.icon === 'ScaleIcon' && '⚖️'}
+                          {milestone.icon === 'RocketLaunchIcon' && '🚀'}
+                          {milestone.icon === 'CameraIcon' && '📷'}
                         </div>
                       </div>
-
-                      {/* Progress indicator for in-progress */}
-                      {milestone.status === 'in-progress' && (
-                        <div className="mt-4 pt-4 border-t border-gray-border/30">
-                          <div className="flex justify-between text-xs mb-2">
-                            <span className="text-text-secondary">Progress</span>
-                            <span className="text-primary-purple font-semibold">65%</span>
-                          </div>
-                          <div className="w-full h-2 bg-gray-border rounded-full overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-primary-purple to-pink-accent w-[65%]" />
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    ) : (
+                      <span className="text-text-secondary">{day}</span>
+                    )}
                   </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="text-center py-12">
-              <SparklesIcon className="size-12 text-text-secondary mx-auto mb-4 opacity-50" />
-              <p className="text-text-secondary mb-2">No milestones found</p>
-              <p className="text-xs text-text-secondary">Try adjusting your filter settings</p>
+                );
+              })}
             </div>
-          )}
-        </section>
+          </section>
+        )}
 
         {/* Call to Action Section */}
         <section className="mt-12 mb-8">
