@@ -2,29 +2,17 @@ import React, { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
 import {
-  FlagIcon,
-  SunIcon,
-  FireIcon,
-  ScaleIcon,
-  RocketLaunchIcon,
-  CameraIcon,
-  BellIcon,
   CheckCircleIcon,
   ClockIcon,
   LockClosedIcon,
-  XMarkIcon,
   SparklesIcon,
   CalendarDaysIcon,
   StarIcon,
   ChevronRightIcon,
-  HeartIcon,
-  TrophyIcon,
   ChartBarIcon,
   CalendarIcon,
-  GiftIcon,
-  UserGroupIcon,
-  LightBulbIcon,
-  HandHeartIcon
+  BellIcon,
+  XMarkIcon
 } from '@heroicons/react/24/solid';
 
 const iconMap = {
