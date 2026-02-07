@@ -38,7 +38,7 @@ const Signup = () => {
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data));
 
-      // Redirect to home
+      // Redirect to login
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create account");
@@ -78,14 +78,14 @@ const Signup = () => {
           {({ isSubmitting }) => (
             <Form className="mt-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-900">
                   Name
                 </label>
                 <Field
                   name="name"
                   type="text"
                   placeholder="Enter your name"
-                  className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-200"
+                  className="mt-1 block w-full px-4 py-2 bg-white text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-200 placeholder-pink-600"
                 />
                 <ErrorMessage
                   className="mt-4 text-sm text-red-500 mt-1"
@@ -95,14 +95,14 @@ const Signup = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-900">
                   Email
                 </label>
                 <Field
                   name="email"
                   type="email"
                   placeholder="example@gmail.com"
-                  className="mt-1 block w-full px-4 py-2 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-200"
+                  className="mt-1 block w-full px-4 py-2 bg-white text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-200 placeholder-pink-600"
                 />
                 <ErrorMessage
                   name="email"
@@ -112,7 +112,7 @@ const Signup = () => {
               </div>
 
               <div className="mt-4">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-900">
                   Password
                 </label>
                 <div className="relative">
@@ -120,7 +120,7 @@ const Signup = () => {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
-                    className="mt-1 block w-full px-4 py-2 pr-10 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-200"
+                    className="mt-1 block w-full px-4 py-2 bg-white text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-200 placeholder-pink-600"
                   />
                   <button
                     type="button"
@@ -185,7 +185,6 @@ const Signup = () => {
                   />
                   <span className="ml-2 text-gray-600">Remember me</span>
                 </label>
-
               </div>
 
               <button

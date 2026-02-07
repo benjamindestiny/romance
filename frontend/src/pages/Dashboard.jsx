@@ -1,14 +1,17 @@
-import React from 'react';
-import Sidebar from '../components/Sidebar.jsx';
-import BottomNav from '../components/BottomNav.jsx';
-import StatCard from '../components/StatCard.jsx';
-import QuickActionCard from '../components/QuickActionCard.jsx';
-import { Link } from 'react-router-dom';
-import LongDistance from '../assets/long-distance.jpg';
-import OnlineDating from '../assets/online-dating.jpg';
-import Friendship from '../assets/meaningful-friendship.jpg';
-import { 
-  BellIcon, 
+import { useState } from "react";
+import Sidebar from "../components/Sidebar.jsx";
+import BottomNav from "../components/BottomNav.jsx";
+import StatCard from "../components/StatCard.jsx";
+import QuickActionCard from "../components/QuickActionCard.jsx";
+import { Link } from "react-router-dom";
+import { getRandomGreeting } from "../utils/greetings.js";
+import LongDistance from "../assets/long-distance.jpg";
+import OnlineDating from "../assets/online-dating.jpg";
+import Friendship from "../assets/meaningful-friendship.jpg";
+import LogoLoading from "../components/LogoLoading.jsx";
+
+import {
+  BellIcon,
   HeartIcon,
   CalendarDaysIcon,
   FireIcon,
@@ -16,10 +19,32 @@ import {
   UserCircleIcon,
   ExclamationTriangleIcon,
   UsersIcon,
-  ChatBubbleLeftRightIcon
-} from '@heroicons/react/24/solid';
+  ChatBubbleLeftRightIcon,
+} from "@heroicons/react/24/solid";
 
 export default function Dashboard() {
+  const [showLoader, setShowLoader] = useState(true);
+  const [greeting] = useState(getRandomGreeting());
+
+  // Get user data from localStorage
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const userName = userData.name || "Guest";
+  const joinDate = userData.createdAt
+    ? new Date(userData.createdAt).toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : new Date().toLocaleDateString("en-US", {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+
+  if (showLoader)
+    return <LogoLoading onComplete={() => setShowLoader(false)} />;
   return (
     <div className="min-h-screen bg-dark-bg text-text-primary font-sans pb-32 md:pb-0">
       <Sidebar />
@@ -27,44 +52,52 @@ export default function Dashboard() {
         {/* Header Section */}
         <header className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-primary-purple text-2xl font-bold md:hidden">Romance</h1>
-            <p className="text-xl font-bold">Welcome Back, Sarah</p>
-            <p className="text-sm text-text-secondary">Wednesday, January 28, 2026</p>
+            <h1 className="text-primary-purple text-2xl font-bold md:hidden">
+              Romance
+            </h1>
+            <p className="text-xl font-bold">
+              {greeting}, {userName}
+            </p>
+            <p className="text-sm text-text-secondary">Joined on {joinDate}</p>
           </div>
           <div className="flex items-center space-x-4">
             <BellIcon className="size-6 text-text-secondary" />
             <Link to="/collaborate">
-              <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm font-medium hidden md:block">Collaborate</button>
+              <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm font-medium hidden md:block">
+                Collaborate
+              </button>
             </Link>
           </div>
         </header>
 
         {/* Stat Cards Section */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <StatCard 
-            icon={<HeartIcon className="size-6 text-primary-purple mb-2" />} 
-            value="0%" 
-            label="Relationship Health" 
-            subtext="+0% this week" 
-            subtextColor="text-green-500" 
+          <StatCard
+            icon={<HeartIcon className="size-6 text-primary-purple mb-2" />}
+            value="0%"
+            label="Relationship Health"
+            subtext="+0% this week"
+            subtextColor="text-green-500"
           />
-          <StatCard 
-            icon={<CalendarDaysIcon className="size-6 text-primary-purple mb-2" />} 
-            value="0" 
-            label="Upcoming Sessions" 
-            subtext="Next: Tomorrow" 
+          <StatCard
+            icon={
+              <CalendarDaysIcon className="size-6 text-primary-purple mb-2" />
+            }
+            value="0"
+            label="Upcoming Sessions"
+            subtext="Next: Tomorrow"
           />
-          <StatCard 
-            icon={<FireIcon className="size-6 text-primary-purple mb-2" />} 
-            value="0" 
-            label="Day Streak" 
-            subtext="Keep it up!" 
+          <StatCard
+            icon={<FireIcon className="size-6 text-primary-purple mb-2" />}
+            value="0"
+            label="Day Streak"
+            subtext="Keep it up!"
           />
-          <StatCard 
-            icon={<TrophyIcon className="size-6 text-primary-purple mb-2" />} 
-            value="0" 
-            label="Milestones Reached" 
-            subtext="+0 this month" 
+          <StatCard
+            icon={<TrophyIcon className="size-6 text-primary-purple mb-2" />}
+            value="0"
+            label="Milestones Reached"
+            subtext="+0 this month"
           />
         </section>
 
@@ -72,23 +105,25 @@ export default function Dashboard() {
         <section className="mb-8">
           <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <QuickActionCard 
-              to="/counseling" 
-              icon={<UserCircleIcon className="size-6 text-primary-purple" />} 
-              title="Book Counseling" 
-              description="Connect with a licensed therapist for your relationship." 
+            <QuickActionCard
+              to="/counseling"
+              icon={<UserCircleIcon className="size-6 text-primary-purple" />}
+              title="Book Counseling"
+              description="Connect with a licensed therapist for your relationship."
             />
-            <QuickActionCard 
-              to="/community" 
-              icon={<UsersIcon className="size-6 text-primary-purple" />} 
-              title="Join Community" 
-              description="Connect with others on similar journeys and share experiences." 
+            <QuickActionCard
+              to="/community"
+              icon={<UsersIcon className="size-6 text-primary-purple" />}
+              title="Join Community"
+              description="Connect with others on similar journeys and share experiences."
             />
-            <QuickActionCard 
-              to="/reports" 
-              icon={<ExclamationTriangleIcon className="size-6 text-primary-purple" />} 
-              title="Report an Issue" 
-              description="Help us keep our community safe and trustworthy." 
+            <QuickActionCard
+              to="/reports"
+              icon={
+                <ExclamationTriangleIcon className="size-6 text-primary-purple" />
+              }
+              title="Report an Issue"
+              description="Help us keep our community safe and trustworthy."
             />
           </div>
         </section>
@@ -98,29 +133,51 @@ export default function Dashboard() {
           <div className="md:w-[75%]">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Upcoming Sessions</h2>
-              <Link to="/sessions" className="text-primary-purple text-sm">View All</Link>
+              <Link to="/sessions" className="text-primary-purple text-sm">
+                View All
+              </Link>
             </div>
             <div className="space-y-4">
               <div className="bg-card-bg p-4 rounded-lg flex justify-between items-center">
                 <div>
-                  <p className="text-primary-purple font-bold text-sm uppercase">Jan 14</p>
+                  <p className="text-primary-purple font-bold text-sm uppercase">
+                    Jan 14
+                  </p>
                   <p className="font-semibold">Marriage Counseling Session</p>
-                  <p className="text-sm text-text-secondary">Dr. Emily Johnson • Video Call</p>
-                  <p className="text-sm text-text-secondary">Tomorrow at 2:00 PM • 60 minutes</p>
+                  <p className="text-sm text-text-secondary">
+                    Dr. Emily Johnson • Video Call
+                  </p>
+                  <p className="text-sm text-text-secondary">
+                    Tomorrow at 2:00 PM • 60 minutes
+                  </p>
                 </div>
-                <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm">Join</button>
+                <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm">
+                  Join
+                </button>
               </div>
               <div className="bg-card-bg p-4 rounded-lg">
-                <p className="text-primary-purple font-bold text-sm uppercase">Jan 16</p>
+                <p className="text-primary-purple font-bold text-sm uppercase">
+                  Jan 16
+                </p>
                 <p className="font-semibold">Personal Growth Workshop</p>
-                <p className="text-sm text-text-secondary">Sarah Chen • Group Session</p>
-                <p className="text-sm text-text-secondary">Thursday at 6:00 PM • 30 minutes</p>
+                <p className="text-sm text-text-secondary">
+                  Sarah Chen • Group Session
+                </p>
+                <p className="text-sm text-text-secondary">
+                  Thursday at 6:00 PM • 30 minutes
+                </p>
               </div>
               <div className="bg-card-bg p-4 rounded-lg">
-                <p className="text-primary-purple font-bold text-sm uppercase">Jan 18</p>
+                <p className="text-primary-purple font-bold text-sm uppercase">
+                  Jan 18
+                </p>
                 <p className="font-semibold">Dating Strategy Session</p>
-                <p className="text-sm text-text-secondary">Michael Torres • 1-on-1 Coaching</p>
-                <p className="text-sm text-text-secondary">Saturday at 10:00 AM • 45 minutes</p>
+                <p className="text-sm text-text-secondary">
+                  Michael Torres • 1-on-1 Coaching
+                </p>
+                <p className="text-sm text-text-secondary">
+                  Saturday at 10:00 AM • 45 minutes
+                </p>
               </div>
             </div>
           </div>
@@ -128,7 +185,9 @@ export default function Dashboard() {
           <div className="md:w-1/2 mt-8 md:mt-0">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold">Your Progress</h2>
-              <Link to="/progress" className="text-primary-purple text-sm">Details</Link>
+              <Link to="/progress" className="text-primary-purple text-sm">
+                Details
+              </Link>
             </div>
             <div className="bg-card-bg p-4 rounded-lg space-y-4">
               <div>
@@ -136,7 +195,10 @@ export default function Dashboard() {
                   <p>Communication Skills</p>
                   <p>0%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Communication Skills: 92% - Excellent progress! Keep practicing active listening and expressing your feelings clearly.">
+                <div
+                  className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                  title="Communication Skills: 92% - Excellent progress! Keep practicing active listening and expressing your feelings clearly."
+                >
                   <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
@@ -145,7 +207,10 @@ export default function Dashboard() {
                   <p>Emotional Intelligence</p>
                   <p>0%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Emotional Intelligence: 78% - Good progress! Focus on recognizing emotions in yourself and others. Consider taking our EQ assessment.">
+                <div
+                  className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                  title="Emotional Intelligence: 78% - Good progress! Focus on recognizing emotions in yourself and others. Consider taking our EQ assessment."
+                >
                   <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
@@ -154,7 +219,10 @@ export default function Dashboard() {
                   <p>Conflict Resolution</p>
                   <p>0%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Conflict Resolution: 85% - Great work! Continue practicing compromise and finding win-win solutions in disagreements.">
+                <div
+                  className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                  title="Conflict Resolution: 85% - Great work! Continue practicing compromise and finding win-win solutions in disagreements."
+                >
                   <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
@@ -163,13 +231,18 @@ export default function Dashboard() {
                   <p>Self-Awareness</p>
                   <p>0%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Self-Awareness: 91% - Outstanding! You're very in tune with your thoughts and feelings. Consider mentoring others.">
+                <div
+                  className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+                  title="Self-Awareness: 91% - Outstanding! You're very in tune with your thoughts and feelings. Consider mentoring others."
+                >
                   <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
                 </div>
               </div>
             </div>
             <Link to="/report">
-              <button className="w-full bg-primary-purple text-white py-3 rounded-lg mt-4 text-sm">View Full Report</button>
+              <button className="w-full bg-primary-purple text-white py-3 rounded-lg mt-4 text-sm">
+                View Full Report
+              </button>
             </Link>
           </div>
         </section>
@@ -178,34 +251,76 @@ export default function Dashboard() {
         <section className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold">Recommended For You</h2>
-            <Link to="/recommendations" className="text-primary-purple text-sm">See More</Link>
+            <Link to="/recommendations" className="text-primary-purple text-sm">
+              See More
+            </Link>
           </div>
           <div className="flex overflow-x-auto space-x-4 pb-4">
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <img className="w-full h-32 object-cover" src={LongDistance} loading='lazy' />
+              <img
+                className="w-full h-32 object-cover"
+                src={LongDistance}
+                loading="lazy"
+              />
               <div className="p-4">
-                <p className="text-xs text-text-secondary mb-1">Article • 8 min read</p>
-                <p className="font-semibold mb-1">Building Intimacy in Long-Distance Relationships</p>
-                <p className="text-sm text-text-secondary mb-2">Practical tips to maintain emotional connection across miles...</p>
-                <Link to="/article" className="text-primary-purple text-sm">Read More +</Link>
+                <p className="text-xs text-text-secondary mb-1">
+                  Article • 8 min read
+                </p>
+                <p className="font-semibold mb-1">
+                  Building Intimacy in Long-Distance Relationships
+                </p>
+                <p className="text-sm text-text-secondary mb-2">
+                  Practical tips to maintain emotional connection across
+                  miles...
+                </p>
+                <Link to="/article" className="text-primary-purple text-sm">
+                  Read More +
+                </Link>
               </div>
             </div>
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <img className="w-full h-32 object-cover" src={Friendship} loading='lazy' />
+              <img
+                className="w-full h-32 object-cover"
+                src={Friendship}
+                loading="lazy"
+              />
               <div className="p-4">
-                <p className="text-xs text-text-secondary mb-1">Workshop • Jan 20</p>
-                <p className="font-semibold mb-1">Making Meaningful Friendships as an Adult</p>
-                <p className="text-sm text-text-secondary mb-2">Join our community workshop on building lasting connections...</p>
-                <Link to="/workshop" className="text-primary-purple text-sm">Join +</Link>
+                <p className="text-xs text-text-secondary mb-1">
+                  Workshop • Jan 20
+                </p>
+                <p className="font-semibold mb-1">
+                  Making Meaningful Friendships as an Adult
+                </p>
+                <p className="text-sm text-text-secondary mb-2">
+                  Join our community workshop on building lasting connections...
+                </p>
+                <Link to="/workshop" className="text-primary-purple text-sm">
+                  Join +
+                </Link>
               </div>
             </div>
             <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
-              <img className="w-full h-32 object-cover" src={OnlineDating} loading='lazy' />
+              <img
+                className="w-full h-32 object-cover"
+                src={OnlineDating}
+                loading="lazy"
+              />
               <div className="p-4">
-                <p className="text-xs text-text-secondary mb-1">Guide • 10 min read</p>
-                <p className="font-semibold mb-1">Safety Tips for Online Dating</p>
-                <p className="text-sm text-text-secondary mb-2">Learn how to stay safe while meeting new people online...</p>
-                <Link to="/safety-guide" className="text-primary-purple text-sm">Read More +</Link>
+                <p className="text-xs text-text-secondary mb-1">
+                  Guide • 10 min read
+                </p>
+                <p className="font-semibold mb-1">
+                  Safety Tips for Online Dating
+                </p>
+                <p className="text-sm text-text-secondary mb-2">
+                  Learn how to stay safe while meeting new people online...
+                </p>
+                <Link
+                  to="/safety-guide"
+                  className="text-primary-purple text-sm"
+                >
+                  Read More +
+                </Link>
               </div>
             </div>
           </div>
@@ -225,7 +340,11 @@ export default function Dashboard() {
                   <p className="text-xs text-text-secondary">1 hour ago</p>
                 </div>
               </div>
-              <p className="text-sm mb-2">Just completed my first month of therapy sessions. The progress has been incredible! Thanks to this amazing community for the support.</p>
+              <p className="text-sm mb-2">
+                Just completed my first month of therapy sessions. The progress
+                has been incredible! Thanks to this amazing community for the
+                support.
+              </p>
               <div className="flex space-x-4 text-text-secondary text-sm">
                 <div className="flex items-center">
                   <HeartIcon className="size-4 mr-1" /> 24
@@ -245,7 +364,10 @@ export default function Dashboard() {
                   <p className="text-xs text-text-secondary">3 hours ago</p>
                 </div>
               </div>
-              <p className="text-sm mb-2">Anyone else in a long-distance relationship? Looking for advice on staying connected daily.</p>
+              <p className="text-sm mb-2">
+                Anyone else in a long-distance relationship? Looking for advice
+                on staying connected daily.
+              </p>
               <div className="flex space-x-4 text-text-secondary text-sm">
                 <div className="flex items-center">
                   <HeartIcon className="size-4 mr-1" /> 32

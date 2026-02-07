@@ -1,0 +1,12 @@
+# Romance - Couple Understanding App
+
+## Allow all crawlers
+User-agent: *
+Allow: /
+
+## Disallow sensitive areas (optional)
+Disallow: /admin
+Disallow: /api
+
+## Sitemap
+Sitemap: https://youromain.com/sitemap.xml

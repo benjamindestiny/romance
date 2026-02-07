@@ -72,11 +72,9 @@ export const registerUser = async (req, res) => {
       console.log("✓ Verification email sent to:", email);
     } catch (emailError) {
       console.error("✗ Email sending failed:", emailError);
-      return res
-        .status(500)
-        .json({
-          message: "Failed to send verification email: " + emailError.message,
-        });
+      return res.status(500).json({
+        message: "Failed to send verification email: " + emailError.message,
+      });
     }
 
     res.status(201).json({
@@ -140,6 +138,7 @@ export const loginUser = async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      createdAt: user.createdAt,
       token,
     });
   } catch (error) {
@@ -227,6 +226,47 @@ export const resetPassword = async (req, res) => {
     });
   } catch (error) {
     console.error("✗ Reset password error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ================= SEARCH USERS ================= */
+export const searchUsers = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q || q.trim() === "") {
+      return res.status(400).json({ message: "Search query is required" });
+    }
+
+    const users = await User.find({
+      $or: [{ name: { $regex: q, $options: "i" } }],
+      isVerified: true,
+    }).select("_id name bio profilePic lookingFor interests createdAt");
+
+    res.json(users);
+  } catch (error) {
+    console.error("✗ Search error:", error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ================= GET USER PROFILE ================= */
+export const getUserProfile = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId).select(
+      "_id name bio profilePic lookingFor interests createdAt",
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("✗ Get profile error:", error);
     res.status(500).json({ message: error.message });
   }
 };

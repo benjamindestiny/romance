@@ -25,7 +25,7 @@ const NotFound = () => {
               The page you are looking for does not exist.
             </p>
             <button
-              onClick={() => window.location.href = '/login'}
+              onClick={() => window.location.href = '/dashboard'}
             className="mt-4 px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-medium rounded-lg shadow hover:brightness-95 focus:outline-none cursor-pointer">
               Go Home
             </button>

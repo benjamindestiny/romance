@@ -11,8 +11,9 @@ import Settings from "./pages/Settings.jsx";
 import Reports from "./pages/Reports.jsx";
 import Quiz from "./pages/Quiz.jsx";
 import Journey from "./pages/Journey.jsx";
-import ToastProvider from "./components/ToastProvider.jsx";
 import Collaborate from "./pages/Collaborate.jsx";
+import Profiles from "./pages/Profiles.jsx";
+import Profile from "./pages/Profile.jsx";
 
 const App = () => {
   return (
@@ -20,23 +21,18 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="signup" element={<Signup />} />
-        <Route path="forgot-password" element={<ForgotPassword />} />
-        <Route path="reset-password" element={<ResetPassword />} />
+        <Route path="forget" element={<ForgotPassword />} />
+        <Route path="reset" element={<ResetPassword />} />
         <Route path="billing" element={<Billing />} />
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="profiles" element={<Profiles />} />
+        <Route path="profile/:userId" element={<Profile />} />
+        <Route path="settings" element={<Settings />} />
+        <Route path="report" element={<Reports />} />
+        <Route path="journey" element={<Journey />} />
+        <Route path="quiz" element={<Quiz />} />
+        <Route path="collaborate" element={<Collaborate />} />
         <Route path="*" element={<NotFound />} />
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/settings" element={<Settings />} />
-
-        <Route path="/reports" element={<Reports />} />
-
-        {/* Journey (coming soon) */}
-        <Route path="/journey" element={<Journey />} />
-
-        {/* Quiz (coming soon) */}
-        <Route path="/quiz" element={<Quiz />} />
-
-        {/* Collaborate (coming soon) */}
-        <Route path="/collaborate" element={<Collaborate />} />
       </Routes>
     </>
   );

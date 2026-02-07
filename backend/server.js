@@ -6,6 +6,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import roomRoutes from "./routes/roomRoutes.js";
 
 connectDB();
 
@@ -16,8 +17,7 @@ app.use(express.json());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/payments", paymentRoutes);
-
-
+app.use("/api/rooms", roomRoutes);
 
 const PORT = process.env.PORT || 3000;
 

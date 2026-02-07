@@ -1,9 +1,15 @@
-import React from 'react';
+import { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
+import LogoLoading from "../components/LogoLoading.jsx";
 
 
 export default function Journey() {
+    const [showLoader, setShowLoader] = useState(true);
+
+
+     if (showLoader)
+    return <LogoLoading onComplete={() => setShowLoader(false)} />;
   return (
     <div className="min-h-screen bg-dark-bg text-text-primary font-sans pb-32 md:pb-0">
       <Sidebar />

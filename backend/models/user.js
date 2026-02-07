@@ -35,6 +35,24 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+    // Profile fields
+    bio: {
+      type: String,
+      default: "",
+    },
+    profilePic: {
+      type: String,
+      default: null,
+    },
+    interests: {
+      type: [String],
+      default: [],
+    },
+    lookingFor: {
+      type: String,
+      enum: ["Marriage", "Dating", "Friendship", "Other"],
+      default: "Marriage",
+    },
   },
   { timestamps: true },
   { lastLogin: Date },
