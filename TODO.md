@@ -1,4 +1,0 @@
-- [ ] Enhance Journey.jsx with calendar view, achievements, animations, and romantic theme elements
-- [ ] Test the updated component
-- [ ] Commit changes
-- [ ] Push to vicky branch
