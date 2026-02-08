@@ -72,9 +72,9 @@ const JOURNEY_STATS = {
     start: '2025-01-01',
     end: '2025-03-31'
   },
-  overallProgress: 45,
-  streakDays: 12,
-  totalPoints: 1250
+  overallProgress: 0,  // Default: 0 - Backend will update this with actual progress percentage
+  streakDays: 0,       // Default: 0 - Backend will update this with actual streak days
+  totalPoints: 0       // Default: 0 - Backend will update this with actual total points
 };
 
 export default function Journey() {
@@ -94,6 +94,18 @@ export default function Journey() {
 
   // Frontend filtering: Display milestones based on user-selected filter
   // Note: Backend can also implement this if pagination/performance requires it
+  /* FILTER EXPLANATION:
+    Using ternary operator (? :) - a simple if/else for one line
+    Syntax: condition ? ifTrue : ifFalse
+    
+    filterType === 'all' ? MILESTONES : MILESTONES.filter(...)
+    Translation: "If user clicked 'all', show ALL milestones. Otherwise, show only filtered ones"
+    
+    .filter(m => m.status === filterType)
+    - Goes through each milestone (m)
+    - Keeps only milestones where status matches what user selected
+    - Example: if user clicked 'completed', keep only milestones with status='completed'
+  */
   const filteredMilestones = filterType === 'all' 
     ? MILESTONES 
     : MILESTONES.filter(m => m.status === filterType);
@@ -121,6 +133,18 @@ export default function Journey() {
             </p>
             <p className="text-xs text-text-secondary mt-2 flex items-center gap-2">
               <CalendarDaysIcon className="size-4" />
+              {/* 
+                Convert date strings to readable format using toLocaleDateString()
+                Example: '2025-01-01' becomes 'Jan 1, 2025'
+                
+                How it works:
+                new Date(dateString) - Turns text date into Date object the browser understands
+                toLocaleDateString('en-US', {...options}) - Formats the date for display
+                  - 'en-US' = Show in American English format
+                  - month: 'short' = Show month as 3 letters (Jan, Feb, etc)
+                  - day: 'numeric' = Show day as number (1, 2, 3... not 01, 02, 03)
+                  - year: 'numeric' = Show year as 4 digits (2025)
+              */}
               {new Date(JOURNEY_STATS.dateRange.start).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(JOURNEY_STATS.dateRange.end).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </p>
           </div>
@@ -131,6 +155,16 @@ export default function Journey() {
 
         {/* Stats Section */}
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {/* MATH.FLOOR EXPLANATION:
+            Math.floor() removes decimal numbers and keeps only whole numbers
+            Example 1: Math.floor(5.7) = 5
+            Example 2: Math.floor(125.9) = 125
+
+            In this calculation: totalPoints * 0.1
+            - 0.1 means 10% (10 out of 100)
+            - If totalPoints = 1250, then 0.1 * 1250 = 125
+            - We use floor() to make sure we show whole numbers (125, not 125.5)
+          */}
           <StatCard 
             icon={<ChartBarIcon className="size-6 text-white mb-2" />}
             value={`${JOURNEY_STATS.overallProgress}%`}
@@ -160,6 +194,23 @@ export default function Journey() {
         {/* Filter and View Controls */}
         <div className="flex justify-between items-center mb-6 flex-col sm:flex-row gap-4">
           <div className="flex gap-2 overflow-x-auto pb-2 w-full sm:w-auto">
+            {/* MAP EXPLANATION:
+              .map() transforms array items into JSX elements
+              
+              Array of filter objects:
+              [
+                { value: 'all', label: 'All Milestones' },
+                { value: 'completed', label: 'Completed', count: 2 },
+                { value: 'in-progress', label: 'In Progress', count: 1 },
+                { value: 'locked', label: 'Locked', count: 3 }
+              ]
+              
+              .map(filter => {...})
+              For each filter object in the array, create one button
+              
+              Result: 4 buttons on screen (one for each filter option)
+              Each button shows: label + count (if it exists)
+            */}
             {[
               { value: 'all', label: 'All Milestones' },
               { value: 'completed', label: 'Completed', count: completedCount },
@@ -208,6 +259,17 @@ export default function Journey() {
         {viewMode === 'timeline' && (
           <section className="space-y-4">
             {filteredMilestones.length > 0 ? (
+              /* MAP EXPLANATION:
+                .map() transforms array items into JSX elements
+                
+                filteredMilestones array contains milestone objects with id, title, date, etc
+                
+                .map(milestone => {...})
+                For each milestone in the filtered list, create one MilestoneCard component
+                
+                Result: One card displayed for each milestone that passes the filter
+                If user selected "completed" filter, only completed milestone cards show
+              */
               filteredMilestones.map((milestone) => (
                 <MilestoneCard
                   key={milestone.id}
@@ -233,6 +295,16 @@ export default function Journey() {
               Journey Calendar
             </h3>
             <div className="grid grid-cols-7 gap-2 mb-4">
+              {/* MAP EXPLANATION:
+                .map() transforms array items into JSX elements
+                
+                Array: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+                
+                .map(day => {...})
+                For each day name in the array, create one header box
+                
+                Result: 7 header boxes showing day names at top of calendar
+              */}
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
                 <div key={day} className="text-center text-xs font-semibold text-text-secondary py-2">
                   {day}
@@ -240,9 +312,46 @@ export default function Journey() {
               ))}
             </div>
             <div className="grid grid-cols-7 gap-2">
+              {/* ARRAY.FROM() EXPLANATION:
+                Array.from() creates a new array with specified number of items.
+                Think of it as: "Create an array with 31 empty slots"
+                
+                Syntax: Array.from({ length: 31 }, callback_function)
+                - { length: 31 } = Make array with 31 slots (for 31 days of month)
+                - (_, i) => { ... } = For each slot, run code. i = slot number (0, 1, 2... 30)
+                - _ = We don't use first parameter, so we name it _ (unused)
+                - i = Index/position (0, 1, 2... 30)
+                - i + 1 = Convert to day number (1, 2, 3... 31)
+                
+                Result: A loop that creates one calendar day box for each number 1-31
+              */}
               {Array.from({ length: 31 }, (_, i) => {
                 const day = i + 1;
+                
+                /* FIND() EXPLANATION:
+                  .find() searches through array and returns FIRST item that matches condition
+                  
+                  MILESTONES.find(m => new Date(m.date).getDate() === day)
+                  Translation: "Look through all milestones and return the one with matching day number"
+                  
+                  new Date(m.date).getDate()
+                  - new Date(m.date) = Convert '2025-01-05' text into Date object
+                  - .getDate() = Extract just the day number from date (5 from Jan 5)
+                  - === day = Does this day number match the calendar day (1-31)?
+                  - Result: If milestone is on Jan 5, it returns that milestone for day 5
+                  
+                  If no milestone found, returns: undefined (nothing)
+                */
                 const milestone = MILESTONES.find(m => new Date(m.date).getDate() === day);
+                
+                /* NEW DATE EXPLANATION:
+                  new Date() with no parameters = Today's date
+                  new Date().getDate() = Extract just today's day number
+                  Example: If today is Feb 8, 2026, getDate() returns 8
+                  
+                  isToday checks: Does calendar day number match today's day number?
+                  If yes, highlight the calendar box with a ring (ring-2 ring-primary-purple)
+                */
                 const isToday = new Date().getDate() === day;
                 const statusColors = {
                   completed: 'bg-green-500/10 border-green-500/30',
