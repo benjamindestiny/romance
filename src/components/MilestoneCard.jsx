@@ -1,6 +1,7 @@
 import React from 'react';
 import { ChevronRightIcon } from '@heroicons/react/24/solid';
 
+// Status styles - Frontend maintains this mapping
 const statusColors = {
   completed: {
     bg: 'bg-green-500/10',
@@ -19,14 +20,16 @@ const statusColors = {
   }
 };
 
+// Status display labels
+const statusLabels = {
+  completed: 'Completed',
+  'in-progress': 'In Progress',
+  locked: 'Locked'
+};
+
+// TODO (Backend): Ensure milestone status values are one of: 'completed', 'in-progress', 'locked'
 export default function MilestoneCard({ milestone, onClick }) {
   const colors = statusColors[milestone.status];
-
-  const statusLabels = {
-    completed: 'Completed',
-    'in-progress': 'In Progress',
-    locked: 'Locked'
-  };
 
   return (
     <div

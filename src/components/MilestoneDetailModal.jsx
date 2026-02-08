@@ -1,6 +1,8 @@
 import React from 'react';
 import { XMarkIcon, CheckCircleIcon, ClockIcon, LockClosedIcon } from '@heroicons/react/24/solid';
 
+// Status configuration - Maps status strings to display properties
+// TODO (Backend): Confirm status values are consistent with database schema
 const statusConfig = {
   completed: {
     icon: CheckCircleIcon,
@@ -58,7 +60,7 @@ export default function MilestoneDetailModal({ milestone, isOpen, onClose }) {
         {/* Description */}
         <p className="text-text-secondary mb-6">{milestone.description}</p>
 
-        {/* Stats */}
+        {/* Stats - Frontend displays what backend provides */}
         <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-gray-border/5 rounded-lg">
           <div>
             <p className="text-xs text-text-secondary mb-1">Points</p>
@@ -70,7 +72,7 @@ export default function MilestoneDetailModal({ milestone, isOpen, onClose }) {
           </div>
         </div>
 
-        {/* Lock Message */}
+        {/* Conditional messaging based on milestone status */}
         {milestone.status === 'locked' && (
           <p className="text-xs text-text-secondary text-center p-2 bg-gray-border/5 rounded-lg mb-3">
             Complete previous milestones to unlock

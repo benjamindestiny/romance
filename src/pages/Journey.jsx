@@ -64,23 +64,41 @@ const MILESTONES = [
   }
 ];
 
+// Backend will provide this data
+const JOURNEY_STATS = {
+  title: 'Relationship Transformation Challenge',
+  description: 'A comprehensive 90-day journey to strengthen your relationship skills and emotional intelligence.',
+  dateRange: {
+    start: '2025-01-01',
+    end: '2025-03-31'
+  },
+  overallProgress: 45,
+  streakDays: 12,
+  totalPoints: 1250
+};
+
 export default function Journey() {
   const [selectedMilestone, setSelectedMilestone] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [filterType, setFilterType] = useState('all');
   const [viewMode, setViewMode] = useState('timeline');
 
-  // Calculate counts
+  // TODO (Backend): Replace MILESTONES with API call to fetch journey milestones
+  // TODO (Backend): Replace JOURNEY_STATS with API call to fetch user journey data
+
+  // Frontend calculations: Count milestones by status for filtering UI
+  // Backend can handle this, but frontend needs it for filter button labels
   const completedCount = MILESTONES.filter(m => m.status === 'completed').length;
   const inProgressCount = MILESTONES.filter(m => m.status === 'in-progress').length;
   const lockedCount = MILESTONES.filter(m => m.status === 'locked').length;
 
-  // Filter milestones
+  // Frontend filtering: Display milestones based on user-selected filter
+  // Note: Backend can also implement this if pagination/performance requires it
   const filteredMilestones = filterType === 'all' 
     ? MILESTONES 
     : MILESTONES.filter(m => m.status === filterType);
 
-  // Handle milestone click
+  // Frontend event handler: Open modal when user clicks milestone
   const handleSelectMilestone = (milestone) => {
     setSelectedMilestone(milestone);
     setShowModal(true);
@@ -97,13 +115,13 @@ export default function Journey() {
             <h1 className="text-primary-purple text-2xl font-bold md:hidden mb-2">
               Romance
             </h1>
-            <p className="text-2xl font-bold">Relationship Transformation Challenge</p>
+            <p className="text-2xl font-bold">{JOURNEY_STATS.title}</p>
             <p className="text-sm text-text-secondary mt-1">
-              A comprehensive 90-day journey to strengthen your relationship skills and emotional intelligence.
+              {JOURNEY_STATS.description}
             </p>
             <p className="text-xs text-text-secondary mt-2 flex items-center gap-2">
               <CalendarDaysIcon className="size-4" />
-              Jan 1 - Mar 31, 2025
+              {new Date(JOURNEY_STATS.dateRange.start).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - {new Date(JOURNEY_STATS.dateRange.end).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
             </p>
           </div>
           <button className="p-2 hover:bg-card-bg rounded-lg transition-colors">
@@ -115,21 +133,21 @@ export default function Journey() {
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard 
             icon={<ChartBarIcon className="size-6 text-white mb-2" />}
-            value="45%"
+            value={`${JOURNEY_STATS.overallProgress}%`}
             label="Overall Progress"
             subtext="+5% this week"
           />
           <StatCard 
             icon={<StarIcon className="size-6 text-white mb-2" />}
-            value="12"
+            value={JOURNEY_STATS.streakDays}
             label="Current Streak"
-            subtext="🔥 Keep going!"
+            subtext="Keep going!"
           />
           <StatCard 
             icon={<StarIcon className="size-6 text-white mb-2" />}
-            value="1250"
+            value={JOURNEY_STATS.totalPoints}
             label="Total Points"
-            subtext="+125 this month"
+            subtext={`+${Math.floor(JOURNEY_STATS.totalPoints * 0.1)} this month`}
           />
           <StatCard 
             icon={<StarIcon className="size-6 text-white mb-2" />}
@@ -144,9 +162,9 @@ export default function Journey() {
           <div className="flex gap-2 overflow-x-auto pb-2 w-full sm:w-auto">
             {[
               { value: 'all', label: 'All Milestones' },
-              { value: 'completed', label: '✓ Completed', count: completedCount },
-              { value: 'in-progress', label: '⏳ In Progress', count: inProgressCount },
-              { value: 'locked', label: '🔒 Locked', count: lockedCount }
+              { value: 'completed', label: 'Completed', count: completedCount },
+              { value: 'in-progress', label: 'In Progress', count: inProgressCount },
+              { value: 'locked', label: 'Locked', count: lockedCount }
             ].map(filter => (
               <button
                 key={filter.value}
