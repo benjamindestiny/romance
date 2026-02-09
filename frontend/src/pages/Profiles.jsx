@@ -28,7 +28,7 @@ export default function Profiles() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/auth/search?q=${encodeURIComponent(
+        `https://romance-0bj5.onrender.com/api/auth/search?q=${encodeURIComponent(
           searchQuery,
         )}`,
       );
