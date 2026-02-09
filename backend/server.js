@@ -16,7 +16,7 @@ const app = express();
 
 /* ===== CORS CONFIG ===== */
 app.use(cors({
-  origin: "https://myromance.vercel.app",
+  origin: process.env.FRONTEND_URL,
   credentials: true
 }));
 
