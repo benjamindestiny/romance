@@ -59,7 +59,7 @@ export default function Collaborate() {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:3000/api/rooms/create",
+        `${import.meta.env.VITE_API_URL}/api/rooms/create`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
