@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD, // App password, not regular password
+    pass: process.env.EMAIL_PASSWORD, // App password
   },
 });
 
@@ -67,7 +67,7 @@ export const signup = async (req, res) => {
       to: user.email,
       subject: "Romance - Verify Your Email",
       html: `
-        <h2>Welcome to Romance!</h2>
+        <h2>Welcome to My_Romance!</h2>
         <p>Your verification code is: <strong>${verificationCode}</strong></p>
         <p>This code expires in 24 hours.</p>
       `,
