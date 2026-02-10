@@ -30,7 +30,7 @@ const Signup = () => {
     try {
       const { name, email, password } = values;
       const response = await axios.post(
-        "https://romance-0bj5.onrender.com/api/auth/register",
+        "https://romance-0bj5.onrender.com/api/auth/signup",
         { name, email, password },
       );
 
