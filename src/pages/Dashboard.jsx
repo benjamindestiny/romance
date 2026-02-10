@@ -25,20 +25,16 @@ export default function Dashboard() {
   const { user } = useUser();
 
   const [stats, setStats] = useLocalStorage('dashboardStats', {
-    relationshipHealth: 72,
-    upcomingSessions: [
-      { id: 1, dateLabel: 'Tomorrow', title: 'Marriage Counseling Session', coach: 'Dr. Emily Johnson', type: 'Video Call', time: 'Tomorrow at 2:00 PM', duration: '60 minutes', cta: 'Join' },
-      { id: 2, dateLabel: 'Thu', title: 'Personal Growth Workshop', coach: 'Sarah Chen', type: 'Group Session', time: 'Thursday at 6:00 PM', duration: '30 minutes' },
-      { id: 3, dateLabel: 'Sat', title: 'Dating Strategy Session', coach: 'Michael Torres', type: '1-on-1 Coaching', time: 'Saturday at 10:00 AM', duration: '45 minutes' }
-    ],
-    dayStreak: 5,
-    milestones: 2,
-    upcomingCount: 3,
+    relationshipHealth: 0,
+    upcomingSessions: [],
+    dayStreak: 0,
+    milestones: 0,
+    upcomingCount: 0,
     progress: {
-      communication: 92,
-      emotional: 78,
-      conflict: 85,
-      selfAwareness: 91
+      communication: 0,
+      emotional: 0,
+      conflict: 0,
+      selfAwareness: 0
     }
   });
 
