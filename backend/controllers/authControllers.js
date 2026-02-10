@@ -26,10 +26,10 @@ const transporter = nodemailer.createTransport({
 // WHY: Create new user account
 export const signup = async (req, res) => {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, name } = req.body;
 
     // Validate inputs
-    if (!email || !password || !firstName || !lastName) {
+    if (!email || !password || !name) {
       return res.status(400).json({
         success: false,
         message: "Please provide all required fields",
