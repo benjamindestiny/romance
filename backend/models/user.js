@@ -17,11 +17,7 @@ const userSchema = new mongoose.Schema(
     },
 
     // Profile info for discover/search
-    firstName: {
-      type: String,
-      required: true,
-    },
-    lastName: {
+    name: {
       type: String,
       required: true,
     },
