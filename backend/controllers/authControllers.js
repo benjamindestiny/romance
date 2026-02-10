@@ -54,8 +54,7 @@ export const signup = async (req, res) => {
     const user = new User({
       email: email.toLowerCase(),
       password,
-      firstName,
-      lastName,
+      name,
       emailVerificationCode: verificationCode,
       emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
     });
@@ -185,8 +184,7 @@ export const login = async (req, res) => {
       user: {
         id: user._id,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
         createdAt: user.createdAt,
       },
     });
@@ -308,8 +306,7 @@ export const searchUsers = async (req, res) => {
       $and: [
         {
           $or: [
-            { firstName: { $regex: q, $options: "i" } },
-            { lastName: { $regex: q, $options: "i" } },
+            { name: { $regex: q, $options: "i" } },
           ],
         },
         { isEmailVerified: true }, // Only verified users
@@ -321,8 +318,7 @@ export const searchUsers = async (req, res) => {
       success: true,
       users: users.map((user) => ({
         id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
         email: user.email,
         bio: user.bio,
         profilePic: user.profilePic,
@@ -360,8 +356,7 @@ export const getUserProfile = async (req, res) => {
       success: true,
       user: {
         id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
         email: user.email,
         bio: user.bio,
         profilePic: user.profilePic,
@@ -398,8 +393,7 @@ export const getMe = async (req, res) => {
       success: true,
       user: {
         id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
         email: user.email,
         bio: user.bio,
         profilePic: user.profilePic,
@@ -439,8 +433,7 @@ export const updateProfile = async (req, res) => {
       message: "Profile updated successfully",
       user: {
         id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
         email: user.email,
         bio: user.bio,
         profilePic: user.profilePic,
