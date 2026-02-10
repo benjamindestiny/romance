@@ -28,6 +28,17 @@ app.use("/api/auth", authRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/rooms", roomRoutes);
 
+
+// Quick debug to check if auth router loads
+app.get("/api/auth/debug", (req, res) => {
+  res.json({ status: "success", message: "Auth router is mounted and responding" });
+});
+
+// Another one for base API
+app.get("/api/debug", (req, res) => {
+  res.json({ status: "success", message: "API routes work" });
+});
+
 /* ===== TEST ROUTE (OPTIONAL) ===== */
 app.get("/", (req, res) => {
   res.send("API is running...");
