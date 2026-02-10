@@ -83,9 +83,6 @@ export default function Journey() {
   const [filterType, setFilterType] = useState('all');
   const [viewMode, setViewMode] = useState('timeline');
 
-  // TODO (Backend): Replace MILESTONES with API call to fetch journey milestones
-  // TODO (Backend): Replace JOURNEY_STATS with API call to fetch user journey data
-
   // Frontend calculations: Count milestones by status for filtering UI
   // Backend can handle this, but frontend needs it for filter button labels
   const completedCount = MILESTONES.filter(m => m.status === 'completed').length;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
 import StatCard from '../components/StatCard.jsx';
@@ -18,8 +18,37 @@ import {
   UsersIcon,
   ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/solid';
+import { useUser } from '../contexts/UserContext.jsx';
+import { useLocalStorage } from '../hooks';
 
 export default function Dashboard() {
+  const { user } = useUser();
+
+  const [stats, setStats] = useLocalStorage('dashboardStats', {
+    relationshipHealth: 72,
+    upcomingSessions: [
+      { id: 1, dateLabel: 'Tomorrow', title: 'Marriage Counseling Session', coach: 'Dr. Emily Johnson', type: 'Video Call', time: 'Tomorrow at 2:00 PM', duration: '60 minutes', cta: 'Join' },
+      { id: 2, dateLabel: 'Thu', title: 'Personal Growth Workshop', coach: 'Sarah Chen', type: 'Group Session', time: 'Thursday at 6:00 PM', duration: '30 minutes' },
+      { id: 3, dateLabel: 'Sat', title: 'Dating Strategy Session', coach: 'Michael Torres', type: '1-on-1 Coaching', time: 'Saturday at 10:00 AM', duration: '45 minutes' }
+    ],
+    dayStreak: 5,
+    milestones: 2,
+    upcomingCount: 3,
+    progress: {
+      communication: 92,
+      emotional: 78,
+      conflict: 85,
+      selfAwareness: 91
+    }
+  });
+
+  useEffect(() => {
+    if (!stats || typeof stats.relationshipHealth !== 'number') return;
+  }, [stats]);
+
+  const today = new Date();
+  const dateStr = today.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
   return (
     <div className="min-h-screen bg-dark-bg text-text-primary font-sans pb-32 md:pb-0">
       <Sidebar />
@@ -28,8 +57,8 @@ export default function Dashboard() {
         <header className="flex justify-between items-center mb-6">
           <div>
             <h1 className="text-primary-purple text-2xl font-bold md:hidden">Romance</h1>
-            <p className="text-xl font-bold">Welcome Back, Sarah</p>
-            <p className="text-sm text-text-secondary">Wednesday, January 28, 2026</p>
+            <p className="text-xl font-bold">Welcome Back, {user?.name ?? 'Friend'}</p>
+            <p className="text-sm text-text-secondary">{dateStr}</p>
           </div>
           <div className="flex items-center space-x-4">
             <BellIcon className="size-6 text-text-secondary" />
@@ -43,28 +72,28 @@ export default function Dashboard() {
         <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <StatCard 
             icon={<HeartIcon className="size-6 text-white mb-2 z-10" />} 
-            value="0%" 
+            value={`${stats.relationshipHealth}%`} 
             label="Relationship Health" 
-            subtext="+0% this week" 
+            subtext={`${stats.relationshipHealth - 2}% this week`} 
             subtextColor="text-green-500" 
           />
           <StatCard 
             icon={<CalendarDaysIcon className="size-6 text-white mb-2 z-10" />} 
-            value="0" 
+            value={stats.upcomingCount} 
             label="Upcoming Sessions" 
-            subtext="Next: Tomorrow" 
+            subtext={`Next: ${stats.upcomingSessions[0]?.dateLabel ?? 'TBD'}`} 
           />
           <StatCard 
             icon={<FireIcon className="size-6 text-white mb-2 z-10" />} 
-            value="0" 
+            value={stats.dayStreak} 
             label="Day Streak" 
             subtext="Keep it up!" 
           />
           <StatCard 
             icon={<TrophyIcon className="size-6 text-white mb-2 z-10" />} 
-            value="0" 
+            value={stats.milestones} 
             label="Milestones Reached" 
-            subtext="+0 this month" 
+            subtext={`+${stats.milestones} this month`} 
           />
         </section>
 
@@ -101,27 +130,19 @@ export default function Dashboard() {
               <Link to="/sessions" className="text-primary-purple text-sm">View All</Link>
             </div>
             <div className="space-y-4">
-              <div className="bg-card-bg p-4 rounded-lg flex justify-between items-center">
-                <div>
-                  <p className="text-primary-purple font-bold text-sm uppercase">Jan 14</p>
-                  <p className="font-semibold">Marriage Counseling Session</p>
-                  <p className="text-sm text-text-secondary">Dr. Emily Johnson • Video Call</p>
-                  <p className="text-sm text-text-secondary">Tomorrow at 2:00 PM • 60 minutes</p>
+              {stats.upcomingSessions.map((s) => (
+                <div key={s.id} className="bg-card-bg p-4 rounded-lg flex justify-between items-center">
+                  <div>
+                    <p className="text-primary-purple font-bold text-sm uppercase">{s.dateLabel}</p>
+                    <p className="font-semibold">{s.title}</p>
+                    <p className="text-sm text-text-secondary">{s.coach} • {s.type}</p>
+                    <p className="text-sm text-text-secondary">{s.time} • {s.duration}</p>
+                  </div>
+                  {s.cta ? (
+                    <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm">{s.cta}</button>
+                  ) : null}
                 </div>
-                <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm">Join</button>
-              </div>
-              <div className="bg-card-bg p-4 rounded-lg">
-                <p className="text-primary-purple font-bold text-sm uppercase">Jan 16</p>
-                <p className="font-semibold">Personal Growth Workshop</p>
-                <p className="text-sm text-text-secondary">Sarah Chen • Group Session</p>
-                <p className="text-sm text-text-secondary">Thursday at 6:00 PM • 30 minutes</p>
-              </div>
-              <div className="bg-card-bg p-4 rounded-lg">
-                <p className="text-primary-purple font-bold text-sm uppercase">Jan 18</p>
-                <p className="font-semibold">Dating Strategy Session</p>
-                <p className="text-sm text-text-secondary">Michael Torres • 1-on-1 Coaching</p>
-                <p className="text-sm text-text-secondary">Saturday at 10:00 AM • 45 minutes</p>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -134,37 +155,37 @@ export default function Dashboard() {
               <div>
                 <div className="flex justify-between text-sm">
                   <p>Communication Skills</p>
-                  <p>0%</p>
+                  <p>{stats.progress.communication}%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Communication Skills: 92% - Excellent progress! Keep practicing active listening and expressing your feelings clearly.">
-                  <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
+                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title={`Communication Skills: ${stats.progress.communication}% - Excellent progress!`}>
+                  <div className="bg-primary-purple h-2 rounded-full hover:bg-pink-accent transition-colors" style={{ width: `${stats.progress.communication}%` }} />
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-sm">
                   <p>Emotional Intelligence</p>
-                  <p>0%</p>
+                  <p>{stats.progress.emotional}%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Emotional Intelligence: 78% - Good progress! Focus on recognizing emotions in yourself and others. Consider taking our EQ assessment.">
-                  <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
+                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title={`Emotional Intelligence: ${stats.progress.emotional}% - Good progress!`}>
+                  <div className="bg-primary-purple h-2 rounded-full hover:bg-pink-accent transition-colors" style={{ width: `${stats.progress.emotional}%` }} />
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-sm">
                   <p>Conflict Resolution</p>
-                  <p>0%</p>
+                  <p>{stats.progress.conflict}%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Conflict Resolution: 85% - Great work! Continue practicing compromise and finding win-win solutions in disagreements.">
-                  <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
+                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title={`Conflict Resolution: ${stats.progress.conflict}% - Great work!`}>
+                  <div className="bg-primary-purple h-2 rounded-full hover:bg-pink-accent transition-colors" style={{ width: `${stats.progress.conflict}%` }} />
                 </div>
               </div>
               <div>
                 <div className="flex justify-between text-sm">
                   <p>Self-Awareness</p>
-                  <p>0%</p>
+                  <p>{stats.progress.selfAwareness}%</p>
                 </div>
-                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title="Self-Awareness: 91% - Outstanding! You're very in tune with your thoughts and feelings. Consider mentoring others.">
-                  <div className="bg-primary-purple h-2 rounded-full w-[0%] hover:bg-pink-accent transition-colors"></div>
+                <div className="bg-progress-bg h-2 rounded-full cursor-pointer hover:opacity-80 transition-opacity" title={`Self-Awareness: ${stats.progress.selfAwareness}% - Outstanding!`}>
+                  <div className="bg-primary-purple h-2 rounded-full hover:bg-pink-accent transition-colors" style={{ width: `${stats.progress.selfAwareness}%` }} />
                 </div>
               </div>
             </div>
@@ -206,53 +227,6 @@ export default function Dashboard() {
                 <p className="font-semibold mb-1">Safety Tips for Online Dating</p>
                 <p className="text-sm text-text-secondary mb-2">Learn how to stay safe while meeting new people online...</p>
                 <Link to="/safety-guide" className="text-primary-purple text-sm">Read More +</Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Community Highlights Section */}
-        <section>
-          <h2 className="text-lg font-semibold mb-4">Community Highlights</h2>
-          <div className="space-y-4">
-            <div className="bg-card-bg p-4 rounded-lg">
-              <div className="flex items-center mb-2">
-                <div className="size-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 mr-3 flex items-center justify-center">
-                  <span className="text-white font-bold">J</span>
-                </div>
-                <div>
-                  <p className="font-semibold">James Wilson</p>
-                  <p className="text-xs text-text-secondary">1 hour ago</p>
-                </div>
-              </div>
-              <p className="text-sm mb-2">Just completed my first month of therapy sessions. The progress has been incredible! Thanks to this amazing community for the support.</p>
-              <div className="flex space-x-4 text-text-secondary text-sm">
-                <div className="flex items-center">
-                  <HeartIcon className="size-4 mr-1" /> 24
-                </div>
-                <div className="flex items-center">
-                  <ChatBubbleLeftRightIcon className="size-4 mr-1" /> 11
-                </div>
-              </div>
-            </div>
-            <div className="bg-card-bg p-4 rounded-lg">
-              <div className="flex items-center mb-2">
-                <div className="size-8 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 mr-3 flex items-center justify-center">
-                  <span className="text-white font-bold">M</span>
-                </div>
-                <div>
-                  <p className="font-semibold">Maria Garcia</p>
-                  <p className="text-xs text-text-secondary">3 hours ago</p>
-                </div>
-              </div>
-              <p className="text-sm mb-2">Anyone else in a long-distance relationship? Looking for advice on staying connected daily.</p>
-              <div className="flex space-x-4 text-text-secondary text-sm">
-                <div className="flex items-center">
-                  <HeartIcon className="size-4 mr-1" /> 32
-                </div>
-                <div className="flex items-center">
-                  <ChatBubbleLeftRightIcon className="size-4 mr-1" /> 18
-                </div>
               </div>
             </div>
           </div>

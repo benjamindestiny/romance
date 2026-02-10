@@ -6,7 +6,6 @@ import Quiz from './pages/Quiz.jsx'
 import Journey from './pages/Journey.jsx';
 import ToastProvider from './components/ToastProvider.jsx';
 import Collaborate from './pages/Collaborate.jsx';
-import Community from './pages/Community.jsx'
 
 
 
@@ -20,7 +19,6 @@ function App() {
         <Route path="/journey" element={<Journey />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/collaborate" element={<Collaborate />} />
-        <Route path='/community' element={<Community />} />
       </Routes>
     </ToastProvider>
   );
