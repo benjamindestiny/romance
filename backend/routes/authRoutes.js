@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  registerUser,
+  signup,
   verifyEmail,
   login,
   forgotPassword,
@@ -18,7 +18,7 @@ const router = express.Router();
 // No authentication required
 
 
-router.post("/register", registerUser);
+router.post("/signup", signup);
 router.post("/login", login);
 
 // router.post("/signup", signup);
