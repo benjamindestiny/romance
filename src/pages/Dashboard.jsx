@@ -131,8 +131,8 @@ export default function Dashboard() {
                   <div>
                     <p className="text-primary-purple font-bold text-sm uppercase">{s.dateLabel}</p>
                     <p className="font-semibold">{s.title}</p>
-                    <p className="text-sm text-text-secondary">{s.coach} • {s.type}</p>
-                    <p className="text-sm text-text-secondary">{s.time} • {s.duration}</p>
+                    <p className="text-sm text-text-secondary">{s.coach} * {s.type}</p>
+                    <p className="text-sm text-text-secondary">{s.time} * {s.duration}</p>
                   </div>
                   {s.cta ? (
                     <button className="bg-pink-accent text-white px-4 py-2 rounded-lg text-sm">{s.cta}</button>
