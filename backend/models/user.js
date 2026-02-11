@@ -26,7 +26,6 @@ const userSchema = new mongoose.Schema(
     bio: {
       type: String,
       default: "",
-      // WHY: Bio is displayed on profile cards - helps partners understand them
     },
     profilePic: {
       type: String,
@@ -58,31 +57,24 @@ const userSchema = new mongoose.Schema(
     },
     emailVerificationCode: {
       type: String,
-      // WHY: Temporary code sent to email for verification
     },
     emailVerificationExpires: {
       type: Date,
-      // WHY: Code expires after 24 hours for security
     },
 
     // Password reset tokens
     resetToken: {
       type: String,
-      // WHY: Temporary token sent to email for password reset
     },
     resetTokenExpires: {
       type: Date,
-      // WHY: Token expires after 1 hour for security
     },
   },
   {
     timestamps: true,
-    // WHY: Automatically adds createdAt and updatedAt fields
   },
 );
 
-// Pre-save hook: Hash password before storing
-// WHY: Never store plain text passwords - bcrypt makes it irreversible
 userSchema.pre("save", async function (next) {
   // Only hash if password is new or modified
   if (!this.isModified("password")) {
