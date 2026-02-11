@@ -10,6 +10,8 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js"; 
 
 
+
+
 connectDB();
 
 const app = express();
@@ -43,6 +45,10 @@ app.get("/api/debug", (req, res) => {
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
+
+
+
+
 
 /* ===== SERVER ===== */
 const PORT = process.env.PORT || 3000;

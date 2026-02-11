@@ -1,6 +1,5 @@
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import nodemailer from "nodemailer";
 
 // Generate JWT token
@@ -232,13 +231,6 @@ export const forgotPassword = async (req, res) => {
       `,
     });
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Email send failed:", error);
-      } else {
-        console.log("Email sent:", info.response);
-      }
-    });
 
     res.json({
       success: true,
