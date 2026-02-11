@@ -232,6 +232,14 @@ export const forgotPassword = async (req, res) => {
       `,
     });
 
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Email send failed:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
+
     res.json({
       success: true,
       message: "Reset code sent to your email",
@@ -305,9 +313,7 @@ export const searchUsers = async (req, res) => {
     const users = await User.find({
       $and: [
         {
-          $or: [
-            { name: { $regex: q, $options: "i" } },
-          ],
+          $or: [{ name: { $regex: q, $options: "i" } }],
         },
         { isEmailVerified: true }, // Only verified users
         { _id: { $ne: currentUserId } }, // Don't show current user
