@@ -33,10 +33,10 @@ const Signup = () => {
         "https://romance-0bj5.onrender.com/api/auth/signup",
         { name, email, password },
       );
-
-      // Store token in localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data));
+                          
+      // Store token in sessionStorage
+      sessionStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("user", JSON.stringify(response.data));
 
       // Redirect to login
       navigate("/");
@@ -89,7 +89,7 @@ const Signup = () => {
                 />
                 <ErrorMessage
                   className="mt-4 text-sm text-red-500 mt-1"
-                  rrorMessage
+                  errorMessage={error}
                   name="name"
                   component="div"
                 />

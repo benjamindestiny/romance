@@ -50,7 +50,7 @@ export default function Collaborate() {
   const [loading, setLoading] = useState(false);
   const [joinCode, setJoinCode] = useState("");
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   if (showLoader)
     return <LogoLoading onComplete={() => setShowLoader(false)} />;

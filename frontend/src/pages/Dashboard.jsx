@@ -26,8 +26,8 @@ export default function Dashboard() {
   const [showLoader, setShowLoader] = useState(true);
   const [greeting] = useState(getRandomGreeting());
 
-  // Get user data from localStorage
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  // Get user data from sessionStorage
+  const userData = JSON.parse(sessionStorage.getItem("user") || "{}");
   const userName = userData.name || "Guest";
   const joinDate = userData.createdAt
     ? new Date(userData.createdAt).toLocaleDateString("en-US", {
