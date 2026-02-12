@@ -32,7 +32,7 @@ const Login = () => {
     try {
       const { email, password } = values;
       const response = await axios.post(
-        "https://romance-0bj5.onrender.com/api/auth/login",
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
         { email, password },
       );
 

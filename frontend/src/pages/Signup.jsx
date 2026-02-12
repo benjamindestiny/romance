@@ -30,10 +30,10 @@ const Signup = () => {
     try {
       const { name, email, password } = values;
       const response = await axios.post(
-        "https://romance-0bj5.onrender.com/api/auth/signup",
+        `${import.meta.env.VITE_API_URL}/api/auth/signup`,
         { name, email, password },
       );
-                          
+
       // Store token in sessionStorage
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("user", JSON.stringify(response.data));
