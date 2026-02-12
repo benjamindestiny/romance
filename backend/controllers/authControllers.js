@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD, 
+    pass: process.env.EMAIL_PASSWORD,
   },
 });
 
@@ -58,6 +58,15 @@ export const signup = async (req, res) => {
 
     await user.save();
 
+    const token = generateToken(user._id);
+
+    res.status(201).json({
+      success: true,
+      message: "Account created. Please verify your email.",
+      email: user.email,
+      token, // send token now
+    });
+
     // ✅ Try sending email but DO NOT crash if it fails
     try {
       await transporter.sendMail({
@@ -83,7 +92,6 @@ export const signup = async (req, res) => {
       message: "Account created. Please verify your email.",
       email: user.email,
     });
-
   } catch (error) {
     console.error("Signup error:", error.message);
     res.status(500).json({
@@ -92,7 +100,6 @@ export const signup = async (req, res) => {
     });
   }
 };
-
 
 // ==================== VERIFY EMAIL ====================
 // POST /api/auth/verify-email
@@ -239,7 +246,6 @@ export const forgotPassword = async (req, res) => {
         <p>If you didn't request this, ignore this email.</p>
       `,
     });
-
 
     res.json({
       success: true,
