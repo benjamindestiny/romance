@@ -44,6 +44,7 @@ router.get("/me", authMiddleware, getMe);
 
 router.put("/profile", authMiddleware, updateProfile);
 
+router.get("/verify-email", verifyEmail);
 
 
 
