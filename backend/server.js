@@ -47,6 +47,9 @@ app.get("/", (req, res) => {
 });
 
 
+router.get("/verify-email", verifyEmail);
+
+
 
 
 

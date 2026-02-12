@@ -3,69 +3,65 @@ import bcryptjs from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
-    // Basic auth info
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
       lowercase: true,
       trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Please enter a valid email"],
     },
+
     password: {
       type: String,
-      required: true,
+      required: [true, "Password is required"],
+      minlength: 6,
     },
 
-    // Profile info for discover/search
     name: {
       type: String,
-      required: true,
+      required: [true, "Name is required"],
+      trim: true,
     },
 
-    // Public profile visible to others
     bio: {
       type: String,
       default: "",
     },
+
     profilePic: {
       type: String,
       default: "https://via.placeholder.com/150?text=Profile",
-      // WHY: Profile picture makes discovery more engaging
     },
 
-    // What they're interested in (for matching)
     interests: {
       type: [String],
       default: [],
-      // WHY: Interests help find compatible partners
-      // Example: ["cooking", "gaming", "travel", "music"]
     },
 
-    // What they're looking for in a partner
     lookingFor: {
       type: String,
       enum: ["understanding", "support", "adventure", "growth"],
       default: "understanding",
-      // WHY: Enum ensures consistency - tells us relationship goals
     },
 
-    // Email verification status
     isEmailVerified: {
       type: Boolean,
       default: false,
-      // WHY: Prevent fake emails - verification code sent to email
     },
+
     emailVerificationCode: {
       type: String,
     },
+
     emailVerificationExpires: {
       type: Date,
     },
 
-    // Password reset tokens
     resetToken: {
       type: String,
     },
+
     resetTokenExpires: {
       type: Date,
     },
@@ -75,15 +71,11 @@ const userSchema = new mongoose.Schema(
   },
 );
 
+// ================= PASSWORD HASHING =================
 userSchema.pre("save", async function (next) {
-  // Only hash if password is new or modified
-  if (!this.isModified("password")) {
-    return next();
-  }
+  if (!this.isModified("password")) return next();
 
   try {
-    // Generate salt and hash password
-    // Salt rounds = 10: Balance between security and speed
     const salt = await bcryptjs.genSalt(10);
     this.password = await bcryptjs.hash(this.password, salt);
     next();
@@ -92,11 +84,22 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-// Method: Compare plain password with hashed password
-// WHY: During login, compare what user typed with what we stored
+// ================= PASSWORD COMPARISON =================
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcryptjs.compare(enteredPassword, this.password);
+  return bcryptjs.compare(enteredPassword, this.password);
 };
+
+// ================= REMOVE PASSWORD FROM JSON =================
+userSchema.methods.toJSON = function () {
+  const userObject = this.toObject();
+  delete userObject.password;
+  delete userObject.emailVerificationCode;
+  delete userObject.resetToken;
+  return userObject;
+};
+
+// ================= INDEX =================
+userSchema.index({ email: 1 });
 
 const User = mongoose.model("User", userSchema);
 
