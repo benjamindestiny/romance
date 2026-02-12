@@ -11,16 +11,16 @@ const generateToken = (userId) => {
 };
 
 // Setup email transporter
-// WHY: Send verification codes and password reset links via email
+
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD, // App password
+    pass: process.env.EMAIL_PASSWORD, 
   },
 });
 
-// ==================== SIGNUP ====================
+/// ==================== SIGNUP ====================
 // POST /api/auth/signup
 // WHY: Create new user account
 export const signup = async (req, res) => {
@@ -36,7 +36,6 @@ export const signup = async (req, res) => {
     }
 
     // Check if user already exists
-    // WHY: Can't have duplicate emails
     const existingUser = await User.findOne({ email: email.toLowerCase() });
     if (existingUser) {
       return res.status(400).json({
@@ -46,8 +45,7 @@ export const signup = async (req, res) => {
     }
 
     // Generate email verification code
-    // WHY: Ensure they own the email before account is usable
-    const verificationCode = Math.random().toString().slice(2, 8); // 6-digit code
+    const verificationCode = Math.random().toString().slice(2, 8);
 
     // Create new user
     const user = new User({
@@ -55,35 +53,46 @@ export const signup = async (req, res) => {
       password,
       name,
       emailVerificationCode: verificationCode,
-      emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
 
     await user.save();
 
-    // Send verification email
-    // WHY: User clicks link to verify they own this email
-    await transporter.sendMail({
-      to: user.email,
-      subject: "Romance - Verify Your Email",
-      html: `
-        <h2>Welcome to My_Romance!</h2>
-        <p>Your verification code is: <strong>${verificationCode}</strong></p>
-        <p>This code expires in 24 hours.</p>
-      `,
-    });
+    // ✅ Try sending email but DO NOT crash if it fails
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: "Romance - Verify Your Email",
+        html: `
+          <h2>Welcome to My_Romance!</h2>
+          <p>Your verification code is: <strong>${verificationCode}</strong></p>
+          <p>This code expires in 24 hours.</p>
+        `,
+      });
+
+      console.log("Verification email sent successfully");
+    } catch (emailError) {
+      console.error("Email sending failed:", emailError.message);
+      // We do NOT return 500 here
+      // Account is still created successfully
+    }
 
     res.status(201).json({
       success: true,
       message: "Account created. Please verify your email.",
       email: user.email,
     });
+
   } catch (error) {
+    console.error("Signup error:", error.message);
     res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
+
 
 // ==================== VERIFY EMAIL ====================
 // POST /api/auth/verify-email
