@@ -23,7 +23,7 @@ const generateToken = (id) => {
 };
 
 /* ================= REGISTER ================= */
-export const registerUser = async (req, res) => {
+export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
@@ -94,7 +94,7 @@ export const verifyEmail = async (req, res) => {
 };
 
 /* ================= LOGIN ================= */
-export const loginUser = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
