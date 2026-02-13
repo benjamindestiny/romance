@@ -44,4 +44,5 @@ const LogoLoading = ({
   );
 };
 
+
 export default LogoLoading;

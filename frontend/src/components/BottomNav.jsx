@@ -12,9 +12,9 @@ export default function BottomNav() {
         <CalendarIcon className="size-6" />
         <span className="text-xs">Sessions</span>
       </Link>
-      <Link to="/community" className="flex flex-col items-center space-y-1 text-text-secondary">
+      <Link to="/collaborate" className="flex flex-col items-center space-y-1 text-text-secondary">
         <ChatBubbleLeftRightIcon className="size-6" />
-        <span className="text-xs">Community</span>
+        <span className="text-xs">Collaborate</span>
       </Link>
       <Link to="/quiz" className="flex flex-col items-center space-y-1 text-text-secondary">
         <AcademicCapIcon className="size-6" />
