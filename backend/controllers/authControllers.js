@@ -47,7 +47,7 @@ export const signup = async (req, res) => {
 
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
-      to: process.env.GMAIL_USER,
+      to: user.email,
       subject: "Romance - Verify Your Email",
       html: `<h3>Your verification code: ${verificationCode}</h3>`,
     });
