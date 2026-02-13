@@ -14,8 +14,8 @@ const generateToken = (userId) => {
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASSWORD,
   },
 });
 
@@ -46,8 +46,8 @@ export const signup = async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: user.email,
+      from: process.env.GMAIL_USER,
+      to: process.env.GMAIL_USER,
       subject: "Romance - Verify Your Email",
       html: `<h3>Your verification code: ${verificationCode}</h3>`,
     });
@@ -155,7 +155,7 @@ export const forgotPassword = async (req, res) => {
     await user.save();
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: process.env.GMAIL_USER,
       to: user.email,
       subject: "Reset Password",
       html: `<h3>Your reset code: ${resetCode}</h3>`,
