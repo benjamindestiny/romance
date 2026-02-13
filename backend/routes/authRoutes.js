@@ -6,7 +6,6 @@ import {
   forgotPassword,
   resetPassword,
   searchUsers,
-  getUserProfile,
   getMe,
   updateProfile,
 } from "../controllers/authControllers.js";
