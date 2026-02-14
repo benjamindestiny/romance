@@ -2,9 +2,6 @@ import { useState } from 'react';
 import Sidebar from '../components/Sidebar.jsx';
 import BottomNav from '../components/BottomNav.jsx';
 import LogoLoading from "../components/LogoLoading.jsx";
-import React, { useState, useRef } from 'react';
-import Sidebar from '../components/Sidebar.jsx';
-import BottomNav from '../components/BottomNav.jsx';
 import { HeartIcon, ChartBarIcon, PlusIcon, SparklesIcon, CalendarIcon } from '@heroicons/react/24/solid';
 
 

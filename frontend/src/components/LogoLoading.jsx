@@ -15,7 +15,7 @@ import romanceLogo from "../assets/rom.png";
  */
 const LogoLoading = ({
   onComplete,
-  duration = 3000,
+  duration = 1000,
   autoHide = true,
   src = romanceLogo,
   alt = "Romance Logo",
