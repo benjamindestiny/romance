@@ -20,11 +20,10 @@ export default function ForgotPassword() {
 
     try {
       const response = await axios.post(
-        "https://beneficial-bravery-production-657e.up.railway.app/api/auth/forgot-password",
-        {
-          email,
-        },
-      );
+  `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
+  { email }
+);
+
 
       setMessage(response.data.message);
       setEmail("");

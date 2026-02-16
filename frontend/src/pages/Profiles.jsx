@@ -28,10 +28,9 @@ export default function Profiles() {
     setLoading(true);
     try {
       const response = await axios.get(
-        `https://romance-0bj5.onrender.com/api/auth/search?q=${encodeURIComponent(
-          searchQuery,
-        )}`,
+        `${import.meta.env.VITE_API_URL}/api/auth/search?q=${encodeURIComponent(searchQuery)}`,
       );
+
       setProfiles(response.data);
       setSearched(true);
 

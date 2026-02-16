@@ -89,12 +89,11 @@ export default function Collaborate() {
     try {
       setLoading(true);
       const response = await axios.post(
-        "http://localhost:3000/api/rooms/join",
-        { roomCode: joinCode },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+  `${import.meta.env.VITE_API_URL}/api/rooms/join`,
+  { roomCode: joinCode },
+  { headers: { Authorization: `Bearer ${token}` } }
+);
+
 
       setRoomId(response.data.roomId);
       setRoomCode(response.data.roomCode);
