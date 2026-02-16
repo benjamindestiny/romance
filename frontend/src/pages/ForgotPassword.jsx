@@ -20,7 +20,7 @@ export default function ForgotPassword() {
 
     try {
       const response = await axios.post(
-        "https://romance-0bj5.onrender.com/api/auth/forgot-password",
+        "https://beneficial-bravery-production-657e.up.railway.app/api/auth/forgot-password",
         {
           email,
         },

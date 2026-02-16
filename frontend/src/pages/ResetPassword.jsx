@@ -38,7 +38,7 @@ export default function ResetPassword() {
 
     try {
       const response = await axios.post(
-        "https://romance-0bj5.onrender.com/api/auth/reset-password",
+        "https://beneficial-bravery-production-657e.up.railway.app/api/auth/reset-password",
         {
           token,
           newPassword,
@@ -51,7 +51,7 @@ export default function ResetPassword() {
 
       // Redirect to login after 2 seconds
       setTimeout(() => {
-        navigate("/login");
+        navigate("/");
       }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to reset password");
