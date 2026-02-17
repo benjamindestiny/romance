@@ -10,6 +10,9 @@ import authRoutes from "./routes/authRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
 
+
+
+
 const app = express();
 
 /* ===== MIDDLEWARE ===== */
@@ -20,6 +23,23 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/rooms", roomRoutes);
+
+
+app.get("/api/test-email", async (req, res) => {
+  try {
+    const info = await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: process.env.GMAIL_USER, // your Gmail to receive test
+      subject: "Railway Test Email via Endpoint",
+      html: "<h3>This is a test email sent from Railway!</h3>",
+    });
+    res.json({ message: "Email sent!", response: info.response });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to send email", error: err.message });
+  }
+});
+
 
 /* ===== DEBUG ROUTES ===== */
 app.get("/api/auth/debug", (req, res) =>
@@ -44,6 +64,27 @@ const startServer = async () => {
     console.error("Failed to start server:", error.message);
   }
 };
+
+
+import dotenv from "dotenv";
+dotenv.config();
+
+import nodemailer from "nodemailer";
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASSWORD,
+  },
+});
+
+
+
+sendTestEmail();
+
+
+
 
 startServer();
 
