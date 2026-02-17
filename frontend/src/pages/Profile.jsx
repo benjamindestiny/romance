@@ -18,8 +18,9 @@ export default function Profile() {
     const fetchProfile = async () => {
       try {
         const response = await axios.get(
-          `https://romance-0bj5.onrender.com/api/auth/profile/${userId}`,
+          `${import.meta.env.VITE_API_URL}/api/auth/profile/${userId}`,
         );
+
         setProfile(response.data);
       } catch (error) {
         toast.error(error.response?.data?.message || "Error loading profile");
