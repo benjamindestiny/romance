@@ -1,21 +1,11 @@
 // ====================== authControllers.js ======================
 import User from "../models/user.js";
 import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
 import crypto from "crypto";
 import dotenv from "dotenv";
+import { sendEmail } from "../utils/sendEmail.js";
 
 dotenv.config();
-
-/* ================= EMAIL CONFIG ================= */
-// Using Gmail credentials from .env
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASSWORD,
-  },
-});
 
 /* ================= GENERATE JWT ================= */
 const generateToken = (id) => {
@@ -28,10 +18,14 @@ export const signup = async (req, res) => {
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "User already exists" });
+    if (existingUser)
+      return res.status(400).json({ message: "User already exists" });
 
     const rawToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
 
     const user = await User.create({
       name,
@@ -43,14 +37,19 @@ export const signup = async (req, res) => {
 
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
+    await sendEmail({
       to: email,
       subject: "Verify your email",
-      html: `<h3>Email Verification</h3><p>Click below to verify:</p><a href="${verificationUrl}">${verificationUrl}</a>`,
+      html: `
+    <h3>Email Verification</h3>
+    <p>Click below to verify your email:</p>
+    <a href="${verificationUrl}">${verificationUrl}</a>
+  `,
     });
 
-    res.status(201).json({ message: "Registration successful. Check email to verify." });
+    res
+      .status(201)
+      .json({ message: "Registration successful. Check email to verify." });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
@@ -68,7 +67,8 @@ export const verifyEmail = async (req, res) => {
       verificationTokenExpiry: { $gt: Date.now() },
     });
 
-    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+    if (!user)
+      return res.status(400).json({ message: "Invalid or expired token" });
 
     user.isVerified = true;
     user.verificationToken = null;
@@ -87,13 +87,20 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
 
-    if (!user) return res.status(400).json({ message: "Invalid email or password" });
-    if (!user.isVerified) return res.status(400).json({ message: "Verify your email first" });
+    if (!user)
+      return res.status(400).json({ message: "Invalid email or password" });
+    if (!user.isVerified)
+      return res.status(400).json({ message: "Verify your email first" });
 
     const isMatch = await user.matchPassword(password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid email or password" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid email or password" });
 
-    res.json({ user: user.toJSON(), isVerified: user.isVerified, token: generateToken(user._id) });
+    res.json({
+      user: user.toJSON(),
+      isVerified: user.isVerified,
+      token: generateToken(user._id),
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -118,7 +125,10 @@ export const forgotPassword = async (req, res) => {
     if (!user) return res.status(400).json({ message: "User not found" });
 
     const rawToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
 
     user.passwordResetToken = hashedToken;
     user.passwordResetTokenExpiry = Date.now() + 60 * 60 * 1000;
@@ -126,11 +136,13 @@ export const forgotPassword = async (req, res) => {
 
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${rawToken}`;
 
-    await transporter.sendMail({
-      from: process.env.GMAIL_USER,
+    await sendEmail({
       to: email,
       subject: "Reset Password",
-      html: `<a href="${resetUrl}">${resetUrl}</a>`,
+      html: `
+    <p>Click below to reset your password:</p>
+    <a href="${resetUrl}">${resetUrl}</a>
+  `,
     });
 
     res.json({ message: "Password reset link sent" });
@@ -145,8 +157,12 @@ export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
-    const user = await User.findOne({ passwordResetToken: hashedToken, passwordResetTokenExpiry: { $gt: Date.now() } });
-    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetTokenExpiry: { $gt: Date.now() },
+    });
+    if (!user)
+      return res.status(400).json({ message: "Invalid or expired token" });
 
     user.password = newPassword;
     user.passwordResetToken = null;
@@ -163,8 +179,10 @@ export const resetPassword = async (req, res) => {
 export const searchUsers = async (req, res) => {
   try {
     const { query } = req.query;
-    const users = await User.find({ name: { $regex: query, $options: 'i' }, isVerified: true })
-      .select('-password -verificationToken -passwordResetToken');
+    const users = await User.find({
+      name: { $regex: query, $options: "i" },
+      isVerified: true,
+    }).select("-password -verificationToken -passwordResetToken");
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -175,8 +193,10 @@ export const searchUsers = async (req, res) => {
 export const getUserProfile = async (req, res) => {
   try {
     const { userId } = req.params;
-    const user = await User.findById(userId).select('-password -verificationToken -passwordResetToken');
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    const user = await User.findById(userId).select(
+      "-password -verificationToken -passwordResetToken",
+    );
+    if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -187,7 +207,7 @@ export const getUserProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const { name, bio, profilePic, interests, lookingFor } = req.body;
     if (name) user.name = name;
