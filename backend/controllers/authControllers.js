@@ -107,6 +107,10 @@ export const login = async (req, res) => {
 };
 
 // After verifying password
+
+const user = await User.findById(req.userId);
+
+
 const today = new Date();
 const lastLogin = user.lastLoginDate ? new Date(user.lastLoginDate) : null;
 
