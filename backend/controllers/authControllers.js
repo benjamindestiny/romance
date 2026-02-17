@@ -106,6 +106,26 @@ export const login = async (req, res) => {
   }
 };
 
+// After verifying password
+const today = new Date();
+const lastLogin = user.lastLoginDate ? new Date(user.lastLoginDate) : null;
+
+// Check if streak should increase
+if (lastLogin) {
+  const diff = today.setHours(0, 0, 0, 0) - lastLogin.setHours(0, 0, 0, 0);
+  if (diff === 24 * 60 * 60 * 1000) {
+    // exactly 1 day difference
+    user.dailyStreak += 1;
+  } else if (diff > 24 * 60 * 60 * 1000) {
+    user.dailyStreak = 1; // reset streak if more than 1 day
+  } // else, logging in multiple times same day, streak stays
+} else {
+  user.dailyStreak = 1; // first login ever
+}
+
+user.lastLoginDate = today;
+await user.save();
+
 /* ================= GET ME ================= */
 export const getMe = async (req, res) => {
   try {

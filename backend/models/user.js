@@ -45,6 +45,17 @@ const userSchema = new mongoose.Schema(
       default: "understanding",
     },
 
+    // User schema || Streaks || Milestones
+    dailyStreak: { type: Number, default: 0 },
+    lastLoginDate: { type: Date, default: null },
+    milestone: { type: Number, default: 0 }, // total quizzes completed
+    scores: {
+      communication: { type: Number, default: 0 },
+      emotionalIntelligence: { type: Number, default: 0 },
+      conflictResolution: { type: Number, default: 0 },
+      selfAwareness: { type: Number, default: 0 },
+    },
+
     // ✅ EMAIL VERIFICATION
     isVerified: {
       type: Boolean,
@@ -58,7 +69,7 @@ const userSchema = new mongoose.Schema(
     passwordResetToken: String,
     passwordResetTokenExpiry: Date,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // ✅ HASH PASSWORD BEFORE SAVE
