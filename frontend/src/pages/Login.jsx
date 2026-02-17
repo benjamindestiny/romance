@@ -36,9 +36,9 @@ const Login = () => {
         { email, password },
       );
 
-      // Store token in sessionStorage
-      sessionStorage.setItem("token", response.data.token);
-      sessionStorage.setItem("user", JSON.stringify(response.data));
+      // Store token in localStorage
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data));
 
       // Redirect to dashboard
       navigate("/dashboard");
