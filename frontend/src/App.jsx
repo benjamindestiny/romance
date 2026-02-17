@@ -30,6 +30,7 @@ const App = () => {
         <Route path="settings" element={<Settings />} />
         <Route path="report" element={<Reports />} />
         <Route path="journey" element={<Journey />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="quiz" element={<Quiz />} />
         <Route path="collaborate" element={<Collaborate />} />
         <Route path="*" element={<NotFound />} />
