@@ -9,14 +9,14 @@ import {
   searchUsers,
   getMe,
   updateProfile,
-  getUserProfile
+  getUserProfile,
 } from "../controllers/authControllers.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 
-<Route path="/verify-email" element={<VerifyEmail />} />
+
 
 
 // ==================== PUBLIC ROUTES ====================
