@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Settings from "./pages/Settings.jsx";
 import Reports from "./pages/Reports.jsx";
 import Quiz from "./pages/Quiz.jsx";
+import VerifyEmail from "./pages/VerifyEmail.jsx";
 import Journey from "./pages/Journey.jsx";
 import Collaborate from "./pages/Collaborate.jsx";
 import Profiles from "./pages/Profiles.jsx";
