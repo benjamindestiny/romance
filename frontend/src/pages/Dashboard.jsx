@@ -251,7 +251,7 @@ export default function Dashboard() {
                 );
               })}
             </div>
-            <Link to="/report">
+            <Link to="/journey">
               <button className="w-full bg-primary-purple text-white py-3 rounded-lg mt-4 text-sm">
                 View Full Report
               </button>
