@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
  * Prevents direct URL access by unregistered users while keeping the code clean and reusable.
  */
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoutes = ({ children }) => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
