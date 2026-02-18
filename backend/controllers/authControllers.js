@@ -82,19 +82,51 @@ export const verifyEmail = async (req, res) => {
 };
 
 /* ================= LOGIN ================= */
+/* ================= LOGIN ================= */
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     const user = await User.findOne({ email });
 
     if (!user)
       return res.status(400).json({ message: "Invalid email or password" });
+
     if (!user.isVerified)
       return res.status(400).json({ message: "Verify your email first" });
 
     const isMatch = await user.matchPassword(password);
+
     if (!isMatch)
       return res.status(400).json({ message: "Invalid email or password" });
+
+    /* ===== DAILY STREAK LOGIC START ===== */
+
+    const today = new Date();
+    const todayMidnight = new Date(today).setHours(0, 0, 0, 0);
+
+    const lastLoginMidnight = user.lastLoginDate
+      ? new Date(user.lastLoginDate).setHours(0, 0, 0, 0)
+      : null;
+
+    if (lastLoginMidnight) {
+      const diff = todayMidnight - lastLoginMidnight;
+
+      if (diff === 24 * 60 * 60 * 1000) {
+        user.dailyStreak += 1; // next day
+      } else if (diff > 24 * 60 * 60 * 1000) {
+        user.dailyStreak = 1; // reset
+      }
+      // same day → do nothing
+    } else {
+      user.dailyStreak = 1; // first login ever
+    }
+
+    user.lastLoginDate = new Date();
+
+    await user.save();
+
+    /* ===== DAILY STREAK LOGIC END ===== */
 
     res.json({
       user: user.toJSON(),
@@ -105,34 +137,6 @@ export const login = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-// After verifying password
-
-const today = new Date();
-const todayMidnight = new Date(today).setHours(0, 0, 0, 0);
-
-const lastLoginMidnight = user.lastLoginDate
-  ? new Date(user.lastLoginDate).setHours(0, 0, 0, 0)
-  : null;
-
-if (lastLoginMidnight) {
-  const diff = todayMidnight - lastLoginMidnight;
-
-  if (diff === 24 * 60 * 60 * 1000) {
-    // Logged in exactly next day
-    user.dailyStreak += 1;
-  } else if (diff > 24 * 60 * 60 * 1000) {
-    // Missed a day → reset
-    user.dailyStreak = 1;
-  }
-  // If same day → do nothing
-} else {
-  // First login ever
-  user.dailyStreak = 1;
-}
-
-user.lastLoginDate = new Date();
-await user.save();
 
 /* ================= GET ME ================= */
 export const getMe = async (req, res) => {
