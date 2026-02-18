@@ -8,7 +8,7 @@ export default function UserIndicatorMobile() {
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <img src={ProfilePhoto} alt="Sarah Mitchell" className="size-10 rounded-full" />
-          <p className="font-semibold">{userName}</p>
+          <p className="font-semibold">Sarah Mitchell</p>
         </div>
         <Link to="/settings">
           <Cog6ToothIcon className="size-6 text-text-secondary cursor-pointer" />
