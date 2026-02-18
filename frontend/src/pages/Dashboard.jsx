@@ -126,7 +126,7 @@ export default function Dashboard() {
     return <LogoLoading onComplete={() => setShowLoader(false)} />;
 
   return (
-    <ProtectedRoute>   {/* ← ALL CONTENT IS NOW PROTECTED */}
+    <ProtectedRoutes>   {/* ← ALL CONTENT IS NOW PROTECTED */}
       <div className="min-h-screen bg-dark-bg text-text-primary font-sans pb-32 md:pb-0">
         <Sidebar />
         <main className="md:ml-64 p-4">
@@ -276,6 +276,6 @@ export default function Dashboard() {
         </main>
         <BottomNav />
       </div>
-    </ProtectedRoute>
+    </ProtectedRoutes>
   );
 }
