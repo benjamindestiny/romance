@@ -26,8 +26,9 @@ export default function Dashboard() {
   const [greeting] = useState(getRandomGreeting());
 
   // User data from localStorage
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
-  const userName = userData.name || "Guest";
+  const storedUser = localStorage.getItem("user");
+  const userData = storedUser ? JSON.parse(storedUser) : null;
+  const userName = userData?.name || "Guest";
   const joinDate = userData.createdAt
     ? new Date(userData.createdAt).toLocaleDateString("en-US", {
         weekday: "long",
@@ -52,12 +53,28 @@ export default function Dashboard() {
   const [responseSaved, setResponseSaved] = useState(false);
 
   const saveResponse = () => {
-    if (userResponse.trim()) {
-      localStorage.setItem("dailyPromptResponse", userResponse);
-      setResponseSaved(true);
-      setTimeout(() => setResponseSaved(false), 2500);
-    }
-  };
+  if (userResponse.trim()) {
+    localStorage.setItem("dailyPromptResponse", userResponse);
+
+    // increase communication score
+    const updatedUser = {
+      ...userData,
+      progress: {
+        ...userData.progress,
+        communication: Math.min(
+          (userData.progress?.communication || 0) + 5,
+          100
+        ),
+      },
+    };
+
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+
+    setResponseSaved(true);
+    setTimeout(() => setResponseSaved(false), 2500);
+  }
+};
+
 
   useEffect(() => {
     const saved = localStorage.getItem("dailyPromptResponse");
@@ -65,12 +82,12 @@ export default function Dashboard() {
   }, []);
 
   // Placeholder scores
-  const [scores] = useState({
+  const scores = userData?.progress || {
     communication: 65,
     emotionalIntelligence: 80,
     conflictResolution: 50,
     selfAwareness: 70,
-  });
+  };
 
   // Success Spotlights
   const [spotlights] = useState([

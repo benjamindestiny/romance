@@ -73,19 +73,7 @@ export default function Sidebar() {
             <HeartIcon className="size-5" />
             <span>Find Partner</span>
           </NavLink>
-          <NavLink
-            to="/community"
-            className={({ isActive }) =>
-              `flex items-center space-x-3 rounded-md p-2 ${
-                isActive
-                  ? "bg-card-bg text-primary-purple font-medium"
-                  : "hover:bg-card-bg"
-              }`
-            }
-          >
-            <UsersIcon className="size-5" />
-            <span>Community</span>
-          </NavLink>
+         
           <NavLink
             to="/collaborate"
             className={({ isActive }) =>
