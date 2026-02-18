@@ -83,7 +83,7 @@ export default function Dashboard() {
 
   // Placeholder scores
   const scores = userData?.progress || {
-    communication: 0,
+    communication: ,
     emotionalIntelligence: 0,
     conflictResolution: 0,
     selfAwareness: 0,
