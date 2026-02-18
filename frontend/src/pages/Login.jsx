@@ -36,11 +36,11 @@ const Login = () => {
         { email, password },
       );
 
-       // ✅ SAVE USER
-  localStorage.setItem("user", JSON.stringify(response.data.user));
+      // ✅ SAVE USER
+      localStorage.setItem("user", JSON.stringify(response.data.user));
 
-  // ✅ SAVE TOKEN
-  localStorage.setItem("token", response.data.token);
+      // ✅ SAVE TOKEN
+      localStorage.setItem("token", response.data.token);
 
       // Redirect to dashboard
       navigate("/dashboard");
@@ -50,13 +50,7 @@ const Login = () => {
       setSubmitting(false);
     }
   };
-  {
-    error && (
-      <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
-        {error}
-      </div>
-    );
-  }
+  
 
   if (showLoader)
     return <LogoLoading onComplete={() => setShowLoader(false)} />;
@@ -72,6 +66,12 @@ const Login = () => {
             <span className="text-rose-600">Romance</span>
           </p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+    )}
 
         <Formik
           initialValues={initialValues}
