@@ -270,9 +270,84 @@ export default function Dashboard() {
             </div>
           </section>
 
-          {/* Recommended For You & Success Spotlights sections remain exactly as before */}
-          {/* ... (your full recommended and spotlights sections here - unchanged) ... */}
+           {/* Recommended For You */}
+        <section className="mb-8">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold">Recommended For You</h2>
+            <Link to="/recommendations" className="text-primary-purple text-sm">See More</Link>
+          </div>
+          <div className="flex overflow-x-auto space-x-4 pb-4">
+            <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
+              <img className="w-full h-32 object-cover" src={LongDistance} loading="lazy" />
+              <div className="p-4">
+                <p className="text-xs text-text-secondary mb-1">Article • 8 min read</p>
+                <p className="font-semibold mb-1">Building Intimacy in Long-Distance Relationships</p>
+                <p className="text-sm text-text-secondary mb-2">Practical tips to maintain emotional connection across miles...</p>
+                <Link to="/article" className="text-primary-purple text-sm">Read More +</Link>
+              </div>
+            </div>
+            <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
+              <img className="w-full h-32 object-cover" src={Friendship} loading="lazy" />
+              <div className="p-4">
+                <p className="text-xs text-text-secondary mb-1">Workshop • Jan 20</p>
+                <p className="font-semibold mb-1">Making Meaningful Friendships as an Adult</p>
+                <p className="text-sm text-text-secondary mb-2">Join our community workshop on building lasting connections...</p>
+                <Link to="/workshop" className="text-primary-purple text-sm">Join +</Link>
+              </div>
+            </div>
+            <div className="min-w-[280px] bg-card-bg rounded-lg overflow-hidden">
+              <img className="w-full h-32 object-cover" src={OnlineDating} loading="lazy" />
+              <div className="p-4">
+                <p className="text-xs text-text-secondary mb-1">Guide • 10 min read</p>
+                <p className="font-semibold mb-1">Safety Tips for Online Dating</p>
+                <p className="text-sm text-text-secondary mb-2">Learn how to stay safe while meeting new people online...</p>
+                <Link to="/safety-guide" className="text-primary-purple text-sm">Read More +</Link>
+              </div>
+            </div>
+          </div>
+        </section>
 
+        {/* Success Spotlights */}
+        <section>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <SparklesIcon className="size-5 text-pink-accent" />
+              Success Spotlights
+            </h2>
+            <Link to="/collaborate" className="text-primary-purple text-sm">Join the wins</Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {spotlights.map((spot) => (
+              <div key={spot.id} className="bg-card-bg rounded-3xl overflow-hidden group hover:ring-1 hover:ring-pink-accent/30 transition-all duration-300">
+                <div className="h-52 relative">
+                  <img src={spot.image} alt={spot.name} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                  <div className="absolute bottom-4 left-4 flex items-center gap-3">
+                    <img src={spot.avatar} alt={spot.name} className="size-10 rounded-full ring-2 ring-white/50" />
+                    <div>
+                      <p className="font-semibold text-white text-sm">{spot.name}</p>
+                      <p className="text-xs text-white/70">{spot.time}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <p className="text-sm leading-snug text-text-secondary mb-4 line-clamp-3">"{spot.story}"</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 text-green-400 text-sm font-medium">
+                      <span className="text-xl">↑</span>
+                      {spot.impact} pts
+                    </div>
+                    <div className="flex items-center gap-1 text-text-secondary text-sm">
+                      <HeartIcon className="size-4" /> {spot.likes}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
         </main>
         <BottomNav />
       </div>
