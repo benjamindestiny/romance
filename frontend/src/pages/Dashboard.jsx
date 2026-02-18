@@ -83,10 +83,10 @@ export default function Dashboard() {
 
   // Placeholder scores
   const scores = userData?.progress || {
-    communication: 65,
-    emotionalIntelligence: 80,
-    conflictResolution: 50,
-    selfAwareness: 70,
+    communication: 0,
+    emotionalIntelligence: 0,
+    conflictResolution: 0,
+    selfAwareness: 0,
   };
 
   // Success Spotlights
