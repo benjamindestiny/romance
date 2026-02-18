@@ -108,26 +108,30 @@ export const login = async (req, res) => {
 
 // After verifying password
 
-const user = await User.findById(req.userId);
-
-
 const today = new Date();
-const lastLogin = user.lastLoginDate ? new Date(user.lastLoginDate) : null;
+const todayMidnight = new Date(today).setHours(0, 0, 0, 0);
 
-// Check if streak should increase
-if (lastLogin) {
-  const diff = today.setHours(0, 0, 0, 0) - lastLogin.setHours(0, 0, 0, 0);
+const lastLoginMidnight = user.lastLoginDate
+  ? new Date(user.lastLoginDate).setHours(0, 0, 0, 0)
+  : null;
+
+if (lastLoginMidnight) {
+  const diff = todayMidnight - lastLoginMidnight;
+
   if (diff === 24 * 60 * 60 * 1000) {
-    // exactly 1 day difference
+    // Logged in exactly next day
     user.dailyStreak += 1;
   } else if (diff > 24 * 60 * 60 * 1000) {
-    user.dailyStreak = 1; // reset streak if more than 1 day
-  } // else, logging in multiple times same day, streak stays
+    // Missed a day → reset
+    user.dailyStreak = 1;
+  }
+  // If same day → do nothing
 } else {
-  user.dailyStreak = 1; // first login ever
+  // First login ever
+  user.dailyStreak = 1;
 }
 
-user.lastLoginDate = today;
+user.lastLoginDate = new Date();
 await user.save();
 
 /* ================= GET ME ================= */
