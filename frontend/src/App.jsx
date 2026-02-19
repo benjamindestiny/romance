@@ -15,7 +15,7 @@ import Journey from "./pages/Journey.jsx";
 import Collaborate from "./pages/Collaborate.jsx";
 import Profiles from "./pages/Profiles.jsx";
 import Profile from "./pages/Profile.jsx";
-import SoloQuiz from "./pages/soloQuiz.jsx";
+import Quiz from "./pages/Quiz.jsx";
 
 const App = () => {
   return (
@@ -30,7 +30,7 @@ const App = () => {
         <Route path="profiles" element={<Profiles />} />
         <Route path="profile/:userId" element={<Profile />} />
         <Route path="settings" element={<Settings />} />
-        <Route path="soloQuiz" element={<soloQuiz />} />
+        <Route path="Quiz" element={<Quiz />} />
         <Route path="report" element={<Reports />} />
         <Route path="journey" element={<Journey />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
