@@ -49,11 +49,15 @@ const userSchema = new mongoose.Schema(
     dailyStreak: { type: Number, default: 0 },
     lastLoginDate: { type: Date, default: null },
     milestone: { type: Number, default: 0 }, // total quizzes completed
+    // scores now supports any new category key without breaking existing ones
     scores: {
-      communication: { type: Number, default: 0 },
-      emotionalIntelligence: { type: Number, default: 0 },
-      conflictResolution: { type: Number, default: 0 },
-      selfAwareness: { type: Number, default: 0 },
+      type: mongoose.Schema.Types.Mixed, // ← changed from fixed object
+      default: {
+        communication: 0,
+        emotionalIntelligence: 0,
+        conflictResolution: 0,
+        selfAwareness: 0,
+      },
     },
 
     // ✅ EMAIL VERIFICATION

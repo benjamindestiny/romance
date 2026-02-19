@@ -1,24 +1,25 @@
-import User from "../models/user.js";
-
-// POST /api/quiz/submit
+// Dynamic scoring – works for all 15 categories + future ones
 export const submitQuiz = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const { category, score } = req.body; // score = points earned
+    const { category, score } = req.body;
 
-    // Update category score
-    if (category === "communication") user.scores.communication += score;
-    if (category === "emotionalIntelligence") user.scores.emotionalIntelligence += score;
-    if (category === "conflictResolution") user.scores.conflictResolution += score;
-    if (category === "selfAwareness") user.scores.selfAwareness += score;
+    // Dynamic update – no more if/else hell
+    if (!user.scores[category]) user.scores[category] = 0;
+    user.scores[category] += Number(score);
 
-    // Increment milestone (total quizzes completed)
-    user.milestone += 1;
+    user.milestone += 1; // existing milestone counter still works
 
     await user.save();
-    res.json({ message: "Quiz submitted successfully", user });
+
+    res.json({ 
+      message: "Solo quiz progress saved", 
+      category,
+      newScore: user.scores[category],
+      milestone: user.milestone 
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
