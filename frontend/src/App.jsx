@@ -15,7 +15,6 @@ import Journey from "./pages/Journey.jsx";
 import Collaborate from "./pages/Collaborate.jsx";
 import Profiles from "./pages/Profiles.jsx";
 import Profile from "./pages/Profile.jsx";
-import Quiz from "./pages/Quiz.jsx";
 
 const App = () => {
   return (
@@ -34,7 +33,6 @@ const App = () => {
         <Route path="report" element={<Reports />} />
         <Route path="journey" element={<Journey />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="quiz" element={<Quiz />} />
         <Route path="collaborate" element={<Collaborate />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
