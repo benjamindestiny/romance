@@ -10,22 +10,19 @@ import {
   getMe,
   updateProfile,
   getUserProfile,
+  resendVerification,
 } from "../controllers/authControllers.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-
-
-
-
 // ==================== PUBLIC ROUTES ====================
 router.post("/signup", signup);
 router.post("/login", login);
 router.get("/verify-email", verifyEmail);
+router.post("/resend-verification", resendVerification);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
-
 
 // ==================== PROTECTED ROUTES ====================
 router.get("/search", authMiddleware, searchUsers);

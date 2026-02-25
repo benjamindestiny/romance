@@ -18,8 +18,40 @@ export const signup = async (req, res) => {
     const { name, email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "User already exists" });
+    if (existingUser) {
+      if (existingUser.isVerified) {
+        return res.status(400).json({ message: "User already exists" });
+      } else {
+        // Resend verification for unverified user
+        const rawToken = crypto.randomBytes(32).toString("hex");
+        const hashedToken = crypto
+          .createHash("sha256")
+          .update(rawToken)
+          .digest("hex");
+
+        existingUser.verificationToken = hashedToken;
+        existingUser.verificationTokenExpiry = Date.now() + 24 * 60 * 60 * 1000;
+        await existingUser.save();
+
+        const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
+
+        console.log(`Resending verification email to: ${email}`);
+        await sendEmail({
+          to: email,
+          subject: "Verify your email",
+          html: `
+    <h3>Email Verification</h3>
+    <p>Click below to verify your email:</p>
+    <a href="${verificationUrl}">${verificationUrl}</a>
+  `,
+        });
+        console.log(`Verification email resent successfully to: ${email}`);
+
+        return res
+          .status(200)
+          .json({ message: "Verification email resent. Check your email." });
+      }
+    }
 
     const rawToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto
@@ -37,6 +69,7 @@ export const signup = async (req, res) => {
 
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 
+    console.log(`Sending verification email to: ${email}`);
     await sendEmail({
       to: email,
       subject: "Verify your email",
@@ -46,6 +79,7 @@ export const signup = async (req, res) => {
     <a href="${verificationUrl}">${verificationUrl}</a>
   `,
     });
+    console.log(`Verification email sent successfully to: ${email}`);
 
     res
       .status(201)
@@ -81,6 +115,48 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
+/* ================= RESEND VERIFICATION ================= */
+export const resendVerification = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "User not found" });
+
+    if (user.isVerified)
+      return res.status(400).json({ message: "User is already verified" });
+
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(rawToken)
+      .digest("hex");
+
+    user.verificationToken = hashedToken;
+    user.verificationTokenExpiry = Date.now() + 24 * 60 * 60 * 1000;
+    await user.save();
+
+    const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
+
+    console.log(`Resending verification email to: ${email}`);
+    await sendEmail({
+      to: email,
+      subject: "Verify your email",
+      html: `
+    <h3>Email Verification</h3>
+    <p>Click below to verify your email:</p>
+    <a href="${verificationUrl}">${verificationUrl}</a>
+  `,
+    });
+    console.log(`Verification email resent successfully to: ${email}`);
+
+    res.json({ message: "Verification email sent" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 /* ================= LOGIN ================= */
 
 export const login = async (req, res) => {
@@ -93,7 +169,12 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
 
     if (!user.isVerified)
-      return res.status(400).json({ message: "Verify your email first , checkk your Email you will receive your verification link from onboarding@resend.dev" });
+      return res
+        .status(400)
+        .json({
+          message:
+            "Verify your email first , checkk your Email you will receive your verification link from onboarding@resend.dev",
+        });
 
     const isMatch = await user.matchPassword(password);
 
