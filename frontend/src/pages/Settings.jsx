@@ -40,6 +40,25 @@ function Settings() {
     timezone: "Pacific Time (PT)",
   });
 
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/auth/me`,
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+        const userData = res.data;
+        setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+    if (token) fetchUser();
+  }, []);
+
   useEffect(() => {
     setProfile({
       firstName: user.firstName || user.name?.split(" ")[0] || "",
