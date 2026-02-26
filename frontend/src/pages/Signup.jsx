@@ -10,6 +10,7 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
   const togglePassword = () => setShowPassword((prev) => !prev);
 
@@ -34,12 +35,14 @@ const Signup = () => {
         { name, email, password },
       );
 
-      // Store token in localStorage
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("user", JSON.stringify(response.data));
+      setSuccessMessage(
+        "Account created successfully! Check your email to verify your account.",
+      );
 
-      // Redirect to login
-      navigate("/");
+      // Redirect to login after a delay
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to create account");
     } finally {
@@ -70,6 +73,12 @@ const Signup = () => {
           </div>
         )}
 
+        {successMessage && (
+          <div className="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded-lg text-sm">
+            {successMessage}
+          </div>
+        )}
+
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -88,7 +97,7 @@ const Signup = () => {
                   className="mt-1 block w-full px-4 py-2 bg-white text-gray-900 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-200 placeholder-pink-600"
                 />
                 <ErrorMessage
-                  className="mt-4 text-sm text-red-500 mt-1"
+                  className="mt-1 text-sm text-red-500"
                   errorMessage={error}
                   name="name"
                   component="div"

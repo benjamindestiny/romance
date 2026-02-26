@@ -17,6 +17,7 @@ export default function Collaborate() {
   const [roomData, setRoomData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [joinCode, setJoinCode] = useState("");
+  const [joinError, setJoinError] = useState("");
 
   // Quiz states
   const [myGender, setMyGender] = useState(null);
@@ -72,7 +73,7 @@ export default function Collaborate() {
       setView("genderSelect");
       toast.success("Joined room successfully!");
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to join room");
+      setJoinError("Invalid room code. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -189,6 +190,12 @@ export default function Collaborate() {
                   {loading ? "Joining..." : "Join Room"}
                 </button>
               </form>
+
+              {joinError && (
+                <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm">
+                  {joinError}
+                </div>
+              )}
             </div>
           </div>
         )}
