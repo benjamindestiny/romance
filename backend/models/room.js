@@ -76,14 +76,14 @@ const roomSchema = new mongoose.Schema(
       index: { expires: 0 },
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-// Generate unique 6-character room code
+// Generate unique 8-character room code
 roomSchema.statics.generateRoomCode = function () {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let code = "";
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 8; i++) {
     code += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return code;
