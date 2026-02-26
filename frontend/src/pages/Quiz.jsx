@@ -5,8 +5,8 @@ import toast from "react-hot-toast";
 import Sidebar from "../components/Sidebar.jsx";
 import BottomNav from "../components/BottomNav.jsx";
 import LogoLoading from "../components/LogoLoading.jsx";
-import ProtectedRoute from "../components/ProtectedRoute.jsx";   // ← Protection added
-import soloQuizCategories from "../data/soloQuizData.js";
+import ProtectedRoute from "../components/ProtectedRoute.jsx"; // ← Protection added
+import { soloQuizCategories } from "../data/soloQuizData.js";
 import {
   ClockIcon,
   TrophyIcon,
@@ -168,7 +168,8 @@ export default function Quiz() {
               {/* Progress & Timer */}
               <div className="flex justify-between items-center mb-6">
                 <div className="text-sm font-medium">
-                  Question {currentQuestionIndex + 1} / {currentQuestions.length}
+                  Question {currentQuestionIndex + 1} /{" "}
+                  {currentQuestions.length}
                 </div>
                 <div className="flex items-center gap-2 text-pink-accent">
                   <ClockIcon className="size-5" />
@@ -227,7 +228,8 @@ export default function Quiz() {
               <p className="text-2xl mb-8">in {selectedCategory.displayName}</p>
 
               <div className="text-text-secondary mb-10">
-                Great work, Nova! This growth will make your future couple quizzes even more meaningful.
+                Great work, Nova! This growth will make your future couple
+                quizzes even more meaningful.
               </div>
 
               <div className="flex gap-4">

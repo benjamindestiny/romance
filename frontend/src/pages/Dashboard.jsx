@@ -179,34 +179,6 @@ export default function Dashboard() {
             </div>
           </header>
 
-          {/* Daily Prompt */}
-          <section className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Today's Prompt</h2>
-              <span className="text-primary-purple text-sm">Reflect daily</span>
-            </div>
-            <div className="bg-card-bg p-6 rounded-2xl">
-              <p className="text-lg leading-snug mb-6">{dailyPrompt}</p>
-              <textarea
-                value={userResponse}
-                onChange={(e) => setUserResponse(e.target.value)}
-                placeholder="Write your thoughts here..."
-                className="w-full bg-[#0F0F0F] border border-gray-border rounded-xl px-5 py-4 text-sm min-h-[110px] focus:outline-none focus:border-pink-accent resize-none"
-              />
-              <button
-                onClick={saveResponse}
-                className="mt-4 bg-pink-accent text-white px-8 py-3 rounded-xl text-sm font-medium w-full md:w-auto"
-              >
-                Save Reflection
-              </button>
-              {responseSaved && (
-                <p className="text-green-400 text-sm mt-3">
-                  Saved! +5 to your health score today.
-                </p>
-              )}
-            </div>
-          </section>
-
           {/* Stat Cards */}
           <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <StatCard
@@ -235,6 +207,36 @@ export default function Dashboard() {
               subtext="+0 this month"
             />
           </section>
+
+          {/* Daily Prompt */}
+          <section className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Today's Prompt</h2>
+              <span className="text-primary-purple text-sm">Reflect daily</span>
+            </div>
+            <div className="bg-card-bg p-6 rounded-2xl">
+              <p className="text-lg leading-snug mb-6">{dailyPrompt}</p>
+              <textarea
+                value={userResponse}
+                onChange={(e) => setUserResponse(e.target.value)}
+                placeholder="Write your thoughts here..."
+                className="w-full bg-[#0F0F0F] border border-gray-border rounded-xl px-5 py-4 text-sm min-h-[110px] focus:outline-none focus:border-pink-accent resize-none"
+              />
+              <button
+                onClick={saveResponse}
+                className="mt-4 bg-pink-accent text-white px-8 py-3 rounded-xl text-sm font-medium w-full md:w-auto"
+              >
+                Save Reflection
+              </button>
+              {responseSaved && (
+                <p className="text-green-400 text-sm mt-3">
+                  Saved! +5 to your health score today.
+                </p>
+              )}
+            </div>
+          </section>
+
+          
 
           {/* Quick Actions */}
           <section className="mb-8">

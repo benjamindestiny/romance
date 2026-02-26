@@ -180,7 +180,7 @@ export default function Collaborate() {
                   value={joinCode}
                   onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                   className="w-full p-4 bg-dark-bg border border-gray-border rounded-lg text-text-primary placeholder-text-secondary focus:outline-none focus:border-primary-purple"
-                  maxLength={6}
+                  maxLength={8}
                 />
                 <button
                   type="submit"
