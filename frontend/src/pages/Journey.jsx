@@ -6,29 +6,13 @@ import axios from "axios";
 import {
   HeartIcon,
   ChartBarIcon,
-  PlusIcon,
   SparklesIcon,
-  CalendarIcon,
 } from "@heroicons/react/24/solid";
 
 export default function Journey() {
   const [showLoader, setShowLoader] = useState(true);
   const [userData, setUserData] = useState(null);
   const [selectedStage, setSelectedStage] = useState(2);
-  const [reflections, setReflections] = useState([
-    {
-      date: "Feb 8",
-      text: "I finally told him how I really feel about the future. Felt scary but good.",
-      impact: "+12",
-    },
-    {
-      date: "Feb 3",
-      text: "Completed the 7-day gratitude challenge together.",
-      impact: "+8",
-    },
-  ]);
-  const [newReflection, setNewReflection] = useState("");
-  const [showModal, setShowModal] = useState(false);
 
   const token = localStorage.getItem("token");
 
@@ -192,13 +176,6 @@ export default function Journey() {
                   <div className="bg-gradient-to-r from-primary-purple to-pink-accent h-full w-[75%] rounded-full" />
                 </div>
               </div>
-
-              <button
-                onClick={() => setShowModal(true)}
-                className="w-full bg-gradient-to-r from-primary-purple to-pink-accent text-white font-semibold py-4 rounded-2xl flex items-center justify-center gap-3 hover:brightness-110 transition"
-              >
-                <PlusIcon className="size-5" /> Add Today’s Reflection
-              </button>
             </div>
           </div>
 
@@ -317,68 +294,7 @@ export default function Journey() {
             </div>
           </div>
         </div>
-
-        {/* Reflections Timeline */}
-        <div className="mt-12 bg-card-bg rounded-3xl p-8">
-          <div className="font-semibold text-lg mb-6 flex items-center gap-2">
-            <CalendarIcon className="size-5" /> Your Reflections
-          </div>
-
-          <div className="space-y-8">
-            {reflections.map((r, i) => (
-              <div key={i} className="flex gap-6">
-                <div className="shrink-0 w-14 text-right">
-                  <div className="text-xs text-text-secondary">{r.date}</div>
-                  <div className="text-green-400 font-bold text-sm">
-                    +{r.impact}
-                  </div>
-                </div>
-                <div className="flex-1 border-l border-gray-border pl-6">
-                  <p className="text-text-secondary leading-relaxed">
-                    “{r.text}”
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       </main>
-
-      {/* Reflection Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-card-bg rounded-3xl max-w-lg w-full p-8">
-            <h3 className="text-2xl font-bold mb-2">
-              How are you feeling today?
-            </h3>
-            <p className="text-text-secondary mb-6">
-              One sentence can change everything.
-            </p>
-
-            <textarea
-              value={newReflection}
-              onChange={(e) => setNewReflection(e.target.value)}
-              placeholder="I finally opened up about..."
-              className="w-full h-40 bg-[#0F0F0F] border border-gray-border rounded-2xl p-5 focus:outline-none focus:border-pink-accent resize-none"
-            />
-
-            <div className="flex gap-4 mt-8">
-              <button
-                onClick={() => setShowModal(false)}
-                className="flex-1 py-4 border border-gray-border rounded-2xl font-medium"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={addReflection}
-                className="flex-1 py-4 bg-pink-accent rounded-2xl font-semibold text-white"
-              >
-                Save Reflection
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <BottomNav />
     </div>
