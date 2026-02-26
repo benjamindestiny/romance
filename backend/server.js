@@ -5,7 +5,7 @@ dotenv.config({ path: "./.env" });
 import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
-import cloudinary from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 
 import authRoutes from "./routes/authRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
@@ -14,7 +14,7 @@ import roomRoutes from "./routes/roomRoutes.js";
 const app = express();
 
 // Configure Cloudinary
-cloudinary.v2.config({
+cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,

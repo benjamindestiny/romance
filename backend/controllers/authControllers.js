@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import dotenv from "dotenv";
 import { sendEmail } from "../utils/sendEmail.js";
-import cloudinary from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
 
 dotenv.config();
@@ -364,7 +364,7 @@ export const uploadProfilePic = [
 
       // Upload to Cloudinary
       const result = await new Promise((resolve, reject) => {
-        const stream = cloudinary.v2.uploader.upload_stream(
+        const stream = cloudinary.uploader.upload_stream(
           {
             folder: "profile_pics",
             transformation: [{ width: 300, height: 300, crop: "fill" }],
