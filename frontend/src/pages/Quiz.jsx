@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import Sidebar from "../components/Sidebar.jsx";
 import BottomNav from "../components/BottomNav.jsx";
 import LogoLoading from "../components/LogoLoading.jsx";
-import ProtectedRoute from "../components/ProtectedRoute.jsx"; // ← Protection added
+import ProtectedRoutes from "../components/ProtectedRoutes.jsx";
 import { soloQuizCategories } from "../data/soloQuizData.js";
 import {
   ClockIcon,
@@ -114,7 +114,7 @@ export default function Quiz() {
     return <LogoLoading onComplete={() => setShowLoader(false)} />;
 
   return (
-    <ProtectedRoute>
+    <ProtectedRoutes>
       <div className="min-h-screen bg-dark-bg text-text-primary font-sans pb-32 md:pb-0">
         <Sidebar />
         <main className="md:ml-64 p-4 md:p-6">
@@ -254,6 +254,6 @@ export default function Quiz() {
         </main>
         <BottomNav />
       </div>
-    </ProtectedRoute>
+    </ProtectedRoutes>
   );
 }
