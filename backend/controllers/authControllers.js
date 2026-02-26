@@ -4,6 +4,10 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import dotenv from "dotenv";
 import { sendEmail } from "../utils/sendEmail.js";
+import cloudinary from "cloudinary";
+import multer from "multer";
+
+dotenv.config();
 
 dotenv.config();
 
@@ -320,12 +324,24 @@ export const updateProfile = async (req, res) => {
     const user = await User.findById(req.user.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const { name, bio, profilePic, interests, lookingFor } = req.body;
+    const {
+      name,
+      bio,
+      profilePic,
+      interests,
+      lookingFor,
+      phone,
+      dob,
+      location,
+    } = req.body;
     if (name) user.name = name;
-    if (bio) user.bio = bio;
+    if (bio !== undefined) user.bio = bio;
     if (profilePic) user.profilePic = profilePic;
     if (interests) user.interests = interests;
     if (lookingFor) user.lookingFor = lookingFor;
+    if (phone !== undefined) user.phone = phone;
+    if (dob) user.dob = new Date(dob);
+    if (location !== undefined) user.location = location;
 
     await user.save();
     res.json(user);
@@ -333,3 +349,37 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+/* ================= UPLOAD PROFILE PICTURE ================= */
+const storage = multer.memoryStorage();
+const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB limit
+
+export const uploadProfilePic = [
+  upload.single("profilePic"),
+  async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No file uploaded" });
+      }
+
+      // Upload to Cloudinary
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream(
+          {
+            folder: "profile_pics",
+            transformation: [{ width: 300, height: 300, crop: "fill" }],
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          },
+        );
+        stream.end(req.file.buffer);
+      });
+
+      res.json({ url: result.secure_url });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  },
+];

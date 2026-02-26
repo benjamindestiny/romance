@@ -29,6 +29,21 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
 
+    phone: {
+      type: String,
+      default: "",
+    },
+
+    dob: {
+      type: Date,
+      default: null,
+    },
+
+    location: {
+      type: String,
+      default: "",
+    },
+
     profilePic: {
       type: String,
       default: "https://via.placeholder.com/150?text=Profile",

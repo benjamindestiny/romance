@@ -16,30 +16,44 @@ export const createRoom = async (req, res) => {
       });
     }
 
-    // Generate unique code
-    let roomCode;
-    let codeExists = true;
+    // Generate unique code by attempting to save
+    let room;
+    let attempts = 0;
+    const maxAttempts = 10;
 
-    while (codeExists) {
-      roomCode = Room.generateRoomCode();
-      const existing = await Room.findOne({ roomCode });
-      if (!existing) codeExists = false;
+    while (!room && attempts < maxAttempts) {
+      const roomCode = Room.generateRoomCode();
+      const newRoom = new Room({
+        roomCode,
+        createdBy: userId,
+        participants: [
+          {
+            userId,
+            status: "joined",
+          },
+        ],
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        status: "waiting",
+      });
+
+      try {
+        room = await newRoom.save();
+      } catch (error) {
+        if (error.code === 11000) {
+          // Duplicate key error, try again
+          attempts++;
+        } else {
+          throw error;
+        }
+      }
     }
 
-    const room = new Room({
-      roomCode,
-      createdBy: userId,           // ← Now correctly set
-      participants: [
-        {
-          userId,
-          status: "joined",
-        },
-      ],
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      status: "waiting",
-    });
-
-    await room.save();
+    if (!room) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to generate unique room code after multiple attempts",
+      });
+    }
 
     res.status(201).json({
       success: true,
@@ -65,27 +79,36 @@ export const createRoom = async (req, res) => {
 export const joinRoom = async (req, res) => {
   try {
     const { roomCode } = req.body;
-    const userId = req.user.id;        // ← FIXED here too
+    const userId = req.user.id; // ← FIXED here too
 
     if (!roomCode) {
-      return res.status(400).json({ success: false, message: "Room code required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Room code required" });
     }
 
     const room = await Room.findOne({ roomCode });
 
-    if (!room) return res.status(404).json({ success: false, message: "Room not found" });
+    if (!room)
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
     if (room.status === "expired" || new Date() > room.expiresAt) {
-      return res.status(400).json({ success: false, message: "Room has expired" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Room has expired" });
     }
     if (room.participants.length >= 2) {
       return res.status(400).json({ success: false, message: "Room is full" });
     }
 
     const alreadyJoined = room.participants.some(
-      (p) => p.userId.toString() === userId.toString()
+      (p) => p.userId.toString() === userId.toString(),
     );
     if (alreadyJoined) {
-      return res.status(400).json({ success: false, message: "You already joined this room" });
+      return res
+        .status(400)
+        .json({ success: false, message: "You already joined this room" });
     }
 
     room.participants.push({ userId, status: "joined" });
@@ -119,11 +142,13 @@ export const getRoom = async (req, res) => {
     const { roomId } = req.params;
 
     const room = await Room.findById(roomId)
-      .populate("createdBy", "name")                    // ← Fixed field name
+      .populate("createdBy", "name") // ← Fixed field name
       .populate("participants.userId", "name");
 
     if (!room) {
-      return res.status(404).json({ success: false, message: "Room not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
     }
 
     res.json({
@@ -155,7 +180,10 @@ export const updateRoomStatus = async (req, res) => {
     const { status, selectedQuiz } = req.body;
 
     const room = await Room.findById(roomId);
-    if (!room) return res.status(404).json({ success: false, message: "Room not found" });
+    if (!room)
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
 
     if (status) room.status = status;
     if (selectedQuiz) room.selectedQuiz = selectedQuiz;
@@ -165,7 +193,11 @@ export const updateRoomStatus = async (req, res) => {
     res.json({
       success: true,
       message: "Room updated",
-      room: { id: room._id, status: room.status, selectedQuiz: room.selectedQuiz },
+      room: {
+        id: room._id,
+        status: room.status,
+        selectedQuiz: room.selectedQuiz,
+      },
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -178,25 +210,32 @@ export const submitQuizAnswers = async (req, res) => {
   try {
     const { roomId } = req.params;
     const { answers } = req.body;
-    const userId = req.user.id;        // ← FIXED
+    const userId = req.user.id; // ← FIXED
 
     if (!answers || !Array.isArray(answers)) {
-      return res.status(400).json({ success: false, message: "Answers array required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Answers array required" });
     }
 
     const room = await Room.findById(roomId);
-    if (!room) return res.status(404).json({ success: false, message: "Room not found" });
+    if (!room)
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
 
     const participantIndex = room.participants.findIndex(
-      (p) => p.userId.toString() === userId.toString()
+      (p) => p.userId.toString() === userId.toString(),
     );
 
     if (participantIndex === -1) {
-      return res.status(403).json({ success: false, message: "You are not in this room" });
+      return res
+        .status(403)
+        .json({ success: false, message: "You are not in this room" });
     }
 
     room.quizAnswers = room.quizAnswers.filter(
-      (qa) => qa.userId.toString() !== userId.toString()
+      (qa) => qa.userId.toString() !== userId.toString(),
     );
 
     room.quizAnswers.push({
@@ -207,7 +246,9 @@ export const submitQuizAnswers = async (req, res) => {
 
     room.participants[participantIndex].status = "completed";
 
-    const allCompleted = room.participants.every((p) => p.status === "completed");
+    const allCompleted = room.participants.every(
+      (p) => p.status === "completed",
+    );
     if (allCompleted) room.status = "completed";
 
     await room.save();
@@ -233,9 +274,14 @@ export const getQuizResults = async (req, res) => {
       .populate("participants.userId", "name")
       .populate("quizAnswers.userId", "name");
 
-    if (!room) return res.status(404).json({ success: false, message: "Room not found" });
+    if (!room)
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
     if (room.status !== "completed") {
-      return res.status(400).json({ success: false, message: "Quiz not completed yet" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Quiz not completed yet" });
     }
 
     let matchingAnswers = 0;
@@ -250,7 +296,8 @@ export const getQuizResults = async (req, res) => {
       });
     }
 
-    const compatibilityScore = totalAnswers > 0 ? Math.round((matchingAnswers / totalAnswers) * 100) : 0;
+    const compatibilityScore =
+      totalAnswers > 0 ? Math.round((matchingAnswers / totalAnswers) * 100) : 0;
 
     res.json({
       success: true,
@@ -275,18 +322,24 @@ export const getQuizResults = async (req, res) => {
 export const leaveRoom = async (req, res) => {
   try {
     const { roomId } = req.params;
-    const userId = req.user.id;        // ← FIXED
+    const userId = req.user.id; // ← FIXED
 
     const room = await Room.findById(roomId);
-    if (!room) return res.status(404).json({ success: false, message: "Room not found" });
+    if (!room)
+      return res
+        .status(404)
+        .json({ success: false, message: "Room not found" });
 
     room.participants = room.participants.filter(
-      (p) => p.userId.toString() !== userId.toString()
+      (p) => p.userId.toString() !== userId.toString(),
     );
 
     if (room.participants.length === 0) {
       await Room.findByIdAndDelete(roomId);
-      return res.json({ success: true, message: "Left room (deleted as it's empty)" });
+      return res.json({
+        success: true,
+        message: "Left room (deleted as it's empty)",
+      });
     }
 
     room.status = "waiting";

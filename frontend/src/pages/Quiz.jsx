@@ -24,9 +24,11 @@ export default function Quiz() {
   const [score, setScore] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [finalPercentage, setFinalPercentage] = useState(0);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user") || "{}"),
+  );
 
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // Timer logic – 35 seconds per question
   useEffect(() => {
@@ -45,7 +47,7 @@ export default function Quiz() {
     setSelectedCategory(category);
     setView("quiz");
     setCurrentQuestionIndex(0);
-    setTimeLeft(35);
+    setTimeLeft(30);
     setSelectedOption(null);
     setScore(0);
     setAnswers([]);
@@ -101,7 +103,15 @@ export default function Quiz() {
         },
         { headers: { Authorization: `Bearer ${token}` } },
       );
-      toast.success(`Progress saved! +${Math.round(percentage / 10)} points`);
+      const newScore = Math.round(percentage / 10);
+      const updatedScores = {
+        ...user.scores,
+        [categoryKey]: Math.max(user.scores?.[categoryKey] || 0, newScore),
+      };
+      const updatedUser = { ...user, scores: updatedScores };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      toast.success(`Progress saved! +${newScore} points`);
     } catch (err) {
       console.error("Solo quiz submit failed:", err);
       toast.error("Progress saved locally – connection issue");
@@ -153,7 +163,7 @@ export default function Quiz() {
                     <div className="text-sm text-text-secondary">
                       Your best:{" "}
                       <span className="text-green-400 font-medium">
-                        {userScore}%
+                        {userScore * 10}%
                       </span>
                     </div>
                   </div>
@@ -228,8 +238,8 @@ export default function Quiz() {
               <p className="text-2xl mb-8">in {selectedCategory.displayName}</p>
 
               <div className="text-text-secondary mb-10">
-                Great work, Nova! This growth will make your future couple
-                quizzes even more meaningful.
+                Great work, {user.name}! This growth will make your future
+                couple quizzes even more meaningful.
               </div>
 
               <div className="flex gap-4">

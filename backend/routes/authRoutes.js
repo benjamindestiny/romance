@@ -11,6 +11,7 @@ import {
   updateProfile,
   getUserProfile,
   resendVerification,
+  uploadProfilePic,
 } from "../controllers/authControllers.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
@@ -29,5 +30,6 @@ router.get("/search", authMiddleware, searchUsers);
 router.get("/profile/:userId", authMiddleware, getUserProfile);
 router.get("/me", authMiddleware, getMe);
 router.put("/profile", authMiddleware, updateProfile);
+router.post("/upload-profile-pic", authMiddleware, uploadProfilePic);
 
 export default router;

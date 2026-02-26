@@ -9,7 +9,7 @@ import LongDistance from "../assets/long-distance.jpg";
 import OnlineDating from "../assets/online-dating.jpg";
 import Friendship from "../assets/meaningful-friendship.jpg";
 import LogoLoading from "../components/LogoLoading.jsx";
-import ProtectedRoutes from "../components/ProtectedRoutes.jsx"; // ← NEW IMPORT
+import ProtectedRoutes from "../components/ProtectedRoutes.jsx";
 import axios from "axios";
 import {
   BellIcon,
@@ -236,8 +236,6 @@ export default function Dashboard() {
             </div>
           </section>
 
-          
-
           {/* Quick Actions */}
           <section className="mb-8">
             <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
@@ -255,7 +253,7 @@ export default function Dashboard() {
                 description="Connect with others on similar journeys and share experiences."
               />
               <QuickActionCard
-                to="/reports"
+                to="/report"
                 icon={
                   <ExclamationTriangleIcon className="size-6 text-primary-purple" />
                 }

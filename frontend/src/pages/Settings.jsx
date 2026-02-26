@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 import Sidebar from "../components/Sidebar.jsx";
 import AccountDeletionModal from "../components/AccountDeletionModal.jsx";
 import LogoLoading from "../components/LogoLoading.jsx";
@@ -25,16 +26,35 @@ function Settings() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [profilePhotoPreview, setProfilePhotoPreview] = useState(ProfilePhoto);
   const [uploading, setUploading] = useState(false);
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("user") || "{}"),
+  );
   const [profile, setProfile] = useState({
-    firstName: "Sarah",
-    lastName: "Mitchell",
-    email: "sarah.mitchell@example.com",
-    phone: "+1 (555) 123-4567",
-    dob: "1992-05-15",
-    bio: "Passionate about personal growth and building meaningful connections. On a journey to discover deeper intimacy and emotional intelligence.",
-    location: "San Francisco, CA",
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    dob: "",
+    bio: "",
+    location: "",
     timezone: "Pacific Time (PT)",
   });
+
+  useEffect(() => {
+    setProfile({
+      firstName: user.firstName || user.name?.split(" ")[0] || "",
+      lastName: user.lastName || user.name?.split(" ")[1] || "",
+      email: user.email || "",
+      phone: user.phone || "",
+      dob: user.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
+      bio: user.bio || "",
+      location: user.location || "",
+      timezone: user.timezone || "Pacific Time (PT)",
+    });
+    if (user.profilePic) {
+      setProfilePhotoPreview(user.profilePic);
+    }
+  }, [user]);
   const activeSectionsLinks = [
     {
       id: "profile",
@@ -63,9 +83,34 @@ function Settings() {
     },
   ];
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    toast.success("Changes saved!");
+    try {
+      const token = localStorage.getItem("token");
+      const updateData = {
+        name: `${profile.firstName} ${profile.lastName}`.trim(),
+        email: profile.email,
+        phone: profile.phone,
+        dob: profile.dob,
+        bio: profile.bio,
+        location: profile.location,
+        profilePic:
+          profilePhotoPreview !== ProfilePhoto
+            ? profilePhotoPreview
+            : undefined,
+      };
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/auth/profile`,
+        updateData,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      const updatedUser = res.data;
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update profile");
+    }
   };
 
   const handleProfileChange = (e) => {
@@ -74,7 +119,7 @@ function Settings() {
   };
 
   // Handle profile photo upload
-  const handlePhotoUpload = (e) => {
+  const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -85,30 +130,42 @@ function Settings() {
     }
 
     // Validate file size (max 5MB)
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > 5 * 1024 * 1024) {
       toast.error("Image must be less than 5MB");
       return;
     }
 
     setUploading(true);
 
-    // Create a preview
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setProfilePhotoPreview(event.target?.result);
-      toast.success(
-        "Photo selected! (Backend dwill upload to Cloudinary/Database)",
+    try {
+      const token = localStorage.getItem("token");
+      const formData = new FormData();
+      formData.append("profilePic", file);
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/upload-profile-pic`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
+
+      setProfilePhotoPreview(res.data.url);
+      toast.success("Photo uploaded successfully!");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to upload photo");
+    } finally {
       setUploading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
-   if (showLoader)
-      return <LogoLoading onComplete={() => setShowLoader(false)} />;
+  if (showLoader)
+    return <LogoLoading onComplete={() => setShowLoader(false)} />;
   return (
     <div className="min-h-screen bg-[#0F0F14] text-gray-100 font-sans pb-32 md:pb-0">
-      
       <Sidebar />
       <main className="md:ml-64 p-4 md:p-6">
         {/* Header Section */}
