@@ -15,7 +15,7 @@ const app = express();
 /* ===== MIDDLEWARE ===== */
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: true, // Allow all origins for testing
     credentials: true,
   }),
 );
@@ -46,7 +46,9 @@ const PORT = process.env.PORT || 3000;
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    app.listen(PORT, "0.0.0.0", () =>
+      console.log(`Server running on port ${PORT}`),
+    );
   } catch (error) {
     console.error("Failed to start server:", error.message);
     process.exit(1);
