@@ -1,7 +1,9 @@
 import { Resend } from "resend";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 console.log("API KEY:", process.env.RESEND_API_KEY);
-
 
 if (!process.env.RESEND_API_KEY) {
   throw new Error("RESEND_API_KEY is missing in environment variables");
