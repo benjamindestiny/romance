@@ -37,7 +37,9 @@ export default function Dashboard() {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/auth/me`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { 
+              Authorization: `Bearer ${token}` 
+            },
           },
         );
         setUserData(res.data);

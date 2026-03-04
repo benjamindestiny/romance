@@ -1,152 +1,329 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { loadStripe } from "@stripe/stripe-js";
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements,
-} from "@stripe/react-stripe-js";
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 const Billing = () => {
-  // Stripe checkout form component
-  const StripeCheckoutForm = ({
-    amount,
-    planId,
-    cardholderName,
-    setCardholderName,
-    setLoading,
-  }) => {
-    const stripe = useStripe();
-    const elements = useElements();
+  const { user } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(null);
+  const [selectedPlan, setSelectedPlan] = useState("basic");
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      if (!stripe || !elements) return;
-      setLoading(true);
+  // Plan configurations
+  const plans = {
+    basic: {
+      name: "Basic Plan",
+      price: 9.99,
+      currency: "USD",
+      features: [
+        "Access to daily prompts",
+        "Basic quiz features",
+        "Email support",
+      ],
+    },
+    premium: {
+      name: "Premium Plan",
+      price: 19.99,
+      currency: "USD",
+      features: [
+        "All Basic features",
+        "Advanced analytics",
+        "Priority support",
+        "Unlimited quizzes",
+      ],
+    },
+    pro: {
+      name: "Pro Plan",
+      price: 39.99,
+      currency: "USD",
+      features: [
+        "All Premium features",
+        "Custom reports",
+        "Dedicated support",
+        "API access",
+      ],
+    },
+  };
 
+  // Check payment status on mount
+  useEffect(() => {
+    const checkPaymentStatus = async () => {
       try {
-        // create payment intent on backend
-        const intentRes = await axios.post(
-          "/api/payments/stripe/create-intent",
-          {
-            amount,
-            planId,
-            currency: "USD",
-          },
-        );
-
-        const clientSecret = intentRes.data.clientSecret;
-        if (!clientSecret) throw new Error("No client secret returned");
-
-        const cardElement = elements.getElement(CardElement);
-
-        const confirmRes = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: cardElement,
-            billing_details: { name: cardholderName || "Customer" },
-          },
-        });
-
-        if (confirmRes.error) {
-          throw confirmRes.error;
+        const res = await axios.get("/api/payments/status");
+        if (res.data.success) {
+          setPaymentStatus(res.data.data);
         }
-
-        if (
-          confirmRes.paymentIntent &&
-          confirmRes.paymentIntent.status === "succeeded"
-        ) {
-          // inform backend to confirm and create records
-          await axios.post("/api/payments/stripe/confirm", {
-            paymentIntentId: confirmRes.paymentIntent.id,
-            planId,
-          });
-
-          alert("Payment successful!");
-        } else {
-          alert("Payment not completed");
-        }
-      } catch (err) {
-        console.error("Stripe payment error", err);
-        alert(err.message || "Payment failed");
-      } finally {
-        setLoading(false);
+      } catch (error) {
+        console.error("Error checking payment status:", error);
       }
     };
 
-    return (
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "15px" }}
-      >
-        <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-              color: "#333",
-            }}
+    checkPaymentStatus();
+  }, []);
+
+  // Initialize Flutterwave payment
+  const handlePayment = async () => {
+    if (!user || !user.email) {
+      alert("Please log in to make a payment");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const planData = plans[selectedPlan];
+
+      // Initialize payment with backend
+      const response = await axios.post(
+        "/api/payments/flutterwave/initialize",
+        {
+          amount: planData.price,
+          currency: planData.currency,
+          email: user.email,
+          userId: user._id,
+          planId: selectedPlan,
+        },
+      );
+
+      if (response.data.success && response.data.data.link) {
+        // Redirect to Flutterwave checkout
+        window.location.href = response.data.data.link;
+      } else {
+        alert("Failed to initialize payment. Please try again.");
+      }
+    } catch (error) {
+      console.error("Payment initialization error:", error);
+      alert(error.response?.data?.message || "Payment initialization failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "#f9f9f9",
+        padding: "2rem",
+      }}
+    >
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        {/* Header */}
+        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+          <h1
+            style={{ fontSize: "2.5rem", color: "#333", marginBottom: "1rem" }}
           >
-            Cardholder Name
-          </label>
-          <input
-            type="text"
-            placeholder="John Doe"
-            value={cardholderName}
-            onChange={(e) => setCardholderName(e.target.value)}
-            required
-            style={{
-              width: "100%",
-              padding: "10px",
-              borderRadius: "5px",
-              border: "1px solid #ddd",
-              fontSize: "1em",
-            }}
-          />
+            Choose Your Plan
+          </h1>
+          <p style={{ fontSize: "1.1rem", color: "#666" }}>
+            Upgrade to unlock premium features and enhance your romance journey
+          </p>
         </div>
 
-        <div>
-          <label
-            style={{
-              display: "block",
-              marginBottom: "5px",
-              fontWeight: "bold",
-              color: "#333",
-            }}
-          >
-            Card Details
-          </label>
+        {/* Current Status */}
+        {paymentStatus && (
           <div
             style={{
-              padding: "12px",
-              border: "1px solid #ddd",
-              borderRadius: "6px",
-              background: "#fff",
+              backgroundColor: "#e8f5e9",
+              border: "1px solid #4caf50",
+              borderRadius: "8px",
+              padding: "1rem",
+              marginBottom: "2rem",
+              textAlign: "center",
             }}
           >
-            <CardElement />
+            <p style={{ color: "#2e7d32", fontWeight: "bold" }}>
+              Current Plan:{" "}
+              <span style={{ textTransform: "capitalize" }}>
+                {paymentStatus.premiumPlan}
+              </span>
+              {paymentStatus.isPremium && paymentStatus.premiumExpiryDate && (
+                <>
+                  <br />
+                  Expires:{" "}
+                  {new Date(
+                    paymentStatus.premiumExpiryDate,
+                  ).toLocaleDateString()}
+                </>
+              )}
+            </p>
           </div>
-        </div>
+        )}
 
-        <button
-          type="submit"
+        {/* Plans Grid */}
+        <div
           style={{
-            backgroundColor: "#FF6B9D",
-            color: "#fff",
-            border: "none",
-            padding: "12px",
-            borderRadius: "5px",
-            fontSize: "1em",
-            fontWeight: "bold",
-            cursor: "pointer",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: "2rem",
+            marginBottom: "3rem",
           }}
         >
-          Pay ${amount}
-        </button>
-      </form>
-    );
-  };
+          {Object.entries(plans).map(([planId, planData]) => (
+            <div
+              key={planId}
+              style={{
+                backgroundColor: selectedPlan === planId ? "#fff3e0" : "#fff",
+                border:
+                  selectedPlan === planId
+                    ? "2px solid #ff6b9d"
+                    : "1px solid #ddd",
+                borderRadius: "12px",
+                padding: "2rem",
+                boxShadow:
+                  selectedPlan === planId
+                    ? "0 4px 12px rgba(255, 107, 157, 0.2)"
+                    : "0 2px 8px rgba(0, 0, 0, 0.1)",
+                transition: "all 0.3s ease",
+                cursor: "pointer",
+                position: "relative",
+              }}
+              onClick={() => setSelectedPlan(planId)}
+            >
+              {selectedPlan === planId && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "-12px",
+                    right: "20px",
+                    backgroundColor: "#ff6b9d",
+                    color: "white",
+                    padding: "4px 12px",
+                    borderRadius: "20px",
+                    fontSize: "0.85rem",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Selected
+                </div>
+              )}
+
+              <h3
+                style={{
+                  fontSize: "1.5rem",
+                  color: "#333",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                {planData.name}
+              </h3>
+
+              <div style={{ marginBottom: "1.5rem" }}>
+                <span
+                  style={{
+                    fontSize: "2.5rem",
+                    fontWeight: "bold",
+                    color: "#ff6b9d",
+                  }}
+                >
+                  ${planData.price}
+                </span>
+                <span style={{ color: "#666", marginLeft: "0.5rem" }}>
+                  /month
+                </span>
+              </div>
+
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  marginBottom: "2rem",
+                }}
+              >
+                {planData.features.map((feature, idx) => (
+                  <li
+                    key={idx}
+                    style={{
+                      padding: "0.5rem 0",
+                      color: "#555",
+                      borderBottom: "1px solid #eee",
+                    }}
+                  >
+                    <span style={{ marginRight: "0.5rem", color: "#4caf50" }}>
+                      ✓
+                    </span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                onClick={() => {
+                  setSelectedPlan(planId);
+                  handlePayment();
+                }}
+                disabled={loading}
+                style={{
+                  width: "100%",
+                  padding: "12px",
+                  backgroundColor:
+                    selectedPlan === planId ? "#ff6b9d" : "#f0f0f0",
+                  color: selectedPlan === planId ? "white" : "#333",
+                  border: "none",
+                  borderRadius: "6px",
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                  cursor: loading ? "not-allowed" : "pointer",
+                  opacity: loading ? 0.6 : 1,
+                  transition: "all 0.3s ease",
+                }}
+              >
+                {loading ? "Processing..." : "Upgrade Now"}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* FAQ Section */}
+        <div
+          style={{
+            backgroundColor: "#fff",
+            borderRadius: "12px",
+            padding: "2rem",
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <h2
+            style={{
+              fontSize: "1.5rem",
+              color: "#333",
+              marginBottom: "1.5rem",
+            }}
+          >
+            Frequently Asked Questions
+          </h2>
+
+          <div style={{ display: "grid", gap: "1rem" }}>
+            {[
+              {
+                q: "Can I change my plan later?",
+                a: "Yes! You can upgrade or downgrade your plan at any time.",
+              },
+              {
+                q: "What payment methods do you accept?",
+                a: "We accept all major credit cards, debit cards, and mobile money through Flutterwave.",
+              },
+              {
+                q: "Is there a free trial?",
+                a: "Currently, all plans require payment. However, the Free plan includes basic features.",
+              },
+              {
+                q: "Do you offer refunds?",
+                a: "Yes, we offer a 7-day money-back guarantee if you're not satisfied.",
+              },
+            ].map((item, idx) => (
+              <div key={idx}>
+                <h4 style={{ color: "#333", marginBottom: "0.5rem" }}>
+                  {item.q}
+                </h4>
+                <p style={{ color: "#666", marginLeft: "1rem" }}>{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Billing;
