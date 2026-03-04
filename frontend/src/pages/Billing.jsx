@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 
 const Billing = () => {
   const { user } = useUser();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState("basic");
+  const [message, setMessage] = useState(null);
+  const [messageType, setMessageType] = useState("info");
 
   // Plan configurations
   const plans = {
@@ -62,12 +67,14 @@ const Billing = () => {
 
   // Initialize Flutterwave payment
   const handlePayment = async () => {
-    if (!user || !user.email) {
-      alert("Please log in to make a payment");
+    if (!user || !user.id) {
+      setMessage("Please log in to make a payment");
+      setMessageType("error");
       return;
     }
 
     setLoading(true);
+    setMessage(null);
 
     try {
       const planData = plans[selectedPlan];
@@ -78,8 +85,8 @@ const Billing = () => {
         {
           amount: planData.price,
           currency: planData.currency,
-          email: user.email,
-          userId: user._id,
+          email: user.email || "", // backend can lookup if missing
+          userId: user._id || user.id,
           planId: selectedPlan,
         },
       );
@@ -88,11 +95,15 @@ const Billing = () => {
         // Redirect to Flutterwave checkout
         window.location.href = response.data.data.link;
       } else {
-        alert("Failed to initialize payment. Please try again.");
+        setMessage("Failed to initialize payment. Please try again.");
+        setMessageType("error");
       }
     } catch (error) {
       console.error("Payment initialization error:", error);
-      alert(error.response?.data?.message || "Payment initialization failed");
+      setMessage(
+        error.response?.data?.message || "Payment initialization failed",
+      );
+      setMessageType("error");
     } finally {
       setLoading(false);
     }
@@ -108,15 +119,38 @@ const Billing = () => {
     >
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "3rem" }}>
-          <h1
-            style={{ fontSize: "2.5rem", color: "#333", marginBottom: "1rem" }}
-          >
-            Choose Your Plan
-          </h1>
-          <p style={{ fontSize: "1.1rem", color: "#666" }}>
-            Upgrade to unlock premium features and enhance your romance journey
-          </p>
+        <div
+          style={{
+            marginBottom: "3rem",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <ArrowLeftIcon
+            onClick={() => navigate(-1)}
+            style={{
+              width: "24px",
+              height: "24px",
+              cursor: "pointer",
+              marginRight: "1rem",
+              color: "#333",
+            }}
+          />
+          <div style={{ flexGrow: 1, textAlign: "center" }}>
+            <h1
+              style={{
+                fontSize: "2.5rem",
+                color: "#333",
+                marginBottom: "1rem",
+              }}
+            >
+              Choose Your Plan
+            </h1>
+            <p style={{ fontSize: "1.1rem", color: "#666" }}>
+              Upgrade to unlock premium features and enhance your romance
+              journey
+            </p>
+          </div>
         </div>
 
         {/* Current Status */}
@@ -146,6 +180,26 @@ const Billing = () => {
                 </>
               )}
             </p>
+          </div>
+        )}
+
+        {/* Message / notification area */}
+        {message && (
+          <div
+            style={{
+              backgroundColor: messageType === "error" ? "#ffebee" : "#e3f2fd",
+              border:
+                messageType === "error"
+                  ? "1px solid #f44336"
+                  : "1px solid #2196f3",
+              borderRadius: "8px",
+              padding: "1rem",
+              marginBottom: "2rem",
+              color: messageType === "error" ? "#b71c1c" : "#0d47a1",
+              textAlign: "center",
+            }}
+          >
+            {message}
           </div>
         )}
 
