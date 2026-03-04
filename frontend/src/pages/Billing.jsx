@@ -67,7 +67,9 @@ const Billing = () => {
 
   // Initialize Flutterwave payment
   const handlePayment = async () => {
-    if (!user || !user.id) {
+    // determine an identifier property – backend returns _id
+    const userId = user?._id || user?.id;
+    if (!user || !userId) {
       setMessage("Please log in to make a payment");
       setMessageType("error");
       return;
