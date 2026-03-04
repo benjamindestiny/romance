@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
+import { useUser } from "../contexts/UserContext";
 
 const Billing = () => {
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState(null);
   const [selectedPlan, setSelectedPlan] = useState("basic");
