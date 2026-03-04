@@ -1,28 +1,30 @@
 import express from "express";
 import authMiddleware from "../middleware/authMiddleware.js";
+import {
+  initializePayment,
+  verifyPayment,
+  getPaymentStatus,
+  handleWebhook,
+} from "../controllers/flutterwaveController.js";
 
 const router = express.Router();
 
-// Placeholder payment routes
-// WHY: Infrastructure ready for future Stripe/PayPal integration
+// Flutterwave payment routes
 
-// POST /api/payments/create-payment-intent
-// WHY: Create Stripe payment for premium features
-router.post("/create-payment-intent", authMiddleware, (req, res) => {
-  res.json({
-    success: false,
-    message: "Payment feature coming soon",
-  });
-});
+// POST /api/payments/flutterwave/initialize
+// WHY: Initialize Flutterwave payment session
+router.post("/flutterwave/initialize", authMiddleware, initializePayment);
+
+// POST /api/payments/flutterwave/verify
+// WHY: Verify Flutterwave payment after user returns from checkout
+router.post("/flutterwave/verify", authMiddleware, verifyPayment);
 
 // GET /api/payments/status
 // WHY: Check user's subscription status
-router.get("/status", authMiddleware, (req, res) => {
-  res.json({
-    success: true,
-    subscription: "free",
-    message: "Premium features coming soon",
-  });
-});
+router.get("/status", authMiddleware, getPaymentStatus);
+
+// POST /api/payments/flutterwave/webhook
+// WHY: Handle webhook events from Flutterwave (charge.completed, etc.)
+router.post("/flutterwave/webhook", handleWebhook);
 
 export default router;
