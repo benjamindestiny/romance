@@ -191,7 +191,7 @@ function Settings() {
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
           <div>
             <button
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/dashboard")}
               className="flex items-center gap-2 text-[#FF69B4] hover:text-[#E0559B] transition-colors mb-2"
             >
               <ArrowLeftIcon className="size-5" />
