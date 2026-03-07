@@ -1,15 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar.jsx";
 import BottomNav from "../components/BottomNav.jsx";
 import LogoLoading from "../components/LogoLoading.jsx";
-import { LinkIcon, CheckCircleIcon } from "@heroicons/react/24/solid";
+import {
+  LinkIcon,
+  CheckCircleIcon,
+  LockClosedIcon,
+} from "@heroicons/react/24/solid";
 import toast from "react-hot-toast";
 
 // Import the clean quiz data
 import { coupleQuizCategories } from "../utils/quizCategories.js";
 
 export default function Collaborate() {
+  const navigate = useNavigate();
   const [showLoader, setShowLoader] = useState(true);
   const [view, setView] = useState("menu");
   const [roomCode, setRoomCode] = useState("");
@@ -18,6 +24,9 @@ export default function Collaborate() {
   const [loading, setLoading] = useState(false);
   const [joinCode, setJoinCode] = useState("");
   const [joinError, setJoinError] = useState("");
+  const [isPro, setIsPro] = useState(false);
+  const [showProBanner, setShowProBanner] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   // Quiz states
   const [myGender, setMyGender] = useState(null);
@@ -26,6 +35,74 @@ export default function Collaborate() {
   const [userAnswers, setUserAnswers] = useState([]);
 
   const token = localStorage.getItem("token");
+
+  // Timeout safeguard to prevent infinite loading
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (showLoader) {
+        console.warn("Collaborate page loading took too long, forcing show");
+        setShowLoader(false);
+      }
+    }, 8000); // 8 second hard timeout
+
+    return () => clearTimeout(timeout);
+  }, [showLoader]);
+
+  // Check if user is pro on component mount
+  useEffect(() => {
+    const checkProStatus = async () => {
+      try {
+        if (!token) {
+          setIsPro(false);
+          setShowUpgradeModal(true);
+          return;
+        }
+
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/auth/me`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            timeout: 5000, // 5 second timeout
+          },
+        );
+        const userSubscriptionStatus = res.data.subscriptionStatus || "free";
+        const isProUser = userSubscriptionStatus === "pro";
+
+        setIsPro(isProUser);
+
+        // Show upgrade modal if not pro
+        if (!isProUser) {
+          setShowUpgradeModal(true);
+        }
+      } catch (error) {
+        console.error("Error checking pro status:", error.message);
+        // Default to free plan if API fails
+        setIsPro(false);
+        setShowUpgradeModal(true);
+      } finally {
+        setShowLoader(false);
+      }
+    };
+
+    checkProStatus();
+  }, [token]);
+
+  // Trigger room creation when view changes to "create"
+  useEffect(() => {
+    if (view === "create") {
+      if (!isPro) {
+        setView("menu");
+        setShowUpgradeModal(true);
+        return;
+      }
+      handleCreateRoom();
+    }
+  }, [view, isPro]);
+
+  const handleUpgradeClick = () => {
+    setShowUpgradeModal(false);
+    navigate("/billing");
+  };
 
   if (showLoader)
     return <LogoLoading onComplete={() => setShowLoader(false)} />;
@@ -151,6 +228,66 @@ export default function Collaborate() {
     <div className="min-h-screen bg-dark-bg text-text-primary font-sans pb-32 md:pb-0">
       <Sidebar />
       <main className="md:ml-64 p-4">
+        {/* Upgrade Modal */}
+        {showUpgradeModal && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-card-bg rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
+              <div className="flex justify-center mb-6">
+                <LockClosedIcon className="size-12 text-pink-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-center text-text-primary mb-3">
+                Upgrade Your Account
+              </h2>
+              <p className="text-center text-text-secondary mb-6">
+                Collaborate is a premium feature. Unlock couple quizzes and
+                compatibility insights with a Pro subscription.
+              </p>
+              <div className="space-y-3">
+                <button
+                  onClick={handleUpgradeClick}
+                  className="w-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-semibold py-3 rounded-lg hover:brightness-110 transition"
+                >
+                  Upgrade to Pro
+                </button>
+                <button
+                  onClick={() => setShowUpgradeModal(false)}
+                  className="w-full border-2 border-text-secondary text-text-secondary font-semibold py-3 rounded-lg hover:bg-dark-bg transition"
+                >
+                  Continue as Free
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pro Feature Banner */}
+        {showProBanner && (
+          <div className="max-w-2xl mx-auto mb-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-pink-400/50 rounded-lg p-4 flex items-start gap-4">
+            <LockClosedIcon className="size-5 text-pink-400 flex-shrink-0 mt-1" />
+            <div className="flex-1">
+              <h3 className="font-semibold text-pink-300 mb-1">
+                Unlock Couple Collaboration
+              </h3>
+              <p className="text-sm text-text-secondary mb-3">
+                Take personalized quizzes with your partner and get
+                compatibility insights. Upgrade to Pro to get started!
+              </p>
+              <button
+                onClick={() => navigate("/billing")}
+                className="text-sm bg-pink-600 hover:bg-pink-700 text-white px-4 py-2 rounded-lg font-medium transition"
+              >
+                Upgrade to Pro
+              </button>
+            </div>
+            <button
+              onClick={() => setShowProBanner(false)}
+              className="text-text-secondary hover:text-text-primary text-lg flex-shrink-0"
+            >
+              ×
+            </button>
+          </div>
+        )}
+
         {/* Your existing header, menu, genderSelect, create, join, room, and playing views remain exactly the same as before */}
         {/* Only the room view category list is now using the imported data */}
 

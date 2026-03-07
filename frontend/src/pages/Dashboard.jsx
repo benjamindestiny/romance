@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import rom from "../assets/rom.png";
 import Sidebar from "../components/Sidebar.jsx";
 import BottomNav from "../components/BottomNav.jsx";
 import StatCard from "../components/StatCard.jsx";
@@ -161,9 +162,7 @@ export default function Dashboard() {
           {/* Header */}
           <header className="flex justify-between items-center mb-6">
             <div>
-              <h1 className="text-primary-purple text-2xl font-bold md:hidden">
-                Romance
-              </h1>
+              <img src="rom" alt="romanceLogo" />
               <p className="text-xl font-bold">
                 {greeting}, {userName}
               </p>
@@ -246,13 +245,16 @@ export default function Dashboard() {
                 to="/counseling"
                 icon={<UserCircleIcon className="size-6 text-primary-purple" />}
                 title="Book Counseling"
-                description="Connect with a licensed therapist for your relationship."
+                description="Connect with a licensed therapist for your relationship.
+                coming soon!!!."
+                
               />
               <QuickActionCard
                 to="/community"
                 icon={<UsersIcon className="size-6 text-primary-purple" />}
                 title="Join Community"
-                description="Connect with others on similar journeys and share experiences."
+                description="Connect with others on similar journeys and share experiences.
+                coming soon!!!."
               />
               <QuickActionCard
                 to="/report"

@@ -4,13 +4,13 @@ import { HomeIcon, CalendarIcon, ChatBubbleLeftRightIcon, UserIcon, AcademicCapI
 export default function BottomNav() {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-dark-bg border-t border-gray-border flex justify-around py-2 z-20">
-      <Link to="/" className="flex flex-col items-center space-y-1 text-text-secondary">
+      <Link to="/dashboard" className="flex flex-col items-center space-y-1 text-text-secondary">
         <HomeIcon className="size-6" />
         <span className="text-xs">Home</span>
       </Link>
-      <Link to="/sessions" className="flex flex-col items-center space-y-1 text-text-secondary">
+      <Link to="/billing" className="flex flex-col items-center space-y-1 text-text-secondary">
         <CalendarIcon className="size-6" />
-        <span className="text-xs">Sessions</span>
+        <span className="text-xs">plan</span>
       </Link>
       <Link to="/collaborate" className="flex flex-col items-center space-y-1 text-text-secondary">
         <ChatBubbleLeftRightIcon className="size-6" />

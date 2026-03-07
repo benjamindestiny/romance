@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Cog6ToothIcon } from '@heroicons/react/24/solid';
 import { Link } from 'react-router-dom';
 import ProfilePhoto from '../assets/nature.jpg';

@@ -151,10 +151,10 @@ export default function Quiz() {
               onClick={() => navigate("/dashboard")}
               className="flex items-center gap-2 text-primary-purple"
             >
-              <ArrowLeftIcon className="size-5" /> Back to Dashboard
+              <ArrowLeftIcon className="size-5" />Back 
             </button>
             <h1 className="text-3xl font-bold text-primary-purple">
-              Solo Growth Quizzes
+              Solo Growth
             </h1>
           </div>
 
