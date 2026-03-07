@@ -1,5 +1,6 @@
-import React from "react";
+import { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
+import rom from "../assets/rom.png"
 import {
   HomeIcon,
   MapIcon,
@@ -19,7 +20,11 @@ export default function Sidebar() {
   return (
     <div className="flex flex-col justify-between">
       <aside className="hidden md:block fixed top-0 left-0 h-full w-64 bg-dark-bg border-r border-gray-border p-4 space-y-6">
-        <h1 className="text-primary-purple text-2xl font-bold">Romance</h1>
+        <img 
+        className="w-full h-32 object-cover"
+        src={rom} 
+        alt="romance logo" 
+        />
         <nav className="space-y-2">
           <NavLink
             to="/dashboard"

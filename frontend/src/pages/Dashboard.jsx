@@ -162,7 +162,6 @@ export default function Dashboard() {
           {/* Header */}
           <header className="flex justify-between items-center mb-6">
             <div>
-              <img src="rom" alt="romanceLogo" />
               <p className="text-xl font-bold">
                 {greeting}, {userName}
               </p>
