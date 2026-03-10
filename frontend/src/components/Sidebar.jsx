@@ -21,7 +21,7 @@ export default function Sidebar() {
     <div className="flex flex-col justify-between">
       <aside className="hidden md:block fixed top-0 left-0 h-full w-64 bg-dark-bg border-r border-gray-border p-4 space-y-6">
         <img 
-        className="w-full h-32 object-cover"
+        className="w-full h-8 object-cover"
         src={rom} 
         alt="romance logo" 
         />
@@ -65,20 +65,7 @@ export default function Sidebar() {
             <MapIcon className="size-5" />
             <span>My Journey</span>
           </NavLink>
-          <NavLink
-            to="/profiles"
-            className={({ isActive }) =>
-              `flex items-center space-x-3 rounded-md p-2 ${
-                isActive
-                  ? "bg-card-bg text-primary-purple font-medium"
-                  : "hover:bg-card-bg"
-              }`
-            }
-          >
-            <HeartIcon className="size-5" />
-            <span>Find Partner</span>
-          </NavLink>
-         
+                   
           <NavLink
             to="/collaborate"
             className={({ isActive }) =>

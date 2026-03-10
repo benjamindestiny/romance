@@ -65,51 +65,38 @@ const Billing = () => {
     checkPaymentStatus();
   }, []);
 
-  // Initialize Flutterwave payment
-  const handlePayment = async () => {
-    // determine an identifier property – backend returns _id
-    const userId = user?._id || user?.id;
-    if (!user || !userId) {
-      setMessage("Please log in to make a payment");
-      setMessageType("error");
-      return;
-    }
+  // Only the important parts changed (rest stays exactly the same)
+const handlePayment = async () => {
+  const userId = user?._id || user?.id;
+  if (!user || !userId) {
+    toast.error("Please log in first");
+    return;
+  }
 
-    setLoading(true);
-    setMessage(null);
+  setLoading(true);
+  const planData = plans[selectedPlan];
 
-    try {
-      const planData = plans[selectedPlan];
-
-      // Initialize payment with backend
-      const response = await axios.post(
-        "/api/payments/flutterwave/initialize",
-        {
-          amount: planData.price,
-          currency: planData.currency,
-          email: user.email || "", // backend can lookup if missing
-          userId: user._id || user.id,
-          planId: selectedPlan,
-        },
-      );
-
-      if (response.data.success && response.data.data.link) {
-        // Redirect to Flutterwave checkout
-        window.location.href = response.data.data.link;
-      } else {
-        setMessage("Failed to initialize payment. Please try again.");
-        setMessageType("error");
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/api/payments/flutterwave/initialize`,
+      {
+        amount: planData.price,
+        currency: "NGN",           // ← Changed to NGN for Nigeria
+        email: user.email,
+        userId,
+        planId: selectedPlan,
       }
-    } catch (error) {
-      console.error("Payment initialization error:", error);
-      setMessage(
-        error.response?.data?.message || "Payment initialization failed",
-      );
-      setMessageType("error");
-    } finally {
-      setLoading(false);
+    );
+
+    if (response.data.success) {
+      window.location.href = response.data.data.link; // redirects to Flutterwave
     }
-  };
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Payment failed to start");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div
