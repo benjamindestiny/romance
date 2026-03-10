@@ -87,6 +87,18 @@ const userSchema = new mongoose.Schema(
     // ✅ PASSWORD RESET
     passwordResetToken: String,
     passwordResetTokenExpiry: Date,
+
+    // ✅ SUBSCRIPTION MANAGEMENT
+    subscriptionStatus: {
+      type: String,
+      enum: ["free", "pro"],
+      default: "free",
+    },
+
+    subscriptionExpiresAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
 );

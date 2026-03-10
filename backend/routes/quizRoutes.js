@@ -1,5 +1,5 @@
 import express from "express";
-import { submitQuiz } from "../controllers/quizControllers.js";
+import { submitQuiz } from "../controllers/quizController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
 const router = express.Router();

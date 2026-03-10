@@ -10,6 +10,9 @@ import { v2 as cloudinary } from "cloudinary";
 import authRoutes from "./routes/authRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
+import dailyPromptRoutes from "./routes/dailyPromptRoutes.js";
+// import quizRoutes from "./routes/quizRoutes.js";
+// import testimoanialRoutes from "./routes/testimoanialRoutes.js";
 
 const app = express();
 
@@ -23,7 +26,7 @@ cloudinary.config({
 /* ===== MIDDLEWARE ===== */
 app.use(
   cors({
-    origin: true, // Allow all origins for testing
+    origin: true,
     credentials: true,
   }),
 );
@@ -33,6 +36,9 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/rooms", roomRoutes);
+app.use("/api/prompts", dailyPromptRoutes);
+// app.use("/api/quiz", quizRoutes);
+// app.use("/api/testimonials", testimoanialRoutes);
 
 /* ===== DEBUG ROUTES ===== */
 app.get("/api/auth/debug", (req, res) =>

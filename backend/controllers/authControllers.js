@@ -9,8 +9,6 @@ import multer from "multer";
 
 dotenv.config();
 
-dotenv.config();
-
 /* ================= GENERATE JWT ================= */
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "7d" });
@@ -383,3 +381,44 @@ export const uploadProfilePic = [
     }
   },
 ];
+/* ================= DELETE ACCOUNT ================= */
+export const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { feedback, reasons } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({ message: "User ID not found" });
+    }
+
+    // Find and delete the user
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // TODO: Store feedback in a separate collection for analytics
+    // Example: await DeletionFeedback.create({ userId, feedback, reasons, deletedAt: new Date() });
+    console.log(
+      `User deleted: ${user.email}. Feedback: ${feedback}, Reasons: ${reasons}`,
+    );
+
+    // TODO: Send deletion confirmation email
+    // await sendEmail({
+    //   to: user.email,
+    //   subject: "Your Romance Account Has Been Deleted",
+    //   html: `<p>Your account has been permanently deleted. We appreciate your time with us!</p>`
+    // });
+
+    res.json({
+      success: true,
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to delete account",
+    });
+  }
+};
