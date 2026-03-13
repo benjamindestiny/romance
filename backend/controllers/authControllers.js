@@ -37,17 +37,18 @@ export const signup = async (req, res) => {
 
         const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 
-        console.log(`Resending verification email to: ${email}`);
-        await sendEmail({
+        // 🔥 NON-BLOCKING EMAIL (important fix)
+        sendEmail({
           to: email,
           subject: "Verify your email",
           html: `
-    <h3>Email Verification</h3>
-    <p>Click below to verify your email:</p>
-    <a href="${verificationUrl}">${verificationUrl}</a>
-  `,
+            <h3>Email Verification</h3>
+            <p>Click below to verify your email:</p>
+            <a href="${verificationUrl}">${verificationUrl}</a>
+          `,
+        }).catch((err) => {
+          console.error(`❌ Failed to send verification email to ${email}:`, err.message);
         });
-        console.log(`Verification email resent successfully to: ${email}`);
 
         return res
           .status(200)
@@ -55,6 +56,7 @@ export const signup = async (req, res) => {
       }
     }
 
+    // Create user first
     const rawToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = crypto
       .createHash("sha256")
@@ -71,27 +73,31 @@ export const signup = async (req, res) => {
 
     const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
 
-    console.log(`Sending verification email to: ${email}`);
-    await sendEmail({
+    console.log(`📧 Sending verification email to: ${email}`);
+
+    // 🔥 NON-BLOCKING EMAIL – signup succeeds instantly
+    sendEmail({
       to: email,
       subject: "Verify your email",
       html: `
-    <h3>Email Verification</h3>
-    <p>Click below to verify your email:</p>
-    <a href="${verificationUrl}">${verificationUrl}</a>
-  `,
-    });
-    console.log(`Verification email sent successfully to: ${email}`);
+        <h3>Email Verification</h3>
+        <p>Click below to verify your email:</p>
+        <a href="${verificationUrl}">${verificationUrl}</a>
+      `,
+    })
+      .then(() => console.log(`✅ Verification email sent successfully to: ${email}`))
+      .catch((err) => {
+        console.error(`❌ Failed to send verification email to ${email}:`, err.message);
+      });
 
     res
       .status(201)
-      .json({ message: "Registration successful. Check email to verify." });
+      .json({ message: "Registration successful! Check your email to verify." });
   } catch (error) {
-    console.error(error);
+    console.error("Signup error:", error);
     res.status(500).json({ message: error.message });
   }
 };
-
 /* ================= VERIFY EMAIL ================= */
 export const verifyEmail = async (req, res) => {
   try {
