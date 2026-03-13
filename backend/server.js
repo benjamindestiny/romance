@@ -71,6 +71,20 @@ const startServer = async () => {
 
 startServer();
 
+// ==================== TEST EMAIL ROUTE (add this) ====================
+app.get("/api/test-email", async (req, res) => {
+  try {
+    await sendEmail({
+      to: process.env.EMAIL_USER, // sends to YOUR own Gmail
+      subject: "Test Email from Romance App",
+      html: "<h2>Hello! This is a test email.</h2><p>If you see this, Nodemailer + Gmail is working 🎉</p>",
+    });
+    res.json({ success: true, message: "Test email sent to your Gmail!" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 /* ===== GLOBAL ERROR HANDLER ===== */
 app.use((err, req, res, next) => {
   console.error(err.stack);

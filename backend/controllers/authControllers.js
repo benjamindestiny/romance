@@ -189,7 +189,7 @@ export const login = async (req, res) => {
     if (!user.isVerified)
       return res.status(400).json({
         message:
-          "Verify your email first, check your Email you will receive your verification link from onboarding@resend.dev",
+          "Verify your email first. Check your inbox for the verification link.",
       });
 
     const isMatch = await user.matchPassword(password);
