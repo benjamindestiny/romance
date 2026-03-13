@@ -1,28 +1,40 @@
-import { Resend } from "resend";
+// ====================== sendEmail.js (UPDATED with Nodemailer + Gmail) 
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
 dotenv.config();
 
-console.log("API KEY:", process.env.RESEND_API_KEY);
+// Create reusable transporter once (best practice)
+const transporter = nodemailer.createTransport({
+  service: "gmail",                    
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error("RESEND_API_KEY is missing in environment variables");
-}
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Test transporter on startup (helps catch errors early)
+transporter.verify((error, success) => {
+  if (error) {
+    console.error("❌ Gmail transporter error:", error);
+  } else {
+    console.log("✅ Gmail email service is ready!");
+  }
+});
 
 export const sendEmail = async ({ to, subject, html }) => {
   try {
-    const data = await resend.emails.send({
-      from: "onboarding@resend.dev",
+    const info = await transporter.sendMail({
+      from: `"Romance App" <${process.env.EMAIL_USER}>`, // pretty sender name
       to,
       subject,
       html,
     });
 
-    return data;
+    console.log(`✅ Email sent to ${to} | Message ID: ${info.messageId}`);
+    return info;
   } catch (error) {
-    console.error("Resend error:", error);
+    console.error("❌ Nodemailer error:", error);
     throw error;
   }
 };
