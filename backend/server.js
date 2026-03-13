@@ -11,6 +11,7 @@ import authRoutes from "./routes/authRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import roomRoutes from "./routes/roomRoutes.js";
 import dailyPromptRoutes from "./routes/dailyPromptRoutes.js";
+import { sendEmail } from "./utils/sendEmail.js";
 // import quizRoutes from "./routes/quizRoutes.js";
 // import testimoanialRoutes from "./routes/testimoanialRoutes.js";
 
