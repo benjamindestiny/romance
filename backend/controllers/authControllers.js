@@ -47,7 +47,10 @@ export const signup = async (req, res) => {
             <a href="${verificationUrl}">${verificationUrl}</a>
           `,
         }).catch((err) => {
-          console.error(`❌ Failed to send verification email to ${email}:`, err.message);
+          console.error(
+            `❌ Failed to send verification email to ${email}:`,
+            err.message,
+          );
         });
 
         return res
@@ -85,14 +88,21 @@ export const signup = async (req, res) => {
         <a href="${verificationUrl}">${verificationUrl}</a>
       `,
     })
-      .then(() => console.log(`✅ Verification email sent successfully to: ${email}`))
+      .then(() =>
+        console.log(`✅ Verification email sent successfully to: ${email}`),
+      )
       .catch((err) => {
-        console.error(`❌ Failed to send verification email to ${email}:`, err.message);
+        console.error(
+          `❌ Failed to send verification email to ${email}:`,
+          err.message,
+        );
       });
 
     res
       .status(201)
-      .json({ message: "Registration successful! Check your email to verify." });
+      .json({
+        message: "Registration successful! Check your email to verify.",
+      });
   } catch (error) {
     console.error("Signup error:", error);
     res.status(500).json({ message: error.message });
